@@ -71,7 +71,7 @@ if uploaded_audio is not None:
     mel_db = librosa.power_to_db(mel_spectrogram, ref=np.max)
 
     # Resize Mel-spectrogram to a fixed width (e.g., 500)
-    mel_db_resized = librosa.util.fix_length(mel_db, 500, axis=-1)  # Resize width to 500
+    mel_db_resized = librosa.util.fix_length(mel_db, size=500, axis=-1)  # Resize width to 500
 
     # Plot Mel-spectrogram
     fig, ax = plt.subplots(figsize=(10, 4))
