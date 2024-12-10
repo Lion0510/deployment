@@ -2,131 +2,144 @@ import streamlit as st
 import numpy as np
 import librosa
 import tensorflow as tf
-import gdown
-import matplotlib.pyplot as plt
+import gdown  # Import gdown for downloading files from Google Drive
 from tensorflow.keras.models import load_model
+import matplotlib.pyplot as plt
+import seaborn as sns
 from io import BytesIO
 
-# Download model dari Google Drive
-melspec_model_url = 'https://drive.google.com/uc?id=192VGvINbZKOyjhGioyBhjfd2alGe6ATM'
-mfcc_model_url = 'https://drive.google.com/uc?id=1aRBAt6bHVMW3t6QwbLHzCPn3fQuqd71h'
+# Set Streamlit page configuration
+st.set_page_config(page_title="Bird Song Classifier", page_icon="🦜", layout="centered")
 
-# Mendownload model Melspec dan MFCC
-melspec_model_path = 'melspec_model.h5'
-mfcc_model_path = 'mfcc_model.h5'
+# Function to download model from Google Drive using gdown
+def download_model_from_google_drive(url, output_path):
+    gdown.download(url, output_path, quiet=False)
 
-gdown.download(melspec_model_url, melspec_model_path, quiet=True)
-gdown.download(mfcc_model_url, mfcc_model_path, quiet=True)
+# Google Drive model URLs
+melspec_model_url = 'https://drive.google.com/uc?id=192VGvINbZKOyjhGioyBhjfd2alGe6ATM'  # Mel Spectrogram model URL
+mfcc_model_url = 'https://drive.google.com/uc?id=1aRBAt6bHVMW3t6QwbLHzCPn3fQuqd71h'  # MFCC model URL
 
-# Load kedua model
-melspec_model = load_model(melspec_model_path)
-mfcc_model = load_model(mfcc_model_path)
+# Path to save the downloaded models
+melspec_model_save_path = 'melspec_model.h5'
+mfcc_model_save_path = 'mfcc_model.h5'
 
-# Fungsi untuk mengekstrak MFCC dari file audio
+# Download the models from Google Drive
+st.write("Mengunduh model Melspec dari Google Drive...")
+download_model_from_google_drive(melspec_model_url, melspec_model_save_path)
+
+st.write("Mengunduh model MFCC dari Google Drive...")
+download_model_from_google_drive(mfcc_model_url, mfcc_model_save_path)
+
+# Load the pre-trained models
+melspec_model = tf.keras.models.load_model(melspec_model_save_path)
+mfcc_model = tf.keras.models.load_model(mfcc_model_save_path)
+
+# Function to extract MFCC features from an audio file
 def extract_mfcc(file_path, sr=22050, n_mfcc=64, n_fft=2048, hop_length=512):
+    # Load the audio file
     y, _ = librosa.load(file_path, sr=sr)
+    
+    # Extract MFCC features
     mfccs = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=n_mfcc, n_fft=n_fft, hop_length=hop_length)
-    mfccs = mfccs.T  # Transpose untuk mendapatkan shape (time, n_mfcc)
+    
+    # Transpose to get shape (n_mfcc, time)
+    mfccs = mfccs.T  # Shape: (time, n_mfcc)
+    
+    # Ensure the shape is (64, n_mfcc) for model input
     if mfccs.shape[0] < 64:
         mfccs = np.pad(mfccs, ((0, 64 - mfccs.shape[0]), (0, 0)), mode='constant')
     else:
         mfccs = mfccs[:64, :]
-    mfccs = np.stack([mfccs] * 3, axis=-1)  # Mengubah menjadi 3 channel (64, 64, 3)
+    
+    # Duplicate the single-channel MFCCs to create a 3-channel input
+    mfccs = np.stack([mfccs] * 3, axis=-1)  # Shape: (64, 64, 3)
+    
     return mfccs
 
-# Fungsi untuk mengekstrak Melspectrogram dari file audio
-def extract_melspec(file_path, sr=22050, n_mels=128, n_fft=2048, hop_length=512):
+# Function to extract Mel Spectrogram features from an audio file
+def extract_melspec(file_path, sr=22050, n_mels=64, n_fft=2048, hop_length=512):
+    # Load the audio file
     y, _ = librosa.load(file_path, sr=sr)
-    melspec = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=n_mels, n_fft=n_fft, hop_length=hop_length)
-    melspec = librosa.power_to_db(melspec, ref=np.max)  # Konversi ke dB
-    melspec = melspec.T  # Transpose agar shape menjadi (time, n_mels)
     
-    # Pastikan shape adalah (64, 64) sebelum padding
+    # Extract Mel Spectrogram features
+    melspec = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=n_mels, n_fft=n_fft, hop_length=hop_length)
+    
+    # Convert to logarithmic scale (log-mel spectrogram)
+    melspec = librosa.power_to_db(melspec, ref=np.max)
+    
+    # Transpose to get shape (n_mels, time)
+    melspec = melspec.T  # Shape: (time, n_mels)
+    
+    # Ensure the shape is (64, n_mels) for model input
     if melspec.shape[0] < 64:
         melspec = np.pad(melspec, ((0, 64 - melspec.shape[0]), (0, 0)), mode='constant')
     else:
         melspec = melspec[:64, :]
     
-    # Pastikan shape melspec adalah (64, 64, 3) untuk input model
-    melspec = np.stack([melspec] * 3, axis=-1)  # Membuat 3 channel (64, 64, 3)
+    # Duplicate the single-channel Mel Spectrogram to create a 3-channel input
+    melspec = np.stack([melspec] * 3, axis=-1)  # Shape: (64, 64, 3)
     
     return melspec
 
+# Function to classify an audio file using the selected model
+def classify_audio(file_path, model_type="mfcc"):
+    if model_type == "mfcc":
+        features = extract_mfcc(file_path)
+        model = mfcc_model
+    else:  # melspec
+        features = extract_melspec(file_path)
+        model = melspec_model
+    
+    # Add batch dimension
+    features = np.expand_dims(features, axis=0)  # Shape: (1, 64, 64, 3)
+    
+    # Make predictions
+    predictions = model.predict(features)
+    
+    # Get the predicted class
+    predicted_class = np.argmax(predictions, axis=1)
+    return predicted_class
 
-# Fungsi untuk klasifikasi menggunakan model
-def classify_audio(file_path):
-    mfcc_features = extract_mfcc(file_path)
-    melspec_features = extract_melspec(file_path)
-    
-    mfcc_features = np.expand_dims(mfcc_features, axis=0)  # Menambahkan dimensi batch
-    melspec_features = np.expand_dims(melspec_features, axis=0)  # Menambahkan dimensi batch
-    
-    # Prediksi menggunakan kedua model
-    mfcc_pred = mfcc_model.predict(mfcc_features)
-    melspec_pred = melspec_model.predict(melspec_features)
-    
-    # Mendapatkan hasil prediksi dan akurasi
-    mfcc_pred_class = np.argmax(mfcc_pred, axis=1)
-    melspec_pred_class = np.argmax(melspec_pred, axis=1)
-    
-    mfcc_accuracy = np.max(mfcc_pred)  # Prediksi untuk model MFCC
-    melspec_accuracy = np.max(melspec_pred)  # Prediksi untuk model Melspec
-    
-    return mfcc_pred_class[0], mfcc_accuracy, melspec_pred_class[0], melspec_accuracy
-
-# Set konfigurasi halaman Streamlit
-st.set_page_config(page_title="Deep Learning in Audio - Klasifikasi Suara Burung", page_icon="🦜", layout="centered")
-
-# Judul Aplikasi
+# Title of the app
 st.title("Deep Learning in Audio: Klasifikasi Suara Burung di Indonesia Bagian Barat 🦜")
 
-# Deskripsi
+# Introduction
 st.markdown("""
-    **Selamat datang di aplikasi klasifikasi suara burung menggunakan Deep Learning!**
+     **Selamat datang di aplikasi klasifikasi suara burung menggunakan Deep Learning!**
     Aplikasi ini mengimplementasikan teknik ekstraksi fitur audio menggunakan MFCC dan Melspectrogram, 
     serta menggunakan dua model CNN yang berbeda untuk mengklasifikasikan suara burung yang ada di Indonesia Bagian Barat.
     Unggah file audio dalam format MP3 atau WAV, dan model akan memberikan prediksi kelas burung beserta akurasi dari kedua model.
 """)
 
-# Upload file audio
+# File upload section
 st.header("Unggah File Audio Suara Burung")
 
 uploaded_audio = st.file_uploader("Pilih file audio (MP3/WAV) untuk diuji", type=["mp3", "wav"])
 
+# Model selection section
+model_option = st.radio("Pilih model untuk klasifikasi:", ("mfcc", "melspec"))
+
 if uploaded_audio is not None:
-    # Menampilkan file audio
+    # Display file details
     st.audio(uploaded_audio, format="audio/mp3")
     
-    # Menyimpan file audio yang diunggah ke file sementara
+    # Process the audio file
     audio_bytes = uploaded_audio.read()
     with BytesIO(audio_bytes) as audio_buffer:
-        temp_file_path = 'temp_audio.wav'
+        # Save the uploaded audio to a temporary file
+        temp_file_path = 'temp_audio.wav'  # You can use any temporary file name
         with open(temp_file_path, 'wb') as f:
             f.write(audio_buffer.getbuffer())
-    
-    # Button untuk prediksi
+
+    # Predict using the classify_audio function
     if st.button('Prediksi Kelas Burung'):
         with st.spinner("Memproses..."):
-            # Mengklasifikasikan menggunakan kedua model
-            mfcc_class, mfcc_acc, melspec_class, melspec_acc = classify_audio(temp_file_path)
-            
-            # Menampilkan hasil prediksi
+            predicted_class = classify_audio(temp_file_path, model_type=model_option)
             st.subheader("Hasil Prediksi:")
-            
-            st.write(f"**Prediksi Kelas (Model MFCC):** {mfcc_class} dengan Akurasi: {mfcc_acc*100:.2f}%")
-            st.write(f"**Prediksi Kelas (Model Melspec):** {melspec_class} dengan Akurasi: {melspec_acc*100:.2f}%")
-            
-            # Menampilkan visualisasi akurasi
-            st.subheader("Visualisasi Akurasi:")
-            fig, ax = plt.subplots()
-            ax.bar(["MFCC Model", "Melspec Model"], [mfcc_acc, melspec_acc], color=["blue", "orange"])
-            ax.set_ylim(0, 1)
-            ax.set_ylabel("Akurasi")
-            ax.set_title("Perbandingan Akurasi antara Model MFCC dan Melspec")
-            st.pyplot(fig)
+            st.write(f"**Prediksi Kelas:** {predicted_class[0]}")
 
 # Footer
 st.markdown("""
     <hr>
-    <p style="text-align:center; font-size:12px; color:#888;">Aplikasi Klasifikasi Suara Burung menggunakan Deep Learning - Implementasi Variasi Teknik Ekstraksi Fitur</p>
-""", unsafe_allow_html=True)
+    <p style="text-align:center; font-size:12px; color:#888;">Aplikasi Klasifikasi Suara Burung menggunakan Deep Learning</p>
+""")
