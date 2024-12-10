@@ -140,5 +140,7 @@ if uploaded_audio is not None:
 # Footer
 st.markdown("""
     <hr>
-    <p style="text-align:center; font-size:12px; color:#888;">Aplikasi Klasifikasi Suara Burung menggunakan Deep Learning</p>
-""")
+    <p style="text-align:center; font-size:14px; color:#888; margin-top: 10px; margin-bottom: 10px;">
+        Aplikasi Klasifikasi Suara Burung menggunakan Deep Learning | Dibuat oleh Kelompok 11
+    </p>
+""", unsafe_allow_html=True)
