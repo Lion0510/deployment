@@ -16,8 +16,8 @@ def download_model_from_google_drive(url, output_path):
     gdown.download(url, output_path, quiet=False)
 
 # Google Drive model URLs
-melspec_model_url = 'https://drive.google.com/uc?id=192VGvINbZKOyjhGioyBhjfd2alGe6ATM'  # Mel Spectrogram model URL
-mfcc_model_url = 'https://drive.google.com/uc?id=1aRBAt6bHVMW3t6QwbLHzCPn3fQuqd71h'  # MFCC model URL
+melspec_model_url = 'https://drive.google.com/file/d/192VGvINbZKOyjhGioyBhjfd2alGe6ATM/view?usp=drive_link'  # Mel Spectrogram model URL
+mfcc_model_url = 'https://drive.google.com/file/d/1aRBAt6bHVMW3t6QwbLHzCPn3fQuqd71h/view?usp=drive_link'  # MFCC model URL
 
 # Path to save the downloaded models
 melspec_model_save_path = 'melspec_model.h5'
