@@ -66,8 +66,13 @@ if uploaded_audio is not None:
     mel_spectrogram = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=128, fmax=8000)
     mel_db = librosa.power_to_db(mel_spectrogram, ref=np.max)
 
-    # Resize Mel-spectrogram to a fixed width (e.g., 500)
-    mel_db_resized = librosa.util.fix_length(mel_db, 500, axis=-1)  # Resize width to 500
+    target_length = 500
+    if mel_db.shape[-1] < target_length:
+        # Jika panjangnya kurang dari 500, tambahkan padding di sisi kanan
+        mel_db_resized = np.pad(mel_db, ((0, 0), (0, target_length - mel_db.shape[-1])), mode='constant')
+    else:
+        # Jika panjangnya cukup, gunakan fix_length
+        mel_db_resized = librosa.util.fix_length(mel_db, target_length, axis=-1)
 
     # Plot Mel-spectrogram
     fig, ax = plt.subplots(figsize=(10, 4))
@@ -97,31 +102,4 @@ if uploaded_audio is not None:
 
     # Predict using the models
     if st.button('Prediksi Kelas Burung'):
-        with st.spinner("Memproses..."):
-            try:
-                # Reshape for model input
-                mel_spectrogram_input = np.expand_dims(mel_spectrogram, axis=0)  # Add batch dimension
-                mfcc_input = np.expand_dims(mfcc, axis=0)  # Add batch dimension
-
-                # Predict using the models (Melspec and MFCC models)
-                melspec_pred = melspec_model.predict(mel_spectrogram_input)
-                mfcc_pred = mfcc_model.predict(mfcc_input)
-
-                # Decode predictions
-                melspec_pred_class = np.argmax(melspec_pred, axis=1)[0]
-                mfcc_pred_class = np.argmax(mfcc_pred, axis=1)[0]
-
-                # Display results
-                st.subheader("Hasil Prediksi:")
-                st.write(f"**Melspec Model Prediksi:** Kelas {melspec_pred_class}")
-                st.write(f"**MFCC Model Prediksi:** Kelas {mfcc_pred_class}")
-            
-            except Exception as e:
-                st.error(f"Error during prediction: {e}")
-
-# Footer
-st.markdown("""
-    <hr>
-    <p style="text-align:center; font-size:12px; color:#555;">Aplikasi ini dibangun menggunakan Streamlit dan TensorFlow.</p>
-    <p style="text-align:center; font-size:12px; color:#555;">Desain oleh <strong>Kelompok 11</strong>.</p>
-""", unsafe_allow_html=True)
+        with st.spinner("Memproses...")
