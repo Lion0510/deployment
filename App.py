@@ -4,7 +4,7 @@ import librosa
 import tensorflow as tf
 from tensorflow.keras.models import load_model
 import matplotlib.pyplot as plt
-import gdown
+import gdown  # Import gdown library for downloading from Google Drive
 from io import BytesIO
 import os
 
@@ -19,14 +19,18 @@ mfcc_model_url = 'https://drive.google.com/uc?id=1aRBAt6bHVMW3t6QwbLHzCPn3fQuqd7
 melspec_model_path = 'melspec_model.h5'
 mfcc_model_path = 'mfcc_model.h5'
 
-@st.cache_data
-def download_model_silently(model_url, model_path):
+# Download models from Google Drive if not already downloaded
+def download_model(model_url, model_path):
     if not os.path.exists(model_path):
-        gdown.download(model_url, model_path, quiet=True)
+        st.info(f"Downloading model from {model_url}...")
+        gdown.download(model_url, model_path, quiet=False)
+        st.success(f"Model downloaded and saved to {model_path}")
+    else:
+        st.info(f"Model already exists at {model_path}, skipping download.")
 
-# Download the models silently
-download_model_silently(melspec_model_url, melspec_model_path)
-download_model_silently(mfcc_model_url, mfcc_model_path)
+# Download the models
+download_model(melspec_model_url, melspec_model_path)
+download_model(mfcc_model_url, mfcc_model_path)
 
 # Load models
 try:
@@ -39,7 +43,11 @@ except Exception as e:
 st.title("West Indonesia Birds Audio Classifier 🦜")
 
 # Introduction
-st.markdown("""**Selamat datang di aplikasi Klasifikasi Suara Burung!** Aplikasi ini akan mengklasifikasikan suara burung berdasarkan file audio yang diunggah. Cukup unggah file audio dalam format MP3 atau WAV, dan model akan memberikan prediksi kelas burung!""")
+st.markdown("""
+    **Selamat datang di aplikasi Klasifikasi Suara Burung!**
+    Aplikasi ini akan mengklasifikasikan suara burung berdasarkan file audio yang diunggah.
+    Cukup unggah file audio dalam format MP3 atau WAV, dan model akan memberikan prediksi kelas burung!
+""")
 
 # File upload section
 uploaded_audio = st.file_uploader("Pilih file audio (MP3/WAV) untuk diuji", type=["mp3", "wav"])
@@ -49,6 +57,7 @@ if uploaded_audio is not None:
     st.audio(uploaded_audio, format="audio/mp3")
     
     # Process the audio file
+    # Read audio file using librosa
     audio_bytes = uploaded_audio.read()
     with BytesIO(audio_bytes) as audio_buffer:
         # Load audio using librosa
@@ -62,7 +71,7 @@ if uploaded_audio is not None:
     mel_db = librosa.power_to_db(mel_spectrogram, ref=np.max)
 
     # Resize Mel-spectrogram to a fixed width (e.g., 500)
-    mel_db_resized = librosa.util.fix_length(mel_db, size=500, axis=-1)  # Resize width to 500
+    mel_db_resized = librosa.util.fix_length(mel_db, 500, axis=-1)  # Resize width to 500
 
     # Plot Mel-spectrogram
     fig, ax = plt.subplots(figsize=(10, 4))
@@ -90,42 +99,33 @@ if uploaded_audio is not None:
     # Reshape Mel-spectrogram to have 3 channels (required by the model)
     mel_spectrogram = np.repeat(mel_spectrogram, 3, axis=-1)  # Repeat channels 3 times to match the model input
 
-    # Flatten the mel_spectrogram input to match the expected input shape for the model (9216)
-    mel_spectrogram_flattened = mel_spectrogram.flatten().reshape(1, -1)  # Flatten into a single vector
+    # Predict using the models
+    if st.button('Prediksi Kelas Burung'):
+        with st.spinner("Memproses..."):
+            try:
+                # Reshape for model input
+                mel_spectrogram_input = np.expand_dims(mel_spectrogram, axis=0)  # Add batch dimension
+                mfcc_input = np.expand_dims(mfcc, axis=0)  # Add batch dimension
 
-    # Tombol prediksi di tengah (HTML tombol kustom)
-    centered_button = """
-    <div style="display: flex; justify-content: center; align-items: center; margin-top: 20px;">
-        <form action="" method="get">
-            <input type="submit" value="Prediksi Kelas Burung" style="padding: 10px 20px; font-size: 16px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
-        </form>
-    </div>
-    """
-    # Render tombol kustom di Streamlit
-    st.markdown(centered_button, unsafe_allow_html=True)
+                # Predict using the models (Melspec and MFCC models)
+                melspec_pred = melspec_model.predict(mel_spectrogram_input)
+                mfcc_pred = mfcc_model.predict(mfcc_input)
 
-    # Prediction logic (hidden Streamlit logic)
-    # This logic should run only when the file is uploaded and process the predictions in the background
-    try:
-        # Reshape for model input
-        mel_spectrogram_input = mel_spectrogram_flattened  # Use the flattened mel spectrogram
-        mfcc_input = np.expand_dims(mfcc, axis=0)  # Add batch dimension
+                # Decode predictions
+                melspec_pred_class = np.argmax(melspec_pred, axis=1)[0]
+                mfcc_pred_class = np.argmax(mfcc_pred, axis=1)[0]
 
-        # Predict using the models (Melspec and MFCC models)
-        melspec_pred = melspec_model.predict(mel_spectrogram_input)
-        mfcc_pred = mfcc_model.predict(mfcc_input)
-
-        # Decode predictions
-        melspec_pred_class = np.argmax(melspec_pred, axis=1)[0]
-        mfcc_pred_class = np.argmax(mfcc_pred, axis=1)[0]
-
-        # Display results
-        st.subheader("Hasil Prediksi:")
-        st.write(f"**Melspec Model Prediksi:** Kelas {melspec_pred_class}")
-        st.write(f"**MFCC Model Prediksi:** Kelas {mfcc_pred_class}")
-    
-    except Exception as e:
-        st.error(f"Error during prediction: {e}")
+                # Display results
+                st.subheader("Hasil Prediksi:")
+                st.write(f"**Melspec Model Prediksi:** Kelas {melspec_pred_class}")
+                st.write(f"**MFCC Model Prediksi:** Kelas {mfcc_pred_class}")
+            
+            except Exception as e:
+                st.error(f"Error during prediction: {e}")
 
 # Footer
-st.markdown("""<hr><p style="text-align:center; font-size:12px; color:#555;">Aplikasi ini dibangun menggunakan Streamlit dan TensorFlow.</p><p style="text-align:center; font-size:12px; color:#555;">Desain oleh <strong>Kelompok 11</strong>.</p>""", unsafe_allow_html=True)
+st.markdown("""
+    <hr>
+    <p style="text-align:center; font-size:12px; color:#555;">Aplikasi ini dibangun menggunakan Streamlit dan TensorFlow.</p>
+    <p style="text-align:center; font-size:12px; color:#555;">Desain oleh <strong>Kelompok 11</strong>.</p>
+""", unsafe_allow_html=True)
