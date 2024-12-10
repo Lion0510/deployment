@@ -7,13 +7,13 @@ import os
 # Set Streamlit page configuration
 st.set_page_config(page_title="Bird Song Classifier", page_icon="🦜", layout="centered")
 
-# Function to download model from Google Drive using gdown
+# Fungsi untuk mengunduh model dari Google Drive
 def download_model_from_google_drive(url, output_path):
     try:
-        gdown.download(url, output_path, quiet=False)
-        st.write(f"Model berhasil diunduh ke: {output_path}")
+        gdown.download(url, output_path, quiet=True)  # quiet=True untuk menyembunyikan output
     except Exception as e:
-        st.error(f"Error saat mengunduh model: {str(e)}")
+        raise RuntimeError(f"Error saat mengunduh model: {str(e)}")
+
 
 # Google Drive model URLs
 melspec_model_url = 'https://drive.google.com/uc?id=1--BTVqDAoyy83_3GEqL93SveSNYdncB_'
@@ -25,35 +25,25 @@ melspec_model_save_path = 'melspec_model.h5'
 mfcc_model_save_path = 'mfcc_model.h5'
 
 # Download the models from Google Drive
-st.write("Mengunduh model Melspec dari Google Drive...")
 download_model_from_google_drive(melspec_model_url, melspec_model_save_path)
-
-st.write("Mengunduh model MFCC dari Google Drive...")
 download_model_from_google_drive(mfcc_model_url, mfcc_model_save_path)
 
 # Check if the models exist and their file size
-if os.path.exists(melspec_model_save_path):
-    st.write(f"Model Melspec ditemukan. Ukuran file: {os.path.getsize(melspec_model_save_path)} bytes")
-else:
-    st.error("Model Melspec tidak ditemukan. Pastikan file berhasil diunduh.")
-
-if os.path.exists(mfcc_model_save_path):
-    st.write(f"Model MFCC ditemukan. Ukuran file: {os.path.getsize(mfcc_model_save_path)} bytes")
-else:
-    st.error("Model MFCC tidak ditemukan. Pastikan file berhasil diunduh.")
+if not os.path.exists(melspec_model_save_path):
+    raise FileNotFoundError("Model Melspec tidak ditemukan setelah unduhan!")
+if not os.path.exists(mfcc_model_save_path):
+    raise FileNotFoundError("Model MFCC tidak ditemukan setelah unduhan!")
 
 # Load the pre-trained models
 try:
     melspec_model = tf.keras.models.load_model(melspec_model_save_path)
-    st.write("Model Melspec berhasil dimuat.")
 except Exception as e:
-    st.error(f"Error saat memuat model Melspec: {str(e)}")
+    raise RuntimeError(f"Error saat memuat model Melspec: {str(e)}")
 
 try:
     mfcc_model = tf.keras.models.load_model(mfcc_model_save_path)
-    st.write("Model MFCC berhasil dimuat.")
 except Exception as e:
-    st.error(f"Error saat memuat model MFCC: {str(e)}")
+    raise RuntimeError(f"Error saat memuat model MFCC: {str(e)}")
 
 # Title of the app
 st.title("Deep Learning in Audio: Klasifikasi Suara Burung di Indonesia Bagian Barat 🦜")
