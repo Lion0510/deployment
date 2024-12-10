@@ -4,7 +4,7 @@ import librosa
 import tensorflow as tf
 from tensorflow.keras.models import load_model
 import matplotlib.pyplot as plt
-import gdown  # Import gdown library for downloading from Google Drive
+import gdown
 from io import BytesIO
 import os
 
@@ -19,18 +19,14 @@ mfcc_model_url = 'https://drive.google.com/uc?id=1aRBAt6bHVMW3t6QwbLHzCPn3fQuqd7
 melspec_model_path = 'melspec_model.h5'
 mfcc_model_path = 'mfcc_model.h5'
 
-# Download models from Google Drive if not already downloaded
-def download_model(model_url, model_path):
+@st.cache_data
+def download_model_silently(model_url, model_path):
     if not os.path.exists(model_path):
-        st.info(f"Downloading model from {model_url}...")
-        gdown.download(model_url, model_path, quiet=False)
-        st.success(f"Model downloaded and saved to {model_path}")
-    else:
-        st.info(f"Model already exists at {model_path}, skipping download.")
+        gdown.download(model_url, model_path, quiet=True)
 
-# Download the models
-download_model(melspec_model_url, melspec_model_path)
-download_model(mfcc_model_url, mfcc_model_path)
+# Download the models silently
+download_model_silently(melspec_model_url, melspec_model_path)
+download_model_silently(mfcc_model_url, mfcc_model_path)
 
 # Load models
 try:
