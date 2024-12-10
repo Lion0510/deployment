@@ -24,10 +24,7 @@ melspec_model_save_path = 'melspec_model.h5'
 mfcc_model_save_path = 'mfcc_model.h5'
 
 # Download the models from Google Drive
-st.write("Mengunduh model Melspec dari Google Drive...")
 download_model_from_google_drive(melspec_model_url, melspec_model_save_path)
-
-st.write("Mengunduh model MFCC dari Google Drive...")
 download_model_from_google_drive(mfcc_model_url, mfcc_model_save_path)
 
 # Load the pre-trained models
