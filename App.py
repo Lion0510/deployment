@@ -94,12 +94,15 @@ if uploaded_audio is not None:
     # Reshape Mel-spectrogram to have 3 channels (required by the model)
     mel_spectrogram = np.repeat(mel_spectrogram, 3, axis=-1)  # Repeat channels 3 times to match the model input
 
+    # Flatten the mel_spectrogram input to match the expected input shape for the model (9216)
+    mel_spectrogram_flattened = mel_spectrogram.flatten().reshape(1, -1)  # Flatten into a single vector
+
     # Predict using the models
     if st.button('Prediksi Kelas Burung'):
         with st.spinner("Memproses..."):
             try:
                 # Reshape for model input
-                mel_spectrogram_input = np.expand_dims(mel_spectrogram, axis=0)  # Add batch dimension
+                mel_spectrogram_input = mel_spectrogram_flattened  # Use the flattened mel spectrogram
                 mfcc_input = np.expand_dims(mfcc, axis=0)  # Add batch dimension
 
                 # Predict using the models (Melspec and MFCC models)
