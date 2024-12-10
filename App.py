@@ -93,7 +93,7 @@ if uploaded_audio is not None:
     # Flatten the mel_spectrogram input to match the expected input shape for the model (9216)
     mel_spectrogram_flattened = mel_spectrogram.flatten().reshape(1, -1)  # Flatten into a single vector
 
-    # Tombol prediksi di tengah
+    # Tombol prediksi di tengah (HTML tombol kustom)
     centered_button = """
     <div style="display: flex; justify-content: center; align-items: center; margin-top: 20px;">
         <form action="" method="get">
@@ -101,31 +101,31 @@ if uploaded_audio is not None:
         </form>
     </div>
     """
+    # Render tombol kustom di Streamlit
     st.markdown(centered_button, unsafe_allow_html=True)
 
-    # Trigger prediction logic when button is clicked
-    if st.button('Prediksi Kelas Burung'):
-        with st.spinner("Memproses..."):
-            try:
-                # Reshape for model input
-                mel_spectrogram_input = mel_spectrogram_flattened  # Use the flattened mel spectrogram
-                mfcc_input = np.expand_dims(mfcc, axis=0)  # Add batch dimension
+    # Prediction logic (hidden Streamlit logic)
+    # This logic should run only when the file is uploaded and process the predictions in the background
+    try:
+        # Reshape for model input
+        mel_spectrogram_input = mel_spectrogram_flattened  # Use the flattened mel spectrogram
+        mfcc_input = np.expand_dims(mfcc, axis=0)  # Add batch dimension
 
-                # Predict using the models (Melspec and MFCC models)
-                melspec_pred = melspec_model.predict(mel_spectrogram_input)
-                mfcc_pred = mfcc_model.predict(mfcc_input)
+        # Predict using the models (Melspec and MFCC models)
+        melspec_pred = melspec_model.predict(mel_spectrogram_input)
+        mfcc_pred = mfcc_model.predict(mfcc_input)
 
-                # Decode predictions
-                melspec_pred_class = np.argmax(melspec_pred, axis=1)[0]
-                mfcc_pred_class = np.argmax(mfcc_pred, axis=1)[0]
+        # Decode predictions
+        melspec_pred_class = np.argmax(melspec_pred, axis=1)[0]
+        mfcc_pred_class = np.argmax(mfcc_pred, axis=1)[0]
 
-                # Display results
-                st.subheader("Hasil Prediksi:")
-                st.write(f"**Melspec Model Prediksi:** Kelas {melspec_pred_class}")
-                st.write(f"**MFCC Model Prediksi:** Kelas {mfcc_pred_class}")
-            
-            except Exception as e:
-                st.error(f"Error during prediction: {e}")
+        # Display results
+        st.subheader("Hasil Prediksi:")
+        st.write(f"**Melspec Model Prediksi:** Kelas {melspec_pred_class}")
+        st.write(f"**MFCC Model Prediksi:** Kelas {mfcc_pred_class}")
+    
+    except Exception as e:
+        st.error(f"Error during prediction: {e}")
 
 # Footer
 st.markdown("""<hr><p style="text-align:center; font-size:12px; color:#555;">Aplikasi ini dibangun menggunakan Streamlit dan TensorFlow.</p><p style="text-align:center; font-size:12px; color:#555;">Desain oleh <strong>Kelompok 11</strong>.</p>""", unsafe_allow_html=True)
