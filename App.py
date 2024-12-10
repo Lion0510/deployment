@@ -23,7 +23,7 @@ mfcc_model_path = 'mfcc_model.h5'
 def download_model(model_url, model_path):
     if not os.path.exists(model_path):
         st.info(f"Downloading model from {model_url}...")
-        gdown.download(model_url, model_path, quiet=False)
+        gdown.download(model_url, model_path, quiet=True)
         st.success(f"Model downloaded and saved to {model_path}")
     else:
         st.info(f"Model already exists at {model_path}, skipping download.")
