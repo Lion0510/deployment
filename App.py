@@ -73,7 +73,7 @@ if uploaded_audio is not None:
         mel_db_resized = np.pad(mel_db, ((0, 0), (0, target_length - mel_db.shape[-1])), mode='constant')
     else:
         # Jika panjangnya cukup, gunakan fix_length
-        mel_db_resized = librosa.util.fix_length(mel_db, target_length, axis=-1)
+        mel_db_resized = librosa.util.fix_length(mel_db, size=target_length, axis=-1)
 
     # Plot Mel-spectrogram
     fig, ax = plt.subplots(figsize=(10, 4))
