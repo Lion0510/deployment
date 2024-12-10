@@ -2,103 +2,84 @@ import streamlit as st
 import numpy as np
 import librosa
 import tensorflow as tf
-import gdown  # Import gdown for downloading files from Google Drive
-from tensorflow.keras.models import load_model
+import gdown
 import matplotlib.pyplot as plt
-import seaborn as sns
+from tensorflow.keras.models import load_model
 from io import BytesIO
 
-# Set Streamlit page configuration
-st.set_page_config(page_title="Bird Song Classifier", page_icon="🦜", layout="centered")
+# Download model dari Google Drive
+melspec_model_url = 'https://drive.google.com/uc?id=192VGvINbZKOyjhGioyBhjfd2alGe6ATM'
+mfcc_model_url = 'https://drive.google.com/uc?id=1aRBAt6bHVMW3t6QwbLHzCPn3fQuqd71h'
 
-# Function to download model from Google Drive using gdown
-def download_model_from_google_drive(url, output_path):
-    gdown.download(url, output_path, quiet=False)
+# Mendownload model Melspec dan MFCC
+melspec_model_path = 'melspec_model.h5'
+mfcc_model_path = 'mfcc_model.h5'
 
-# Google Drive model URLs
-melspec_model_url = 'https://drive.google.com/uc?id=192VGvINbZKOyjhGioyBhjfd2alGe6ATM'  # Mel Spectrogram model URL
-mfcc_model_url = 'https://drive.google.com/uc?id=1aRBAt6bHVMW3t6QwbLHzCPn3fQuqd71h'  # MFCC model URL
+gdown.download(melspec_model_url, melspec_model_path, quiet=False)
+gdown.download(mfcc_model_url, mfcc_model_path, quiet=False)
 
-# Path to save the downloaded models
-melspec_model_save_path = 'melspec_model.h5'
-mfcc_model_save_path = 'mfcc_model.h5'
+# Load kedua model
+melspec_model = load_model(melspec_model_path)
+mfcc_model = load_model(mfcc_model_path)
 
-# Download the models from Google Drive
-st.write("Mengunduh model Melspec dari Google Drive...")
-download_model_from_google_drive(melspec_model_url, melspec_model_save_path)
-
-st.write("Mengunduh model MFCC dari Google Drive...")
-download_model_from_google_drive(mfcc_model_url, mfcc_model_save_path)
-
-# Load the pre-trained models
-melspec_model = tf.keras.models.load_model(melspec_model_save_path)
-mfcc_model = tf.keras.models.load_model(mfcc_model_save_path)
-
-# Function to extract MFCC features from an audio file
+# Fungsi untuk mengekstrak MFCC dari file audio
 def extract_mfcc(file_path, sr=22050, n_mfcc=64, n_fft=2048, hop_length=512):
-    # Load the audio file
     y, _ = librosa.load(file_path, sr=sr)
-    
-    # Extract MFCC features
     mfccs = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=n_mfcc, n_fft=n_fft, hop_length=hop_length)
-    
-    # Transpose to get shape (n_mfcc, time)
     mfccs = mfccs.T  # Shape: (time, n_mfcc)
     
-    # Ensure the shape is (64, n_mfcc) for model input
+    # Pastikan panjangnya 64
     if mfccs.shape[0] < 64:
         mfccs = np.pad(mfccs, ((0, 64 - mfccs.shape[0]), (0, 0)), mode='constant')
     else:
         mfccs = mfccs[:64, :]
     
-    # Duplicate the single-channel MFCCs to create a 3-channel input
+    # Duplikasi menjadi 3 channel
     mfccs = np.stack([mfccs] * 3, axis=-1)  # Shape: (64, 64, 3)
     
     return mfccs
 
-# Function to extract Mel Spectrogram features from an audio file
-def extract_melspec(file_path, sr=22050, n_mels=64, n_fft=2048, hop_length=512):
-    # Load the audio file
+# Fungsi untuk mengekstrak Melspectrogram dari file audio
+def extract_melspectrogram(file_path, sr=22050, n_mels=64, n_fft=2048, hop_length=512):
     y, _ = librosa.load(file_path, sr=sr)
+    mel_spectrogram = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=n_mels, n_fft=n_fft, hop_length=hop_length)
+    mel_spectrogram = librosa.power_to_db(mel_spectrogram, ref=np.max)  # Konversi ke dB
     
-    # Extract Mel Spectrogram features
-    melspec = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=n_mels, n_fft=n_fft, hop_length=hop_length)
-    
-    # Convert to logarithmic scale (log-mel spectrogram)
-    melspec = librosa.power_to_db(melspec, ref=np.max)
-    
-    # Transpose to get shape (n_mels, time)
-    melspec = melspec.T  # Shape: (time, n_mels)
-    
-    # Ensure the shape is (64, n_mels) for model input
-    if melspec.shape[0] < 64:
-        melspec = np.pad(melspec, ((0, 64 - melspec.shape[0]), (0, 0)), mode='constant')
+    # Pastikan panjangnya 64
+    if mel_spectrogram.shape[1] < 64:
+        mel_spectrogram = np.pad(mel_spectrogram, ((0, 0), (0, 64 - mel_spectrogram.shape[1])), mode='constant')
     else:
-        melspec = melspec[:64, :]
+        mel_spectrogram = mel_spectrogram[:, :64]
     
-    # Duplicate the single-channel Mel Spectrogram to create a 3-channel input
-    melspec = np.stack([melspec] * 3, axis=-1)  # Shape: (64, 64, 3)
+    # Duplikasi menjadi 3 channel
+    mel_spectrogram = np.stack([mel_spectrogram] * 3, axis=-1)  # Shape: (64, 64, 3)
     
-    return melspec
+    return mel_spectrogram
 
-# Function to classify an audio file using the selected model
-def classify_audio(file_path, model_type="mfcc"):
-    if model_type == "mfcc":
-        features = extract_mfcc(file_path)
-        model = mfcc_model
-    else:  # melspec
-        features = extract_melspec(file_path)
-        model = melspec_model
+# Fungsi untuk mengklasifikasikan file audio menggunakan model
+def classify_audio(file_path):
+    # Ekstraksi fitur MFCC dan Melspec
+    mfcc_features = extract_mfcc(file_path)
+    mel_features = extract_melspectrogram(file_path)
     
-    # Add batch dimension
-    features = np.expand_dims(features, axis=0)  # Shape: (1, 64, 64, 3)
+    # Tambahkan batch dimension
+    mfcc_features = np.expand_dims(mfcc_features, axis=0)  # Shape: (1, 64, 64, 3)
+    mel_features = np.expand_dims(mel_features, axis=0)  # Shape: (1, 64, 64, 3)
     
-    # Make predictions
-    predictions = model.predict(features)
+    # Prediksi dengan model MFCC
+    mfcc_predictions = mfcc_model.predict(mfcc_features)
+    mfcc_predicted_class = np.argmax(mfcc_predictions, axis=1)
+    mfcc_accuracy = np.max(mfcc_predictions)  # Prediksi dengan confidence tertinggi
     
-    # Get the predicted class
-    predicted_class = np.argmax(predictions, axis=1)
-    return predicted_class
+    # Prediksi dengan model Melspec
+    mel_predictions = melspec_model.predict(mel_features)
+    mel_predicted_class = np.argmax(mel_predictions, axis=1)
+    mel_accuracy = np.max(mel_predictions)  # Prediksi dengan confidence tertinggi
+    
+    return mfcc_predicted_class[0], mfcc_accuracy, mel_predicted_class[0], mel_accuracy
+
+# Set Streamlit page configuration
+st.set_page_config(page_title="Bird Song Classifier", page_icon="🦜", layout="centered")
 
 # Title of the app
 st.title("West Indonesia Birds Audio Classifier 🦜")
@@ -115,9 +96,6 @@ st.header("Unggah File Audio Suara Burung")
 
 uploaded_audio = st.file_uploader("Pilih file audio (MP3/WAV) untuk diuji", type=["mp3", "wav"])
 
-# Model selection section
-model_option = st.radio("Pilih model untuk klasifikasi:", ("mfcc", "melspec"))
-
 if uploaded_audio is not None:
     # Display file details
     st.audio(uploaded_audio, format="audio/mp3")
@@ -133,14 +111,20 @@ if uploaded_audio is not None:
     # Predict using the classify_audio function
     if st.button('Prediksi Kelas Burung'):
         with st.spinner("Memproses..."):
-            predicted_class = classify_audio(temp_file_path, model_type=model_option)
-            st.subheader("Hasil Prediksi:")
-            st.write(f"**Prediksi Kelas:** {predicted_class[0]}")
+            mfcc_predicted_class, mfcc_accuracy, mel_predicted_class, mel_accuracy = classify_audio(temp_file_path)
+            
+            st.subheader("Hasil Prediksi Model MFCC:")
+            st.write(f"**Prediksi Kelas:** {mfcc_predicted_class}")
+            st.write(f"**Akurasi Model:** {mfcc_accuracy:.2f}")
+            
+            st.subheader("Hasil Prediksi Model Melspec:")
+            st.write(f"**Prediksi Kelas:** {mel_predicted_class}")
+            st.write(f"**Akurasi Model:** {mel_accuracy:.2f}")
 
 # Footer
 st.markdown("""
     <hr>
     <p style="text-align:center; font-size:14px; color:#888; margin-top: 10px; margin-bottom: 10px;">
-        Aplikasi Klasifikasi Suara Burung menggunakan Deep Learning | Dibuat oleh Kelompok 11
+        Aplikasi Klasifikasi Suara Burung menggunakan Deep Learning | Dibuat oleh [Nama Anda]
     </p>
 """, unsafe_allow_html=True)
