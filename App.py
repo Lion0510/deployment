@@ -4,7 +4,7 @@ import librosa
 import tensorflow as tf
 from tensorflow.keras.models import load_model
 import matplotlib.pyplot as plt
-import gdown  # Import gdown library for downloading from Google Drive
+import gdown
 from io import BytesIO
 import os
 
@@ -43,11 +43,7 @@ except Exception as e:
 st.title("West Indonesia Birds Audio Classifier 🦜")
 
 # Introduction
-st.markdown("""
-    **Selamat datang di aplikasi Klasifikasi Suara Burung!**
-    Aplikasi ini akan mengklasifikasikan suara burung berdasarkan file audio yang diunggah.
-    Cukup unggah file audio dalam format MP3 atau WAV, dan model akan memberikan prediksi kelas burung!
-""")
+st.markdown("""**Selamat datang di aplikasi Klasifikasi Suara Burung!** Aplikasi ini akan mengklasifikasikan suara burung berdasarkan file audio yang diunggah. Cukup unggah file audio dalam format MP3 atau WAV, dan model akan memberikan prediksi kelas burung!""")
 
 # File upload section
 uploaded_audio = st.file_uploader("Pilih file audio (MP3/WAV) untuk diuji", type=["mp3", "wav"])
@@ -57,7 +53,6 @@ if uploaded_audio is not None:
     st.audio(uploaded_audio, format="audio/mp3")
     
     # Process the audio file
-    # Read audio file using librosa
     audio_bytes = uploaded_audio.read()
     with BytesIO(audio_bytes) as audio_buffer:
         # Load audio using librosa
@@ -124,8 +119,4 @@ if uploaded_audio is not None:
                 st.error(f"Error during prediction: {e}")
 
 # Footer
-st.markdown("""
-    <hr>
-    <p style="text-align:center; font-size:12px; color:#555;">Aplikasi ini dibangun menggunakan Streamlit dan TensorFlow. Dataset burung Indonesia diambil dari Kaggle.</p>
-    <p style="text-align:center; font-size:12px; color:#555;">Desain oleh <strong>AI Model</strong>.</p>
-""", unsafe_allow_html=True)
+st.markdown("""<hr><p style="text-align:center; font-size:12px; color:#555;">Aplikasi ini dibangun menggunakan Streamlit dan TensorFlow. Dataset burung Indonesia diambil dari Kaggle.</p><p style="text-align:center; font-size:12px; color:#555;">Desain oleh <strong>AI Model</strong>.</p>""", unsafe_allow_html=True)
