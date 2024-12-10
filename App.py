@@ -158,6 +158,5 @@ st.markdown("""
     <hr>
     <p style="text-align:center; font-size:12px; color:#555;">Aplikasi ini dibangun menggunakan Streamlit dan TensorFlow. Dataset burung Indonesia diambil dari Kaggle.</p>
     <p style="text-align:center; font-size:12px; color:#555;">Desain oleh <strong>AI Model</strong>.</p>
-""", unsafe_allow_html=True)gn:center; font-size:12px; color:#555;">Aplikasi ini dibangun menggunakan Streamlit dan TensorFlow. Dataset burung Indonesia diambil dari Kaggle.</p>
-    <p style="text-align:center; font-size:12px; color:#555;">Desain oleh <strong>AI Model</strong>.</p>
 """, unsafe_allow_html=True)
+
