@@ -40,12 +40,18 @@ def extract_melspec(file_path, sr=22050, n_mels=128, n_fft=2048, hop_length=512)
     melspec = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=n_mels, n_fft=n_fft, hop_length=hop_length)
     melspec = librosa.power_to_db(melspec, ref=np.max)  # Konversi ke dB
     melspec = melspec.T  # Transpose agar shape menjadi (time, n_mels)
+    
+    # Pastikan shape adalah (64, 64) sebelum padding
     if melspec.shape[0] < 64:
         melspec = np.pad(melspec, ((0, 64 - melspec.shape[0]), (0, 0)), mode='constant')
     else:
         melspec = melspec[:64, :]
-    melspec = np.stack([melspec] * 3, axis=-1)  # Mengubah menjadi 3 channel (64, 64, 3)
+    
+    # Pastikan shape melspec adalah (64, 64, 3) untuk input model
+    melspec = np.stack([melspec] * 3, axis=-1)  # Membuat 3 channel (64, 64, 3)
+    
     return melspec
+
 
 # Fungsi untuk klasifikasi menggunakan model
 def classify_audio(file_path):
