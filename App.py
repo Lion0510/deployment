@@ -16,8 +16,9 @@ def download_model_from_google_drive(url, output_path):
         st.error(f"Error saat mengunduh model: {str(e)}")
 
 # Google Drive model URLs
-melspec_model_url = 'https://drive.google.com/file/d/1--BTVqDAoyy83_3GEqL93SveSNYdncB_/view?usp=sharing'  # Mel Spectrogram model URL
-mfcc_model_url = 'https://drive.google.com/file/d/1rHo_GkTxFp5lDsNcFphEVV__dEHBciZa/view?usp=sharing'  # MFCC model URL
+melspec_model_url = 'https://drive.google.com/uc?id=1--BTVqDAoyy83_3GEqL93SveSNYdncB_'
+mfcc_model_url = 'https://drive.google.com/uc?id=1rHo_GkTxFp5lDsNcFphEVV__dEHBciZa'
+
 
 # Path to save the downloaded models
 melspec_model_save_path = 'melspec_model.h5'
