@@ -4,50 +4,40 @@ import librosa
 import tensorflow as tf
 from tensorflow.keras.models import load_model
 import matplotlib.pyplot as plt
-import seaborn as sns
+import gdown  # Import gdown library for downloading from Google Drive
 from io import BytesIO
-import gdown 
-
-# Google Drive file IDs
-melspec_model_url = 'https://drive.google.com/uc?id=192VGvINbZKOyjhGioyBhjfd2alGe6ATM'
-mfcc_model_url = 'https://drive.google.com/uc?id=1aRBAt6bHVMW3t6QwbLHzCPn3fQuqd71h'
+import os
 
 # Set Streamlit page configuration
 st.set_page_config(page_title="Bird Song Classifier", page_icon="🦜", layout="centered")
 
-# Set the background color and theme
-st.markdown("""
-    <style>
-        body {
-            background-color: #F0F8FF; /* Soft light blue background */
-            color: #333333;  /* Dark grey text */
-        }
-        .stButton>button {
-            background-color: #1E90FF;
-            color: white;
-            border-radius: 12px;
-            font-size: 18px;
-        }
-        .stButton>button:hover {
-            background-color: #4682B4;
-        }
-        .stTextInput input {
-            background-color: #FFFAF0;
-            border: 2px solid #1E90FF;
-        }
-        h1 {
-            color: #1E90FF;
-            font-family: 'Arial', sans-serif;
-        }
-        .stFileUploader {
-            background-color: #FFFAF0;
-            border: 2px dashed #1E90FF;
-        }
-        .stProgress {
-            background-color: #1E90FF;
-        }
-    </style>
-""", unsafe_allow_html=True)
+# Google Drive file URLs for models
+melspec_model_url = 'https://drive.google.com/uc?id=192VGvINbZKOyjhGioyBhjfd2alGe6ATM'
+mfcc_model_url = 'https://drive.google.com/uc?id=1aRBAt6bHVMW3t6QwbLHzCPn3fQuqd71h'
+
+# File path to save the models
+melspec_model_path = 'melspec_model.h5'
+mfcc_model_path = 'mfcc_model.h5'
+
+# Download models from Google Drive if not already downloaded
+def download_model(model_url, model_path):
+    if not os.path.exists(model_path):
+        st.info(f"Downloading model from {model_url}...")
+        gdown.download(model_url, model_path, quiet=False)
+        st.success(f"Model downloaded and saved to {model_path}")
+    else:
+        st.info(f"Model already exists at {model_path}, skipping download.")
+
+# Download the models
+download_model(melspec_model_url, melspec_model_path)
+download_model(mfcc_model_url, mfcc_model_path)
+
+# Load models
+try:
+    melspec_model = load_model(melspec_model_path)  # Load the Mel-spectrogram model
+    mfcc_model = load_model(mfcc_model_path)  # Load the MFCC model
+except Exception as e:
+    st.error(f"Error loading models: {e}")
 
 # Title of the app
 st.title("West Indonesia Birds Audio Classifier 🦜")
@@ -60,8 +50,6 @@ st.markdown("""
 """)
 
 # File upload section
-st.header("Unggah File Audio Suara Burung")
-
 uploaded_audio = st.file_uploader("Pilih file audio (MP3/WAV) untuk diuji", type=["mp3", "wav"])
 
 if uploaded_audio is not None:
@@ -82,14 +70,8 @@ if uploaded_audio is not None:
     mel_spectrogram = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=128, fmax=8000)
     mel_db = librosa.power_to_db(mel_spectrogram, ref=np.max)
 
-    # Cek shape dari mel_db sebelum fix_length
-    st.write("Original Mel Spectrogram Shape:", mel_db.shape)
-
     # Resize Mel-spectrogram to a fixed width (e.g., 500)
-    mel_db_resized = librosa.util.fix_length(mel_db, size=500, axis=-1)
-
-    # Cek shape setelah fix_length
-    st.write("Resized Mel Spectrogram Shape:", mel_db_resized.shape)
+    mel_db_resized = librosa.util.fix_length(mel_db, 500, axis=-1)  # Resize width to 500
 
     # Plot Mel-spectrogram
     fig, ax = plt.subplots(figsize=(10, 4))
@@ -120,38 +102,26 @@ if uploaded_audio is not None:
     # Predict using the models
     if st.button('Prediksi Kelas Burung'):
         with st.spinner("Memproses..."):
-            # Reshape for model input
-            mel_spectrogram = np.expand_dims(mel_spectrogram, axis=0)  # Add batch dimension
-            mfcc = np.expand_dims(mfcc, axis=0)  # Add batch dimension
-            
-            # Predict using the models (Melspec and MFCC models)
-            melspec_pred = melspec_model.predict(mel_spectrogram)
-            mfcc_pred = mfcc_model.predict(mfcc)
+            try:
+                # Reshape for model input
+                mel_spectrogram_input = np.expand_dims(mel_spectrogram, axis=0)  # Add batch dimension
+                mfcc_input = np.expand_dims(mfcc, axis=0)  # Add batch dimension
 
-            # Decode predictions
-            melspec_pred_class = np.argmax(melspec_pred, axis=1)[0]
-            mfcc_pred_class = np.argmax(mfcc_pred, axis=1)[0]
+                # Predict using the models (Melspec and MFCC models)
+                melspec_pred = melspec_model.predict(mel_spectrogram_input)
+                mfcc_pred = mfcc_model.predict(mfcc_input)
 
-            # Display results
-            st.subheader("Hasil Prediksi:")
-            st.write(f"**Melspec Model Prediksi:** Kelas {melspec_pred_class}")
-            st.write(f"**MFCC Model Prediksi:** Kelas {mfcc_pred_class}")
-            
-            # Show a confusion matrix (dummy data for the example)
-            fig, ax = plt.subplots(figsize=(8, 6))
-            cm = np.array([[182, 16, 21, 2, 1, 0],
-                           [10, 167, 18, 1, 1, 1],
-                           [73, 16, 182, 3, 11, 5],
-                           [2, 17, 4, 246, 8, 0],
-                           [2, 0, 2, 7, 63, 0],
-                           [20, 13, 50, 1, 1, 23]])  # Confusion matrix for demo
-            
-            sns.heatmap(cm, annot=True, fmt='g', cmap='Blues', ax=ax)
-            plt.xlabel("Predicted")
-            plt.ylabel("True")
-            st.pyplot(fig)
+                # Decode predictions
+                melspec_pred_class = np.argmax(melspec_pred, axis=1)[0]
+                mfcc_pred_class = np.argmax(mfcc_pred, axis=1)[0]
 
-            st.success("Prediksi selesai!")
+                # Display results
+                st.subheader("Hasil Prediksi:")
+                st.write(f"**Melspec Model Prediksi:** Kelas {melspec_pred_class}")
+                st.write(f"**MFCC Model Prediksi:** Kelas {mfcc_pred_class}")
+            
+            except Exception as e:
+                st.error(f"Error during prediction: {e}")
 
 # Footer
 st.markdown("""
@@ -159,4 +129,3 @@ st.markdown("""
     <p style="text-align:center; font-size:12px; color:#555;">Aplikasi ini dibangun menggunakan Streamlit dan TensorFlow. Dataset burung Indonesia diambil dari Kaggle.</p>
     <p style="text-align:center; font-size:12px; color:#555;">Desain oleh <strong>AI Model</strong>.</p>
 """, unsafe_allow_html=True)
-
