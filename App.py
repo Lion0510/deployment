@@ -122,4 +122,4 @@ if uploaded_audio is not None:
                 st.error(f"Error during prediction: {e}")
 
 # Footer
-st.markdown("""<hr><p style="text-align:center; font-size:12px; color:#555;">Aplikasi ini dibangun menggunakan Streamlit dan TensorFlow. Dataset burung Indonesia diambil dari Kaggle.</p><p style="text-align:center; font-size:12px; color:#555;">Desain oleh <strong>AI Model</strong>.</p>""", unsafe_allow_html=True)
+st.markdown("""<hr><p style="text-align:center; font-size:12px; color:#555;">Aplikasi ini dibangun menggunakan Streamlit dan TensorFlow. Dataset burung Indonesia diambil dari Kaggle.</p><p style="text-align:center; font-size:12px; color:#555;">Desain oleh <strong>Kelompok 11</strong>.</p>""", unsafe_allow_html=True)
