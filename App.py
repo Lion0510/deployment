@@ -19,14 +19,14 @@ mfcc_model_url = 'https://drive.google.com/uc?id=1aRBAt6bHVMW3t6QwbLHzCPn3fQuqd7
 melspec_model_path = 'melspec_model.h5'
 mfcc_model_path = 'mfcc_model.h5'
 
-# Download models from Google Drive if not already downloaded
-def download_model(model_url, model_path):
+@st.cache_data
+def download_model_silently(model_url, model_path):
     if not os.path.exists(model_path):
-        gdown.download(model_url, model_path, quiet=True)  # Silent download
+        gdown.download(model_url, model_path, quiet=True)
 
-# Download the models
-download_model(melspec_model_url, melspec_model_path)
-download_model(mfcc_model_url, mfcc_model_path)
+# Download the models silently
+download_model_silently(melspec_model_url, melspec_model_path)
+download_model_silently(mfcc_model_url, mfcc_model_path)
 
 # Load models
 try:
@@ -93,7 +93,17 @@ if uploaded_audio is not None:
     # Flatten the mel_spectrogram input to match the expected input shape for the model (9216)
     mel_spectrogram_flattened = mel_spectrogram.flatten().reshape(1, -1)  # Flatten into a single vector
 
-    # Predict using the models
+    # Tombol prediksi di tengah
+    centered_button = """
+    <div style="display: flex; justify-content: center; align-items: center; margin-top: 20px;">
+        <form action="" method="get">
+            <input type="submit" value="Prediksi Kelas Burung" style="padding: 10px 20px; font-size: 16px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+        </form>
+    </div>
+    """
+    st.markdown(centered_button, unsafe_allow_html=True)
+
+    # Trigger prediction logic when button is clicked
     if st.button('Prediksi Kelas Burung'):
         with st.spinner("Memproses..."):
             try:
@@ -118,4 +128,4 @@ if uploaded_audio is not None:
                 st.error(f"Error during prediction: {e}")
 
 # Footer
-st.markdown("""<hr><p style="text-align:center; font-size:12px; color:#555;">Aplikasi ini dibangun menggunakan Streamlit dan TensorFlow. Dataset burung Indonesia diambil dari Kaggle.</p><p style="text-align:center; font-size:12px; color:#555;">Desain oleh <strong>Kelompok 11</strong>.</p>""", unsafe_allow_html=True)
+st.markdown("""<hr><p style="text-align:center; font-size:12px; color:#555;">Aplikasi ini dibangun menggunakan Streamlit dan TensorFlow.</p><p style="text-align:center; font-size:12px; color:#555;">Desain oleh <strong>Kelompok 11</strong>.</p>""", unsafe_allow_html=True)
