@@ -81,24 +81,29 @@ def extract_melspec(file_path, sr=22050, n_mels=64, n_fft=2048, hop_length=512):
     
     return melspec
 
-# Function to classify an audio file using the selected model
-def classify_audio(file_path, model_type="mfcc"):
-    if model_type == "mfcc":
-        features = extract_mfcc(file_path)
-        model = mfcc_model
-    else:  # melspec
-        features = extract_melspec(file_path)
-        model = melspec_model
+# Function to classify an audio file using both models (MFCC and Melspec)
+def classify_audio(file_path):
+    # Extract features for MFCC and Melspec
+    mfcc_features = extract_mfcc(file_path)
+    melspec_features = extract_melspec(file_path)
     
-    # Add batch dimension
-    features = np.expand_dims(features, axis=0)  # Shape: (1, 64, 64, 3)
+    # Add batch dimension for both
+    mfcc_features = np.expand_dims(mfcc_features, axis=0)  # Shape: (1, 64, 64, 3)
+    melspec_features = np.expand_dims(melspec_features, axis=0)  # Shape: (1, 64, 64, 3)
     
-    # Make predictions
-    predictions = model.predict(features)
+    # Make predictions using both models
+    mfcc_predictions = mfcc_model.predict(mfcc_features)
+    melspec_predictions = melspec_model.predict(melspec_features)
     
-    # Get the predicted class
-    predicted_class = np.argmax(predictions, axis=1)
-    return predicted_class
+    # Get the predicted classes for both models
+    mfcc_pred_class = np.argmax(mfcc_predictions, axis=1)
+    melspec_pred_class = np.argmax(melspec_predictions, axis=1)
+    
+    # Get the accuracies (max prediction probabilities)
+    mfcc_accuracy = np.max(mfcc_predictions)
+    melspec_accuracy = np.max(melspec_predictions)
+    
+    return mfcc_pred_class[0], mfcc_accuracy, melspec_pred_class[0], melspec_accuracy
 
 # Title of the app
 st.title("Deep Learning in Audio: Klasifikasi Suara Burung di Indonesia Bagian Barat 🦜")
@@ -116,9 +121,6 @@ st.header("Unggah File Audio Suara Burung")
 
 uploaded_audio = st.file_uploader("Pilih file audio (MP3/WAV) untuk diuji", type=["mp3", "wav"])
 
-# Model selection section
-model_option = st.radio("Pilih model untuk klasifikasi:", ("mfcc", "melspec"))
-
 if uploaded_audio is not None:
     # Display file details
     st.audio(uploaded_audio, format="audio/mp3")
@@ -131,15 +133,23 @@ if uploaded_audio is not None:
         with open(temp_file_path, 'wb') as f:
             f.write(audio_buffer.getbuffer())
 
-    # Predict using the classify_audio function
+    # Predict using both models
     if st.button('Prediksi Kelas Burung'):
         with st.spinner("Memproses..."):
-            predicted_class = classify_audio(temp_file_path, model_type=model_option)
+            mfcc_class, mfcc_acc, melspec_class, melspec_acc = classify_audio(temp_file_path)
+            
+            # Display both predictions and accuracies
             st.subheader("Hasil Prediksi:")
-            st.write(f"**Prediksi Kelas:** {predicted_class[0]}")
+            st.write(f"**Prediksi Kelas (Model MFCC):** {mfcc_class}")
+            st.write(f"**Akurasi (Model MFCC):** {mfcc_acc * 100:.2f}%")
+            
+            st.write(f"**Prediksi Kelas (Model Melspec):** {melspec_class}")
+            st.write(f"**Akurasi (Model Melspec):** {melspec_acc * 100:.2f}%")
 
 # Footer
 st.markdown("""
     <hr>
-    <p style="text-align:center; font-size:12px; color:#888;">Aplikasi Klasifikasi Suara Burung menggunakan Deep Learning</p>
-""")
+    <p style="text-align:center; font-size:14px; color:#888; margin-top: 10px; margin-bottom: 10px;">
+        Aplikasi Klasifikasi Suara Burung menggunakan Deep Learning | Dibuat oleh Kelompok 11
+    </p>
+""", unsafe_allow_html=True)
