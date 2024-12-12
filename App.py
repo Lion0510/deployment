@@ -51,20 +51,20 @@ def add_custom_css():
             justify-content: center;
             align-items: center;
             background-color: #1E1E1E;
-            padding: 15px 0;
+            padding: 20px 0;
             border-bottom: 2px solid #333;
-            gap: 15px;
+            gap: 20px;
             margin-bottom: 30px;
         }
         .navigation-container button {
-            font-size: 18px;
+            font-size: 22px;
             font-weight: bold;
             text-transform: none;
-            padding: 15px 30px;
+            padding: 20px 40px;
             background-color: #333;
             border: 2px solid #ffffff;
             color: #ffffff;
-            border-radius: 30px;
+            border-radius: 35px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
