@@ -49,12 +49,12 @@ def add_custom_css():
         }
         .navigation-container {
             display: flex;
-            justify-content: center;       /* Memastikan tombol berada di tengah */
+            justify-content: space-around; /* Membuat tombol berjarak sama */
             align-items: center;           /* Vertikal rata tengah */
             background-color: #1E1E1E;     /* Warna latar belakang */
             padding: 20px 0;               /* Tambahkan jarak atas-bawah */
             border-bottom: 2px solid #333; /* Garis bawah */
-            gap: 30px;                     /* Jarak antar tombol */
+            gap: 20px;                     /* Jarak antar tombol */
             margin-bottom: 30px;           /* Tambahkan jarak di bawah kontainer */
         }
         .navigation-container button {
@@ -100,19 +100,14 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Navigasi dengan tombol Streamlit
-with st.container():
-    st.markdown('<div class="navigation-container">', unsafe_allow_html=True)
-    col1, col2, col3 = st.columns(3)  # Buat 3 kolom dengan lebar yang sama
-    with col1:
-        if st.button("Beranda"):
-            navigate("home")
-    with col2:
-        if st.button("Unggah Suara dan Hasil"):
-            navigate("upload_results")
-    with col3:
-        if st.button("Tentang Kami"):
-            navigate("about")
-    st.markdown('</div>', unsafe_allow_html=True)
+st.markdown('<div class="navigation-container">', unsafe_allow_html=True)
+if st.button("Beranda"):
+    navigate("home")
+if st.button("Unggah Suara dan Hasil"):
+    navigate("upload_results")
+if st.button("Tentang Kami"):
+    navigate("about")
+st.markdown('</div>', unsafe_allow_html=True)
 
 # Konten berdasarkan navigasi
 if st.session_state.page == "home":
