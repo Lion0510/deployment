@@ -57,13 +57,14 @@ def add_custom_css():
             margin-bottom: 30px;
         }
         .navigation-container button {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: bold;
-            padding: 10px 20px;
+            text-transform: uppercase;
+            padding: 15px 30px;
             background-color: #333;
             border: 2px solid #ffffff;
             color: #ffffff;
-            border-radius: 25px;
+            border-radius: 30px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
@@ -123,13 +124,13 @@ with st.container():
     st.markdown('<div class="navigation-container">', unsafe_allow_html=True)
     col1, col2, col3 = st.columns([1, 1, 1])
     with col1:
-        if st.button("Beranda"):
+        if st.button("BERANDA"):
             navigate("home")
     with col2:
-        if st.button("Unggah Suara dan Hasil"):
+        if st.button("UNGGAH SUARA DAN HASIL"):
             navigate("upload_results")
     with col3:
-        if st.button("Tentang Kami"):
+        if st.button("TENTANG KAMI"):
             navigate("about")
     st.markdown('</div>', unsafe_allow_html=True)
 
