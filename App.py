@@ -17,32 +17,32 @@ BIRD_CLASSES = {
     0: {
         "name": "Pitta sordida",
         "description": "Burung Pitta sordida dikenal sebagai burung Pitta hijau atau Green-breasted Pitta, memiliki bulu berwarna cerah dan sering ditemukan di hutan tropis.",
-        "image": "https://upload.wikimedia.org/wikipedia/commons/6/6f/Pitta_sordida.jpg"
+        "image": "images/pitta_sordida.jpg"
     },
     1: {
         "name": "Dryocopus javensis",
         "description": "Burung pelatuk besar ini dikenal dengan paruhnya yang kuat dan sering ditemukan di kawasan hutan dataran rendah.",
-        "image": "https://upload.wikimedia.org/wikipedia/commons/8/81/Dryocopus_javensis.jpg"
+        "image": "images/dryocopus_javensis.jpg"
     },
     2: {
         "name": "Caprimulgus macrurus",
         "description": "Burung Caprimulgus macrurus, atau Nightjar ekor panjang, dikenal aktif pada malam hari dan memiliki pola bulu kamuflase.",
-        "image": "https://upload.wikimedia.org/wikipedia/commons/2/26/Caprimulgus_macrurus.jpg"
+        "image": "images/caprimulgus_macrurus.jpg"
     },
     3: {
         "name": "Pnoepyga pusilla",
         "description": "Burung kecil ini sering ditemukan di semak belukar dan terkenal dengan suaranya yang melengking.",
-        "image": "https://upload.wikimedia.org/wikipedia/commons/a/a9/Pnoepyga_pusilla.jpg"
+        "image": "images/pnoepyga_pusilla.jpg"
     },
     4: {
         "name": "Anthipes solitaris",
         "description": "Burung ini memiliki kebiasaan menyendiri dan ditemukan di kawasan pegunungan dengan habitat yang lembab.",
-        "image": "https://upload.wikimedia.org/wikipedia/commons/3/39/Anthipes_solitaris.jpg"
+        "image": "images/anthipes_solitaris.jpg"
     },
     5: {
         "name": "Buceros rhinoceros",
         "description": "Burung Enggang badak memiliki paruh besar yang unik dan merupakan ikon fauna di banyak wilayah Asia Tenggara.",
-        "image": "https://upload.wikimedia.org/wikipedia/commons/2/21/Buceros_rhinoceros.jpg"
+        "image": "images/buceros_rhinoceros.jpg"
     }
 }
 
