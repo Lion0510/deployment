@@ -30,11 +30,13 @@ def add_custom_css():
         }
         .navigation-container {
             display: flex;
-            justify-content: center;
+            justify-content: space-evenly;
             align-items: center;
             background-color: rgba(0, 0, 0, 0.7); /* Transparansi dengan latar belakang gelap */
-            padding: 15px 0;
-            gap: 20px; /* Jarak antar tombol */
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px auto;
+            max-width: 800px;
         }
         .navigation-button {
             font-size: 16px;
@@ -77,12 +79,16 @@ st.markdown("""
 
 # Navigasi Horizontal
 st.markdown('<div class="navigation-container">', unsafe_allow_html=True)
-if st.button("Beranda", key="home_button"):
-    navigate("home")
-if st.button("Unggah Audio", key="upload_results_button"):
-    navigate("upload_results")
-if st.button("Tentang", key="about_button"):
-    navigate("about")
+col1, col2, col3 = st.columns(3)
+with col1:
+    if st.button("Beranda", key="home_button"):
+        navigate("home")
+with col2:
+    if st.button("Unggah Audio", key="upload_results_button"):
+        navigate("upload_results")
+with col3:
+    if st.button("Tentang", key="about_button"):
+        navigate("about")
 st.markdown('</div>', unsafe_allow_html=True)
 
 # Konten Berdasarkan Halaman
