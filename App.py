@@ -156,7 +156,7 @@ def plot_spectrogram(data, sr, title, y_axis, x_axis):
     plt.close()
 
 # Tambahkan CSS ke aplikasi
-add_custom_css()
+#add_custom_css()
 
 # Header
 st.markdown("""
