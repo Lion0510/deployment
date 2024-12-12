@@ -13,46 +13,54 @@ import matplotlib.pyplot as plt
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 # Gaya CSS untuk navigasi dan halaman
-st.markdown("""
-<style>
-body {
-    font-family: 'Montserrat', sans-serif;
-    background-color: #f0f0f0;
-    margin: 0;
-    padding: 0;
-}
-.navigation-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #fff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    padding: 10px;
-    border-radius: 5px;
-    margin: 20px auto;
-    max-width: 800px;
-}
-.navigation-button {
-    padding: 15px 25px;
-    background-color: #fff;
-    color: #333;
-    border: 1px solid #ccc;
-    text-decoration: none;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-.navigation-button:hover {
-    background-color: #e0e0e0;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
-}
-.active {
-    background-color: #2196F3;
-    color: #fff;
-    border-color: #2196F3;
-}
-</style>
-""", unsafe_allow_html=True)
+def add_custom_css():
+    st.markdown(f"""
+    <style>
+    body {{
+        font-family: 'Arial', sans-serif;
+        background-image: url('https://raw.githubusercontent.com/<lion0510/<deployment/main/images/background.jpg');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        margin: 0;
+        padding: 0;
+        color: #ffffff; /* Warna teks putih untuk kontras */
+    }}
+    .main-header {{
+        text-align: center;
+        padding: 30px;
+        background-color: rgba(0, 0, 0, 0.6); /* Transparansi untuk header */
+        color: #ffffff;
+        border-radius: 10px;
+        margin: 20px auto;
+        max-width: 90%;
+    }}
+    .main-header .header-title h1 {{
+        font-size: 2.5rem;
+        margin: 10px 0;
+    }}
+    .main-header .header-title p {{
+        font-size: 1.2rem;
+        margin: 0;
+    }}
+    .content-section {{
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.8); /* Transparansi untuk kontras */
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        color: #000000; /* Teks warna hitam untuk kontras */
+    }}
+    footer {{
+        text-align: center;
+        padding: 20px;
+        background-color: rgba(30, 30, 30, 0.8); /* Transparansi untuk footer */
+        color: #cccccc;
+        margin-top: 50px;
+    }}
+    </style>
+    """, unsafe_allow_html=True)
 
 
 # Kamus deskripsi kelas burung
