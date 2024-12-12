@@ -12,46 +12,28 @@ import matplotlib.pyplot as plt
 # Menyembunyikan log TensorFlow
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-# Gaya CSS untuk navigasi dan halaman
+# Menambahkan background gambar ke aplikasi
 st.markdown("""
-<style>
-body {
-    font-family: 'Montserrat', sans-serif;
-    background-color: #f0f0f0;
-    margin: 0;
-    padding: 0;
-}
-.navigation-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #fff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    padding: 10px;
-    border-radius: 5px;
-    margin: 20px auto;
-    max-width: 800px;
-}
-.navigation-button {
-    padding: 15px 25px;
-    background-color: #fff;
-    color: #333;
-    border: 1px solid #ccc;
-    text-decoration: none;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-.navigation-button:hover {
-    background-color: #e0e0e0;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
-}
-.active {
-    background-color: #2196F3;
-    color: #fff;
-    border-color: #2196F3;
-}
-</style>
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-image: url('images/background.jpg');  # Pastikan path gambar benar
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0;
+            color: #fff;  # Mengubah warna teks agar kontras dengan background
+        }
+        .content-section {
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.5);  # Efek transparansi untuk kontras dengan background
+            border-radius: 10px;
+        }
+        .header-title h1 {
+            color: #fff;
+        }
+    </style>
 """, unsafe_allow_html=True)
 
 
