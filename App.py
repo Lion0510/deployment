@@ -100,16 +100,12 @@ st.markdown("""
 
 # Navigasi dengan tombol Streamlit di dalam kotak hitam
 st.markdown('<div class="navigation-container">', unsafe_allow_html=True)
-col1, col2, col3 = st.columns(3)
-with col1:
-    if st.button("Beranda"):
-        navigate("home")
-with col2:
-    if st.button("Unggah Suara dan Hasil"):
-        navigate("upload_results")
-with col3:
-    if st.button("Tentang Kami"):
-        navigate("about")
+if st.button("Beranda"):
+    navigate("home")
+if st.button("Unggah Suara dan Hasil"):
+    navigate("upload_results")
+if st.button("Tentang Kami"):
+    navigate("about")
 st.markdown('</div>', unsafe_allow_html=True)
 
 # Konten berdasarkan navigasi
