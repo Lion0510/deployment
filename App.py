@@ -29,7 +29,8 @@ def add_custom_css():
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 20px;
+            gap: 40px;
+            margin-bottom: 20px;
         }
         .main-header img {
             width: 100px;
@@ -43,7 +44,7 @@ def add_custom_css():
         .main-header p {
             color: #cccccc;
             font-size: 1.2em;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
         .navigation-container {
             display: flex;
@@ -53,6 +54,7 @@ def add_custom_css():
             padding: 15px 0;
             border-bottom: 2px solid #333;
             gap: 15px;
+            margin-bottom: 30px;
         }
         .navigation-container button {
             font-size: 16px;
@@ -83,6 +85,7 @@ def add_custom_css():
             padding: 20px;
             background-color: #1E1E1E;
             border-top: 2px solid #333;
+            margin-top: 30px;
         }
         footer p {
             margin: 0;
