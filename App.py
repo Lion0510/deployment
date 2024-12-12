@@ -5,6 +5,7 @@ from kaggle.api.kaggle_api_extended import KaggleApi
 import tensorflow as tf
 import librosa
 import numpy as np
+import matplotlib.pyplot as plt
 
 # Set Streamlit page configuration
 st.set_page_config(page_title="Bird Song Classifier", page_icon="🦜", layout="centered")
@@ -102,9 +103,15 @@ def extract_features(audio_path):
 
     return mfcc, melspec
 
+# Fungsi untuk mengubah melspectrogram menjadi format gambar
+def preprocess_melspec(melspec):
+    melspec = np.expand_dims(melspec, axis=-1)  # Tambah dimensi channel
+    melspec = np.expand_dims(melspec, axis=0)  # Tambah dimensi batch (1,)
+    return melspec
+
 # Prediksi menggunakan model yang sudah dimuat
 def predict_bird_class(model, features):
-    prediction = model.predict(np.expand_dims(features, axis=0))  # Tambahkan dimensi batch
+    prediction = model.predict(features)  # Gunakan input dengan dimensi yang sesuai
     predicted_class = np.argmax(prediction, axis=1)[0]  # Ambil kelas dengan nilai tertinggi
     accuracy = np.max(prediction)  # Akurasi model
     return predicted_class, accuracy
@@ -125,22 +132,16 @@ if uploaded_audio is not None:
     if st.button("Prediksi Kelas Burung"):
         with st.spinner("Memproses..."):
             try:
+                # Mengubah Melspectrogram menjadi format yang sesuai
+                melspec_input = preprocess_melspec(melspec_features)
+                
                 # Prediksi dengan model MFCC
-                mfcc_class, mfcc_accuracy = predict_bird_class(mfcc_model, mfcc_features)
+                mfcc_class, mfcc_accuracy = predict_bird_class(mfcc_model, np.expand_dims(mfcc_features, axis=0))
+                
                 # Prediksi dengan model Melspec
-                melspec_class, melspec_accuracy = predict_bird_class(melspec_model, melspec_features)
+                melspec_class, melspec_accuracy = predict_bird_class(melspec_model, melspec_input)
 
                 # Tampilkan hasil prediksi
                 st.subheader("Hasil Prediksi:")
                 st.write(f"**Model MFCC:** Prediksi kelas {mfcc_class} dengan akurasi {mfcc_accuracy * 100:.2f}%")
-                st.write(f"**Model Melspec:** Prediksi kelas {melspec_class} dengan akurasi {melspec_accuracy * 100:.2f}%")
-            except Exception as e:
-                st.error(f"Error saat melakukan prediksi: {str(e)}")
-
-# Footer
-st.markdown("""
-    <hr>
-    <p style="text-align:center; font-size:14px; color:#888; margin-top: 10px; margin-bottom: 10px;">
-        Aplikasi Klasifikasi Suara Burung menggunakan Deep Learning | Dibuat oleh Kelompok 11
-    </p>
-""", unsafe_allow_html=True)
+                st.write(f"**Model Melspec:** Prediksi kelas
