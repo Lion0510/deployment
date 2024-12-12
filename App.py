@@ -12,13 +12,10 @@ st.set_page_config(page_title="Bird Song Classifier", page_icon="🦜", layout="
 def download_model_from_google_drive(url, output_path):
     try:
         gdown.download(url, output_path, quiet=True)  # quiet=True untuk menyembunyikan output
-        st.success(f"Model berhasil diunduh ke {output_path}")
-    except Exception as e:
-        st.error(f"Error saat mengunduh model: {str(e)}")
 
 # Google Drive model URLs (ganti dengan URL model Anda)
-melspec_model_url = 'https://drive.google.com/uc?id=1--BTVqDAoyy83_3GEqL93SveSNYdncB_'  # Ganti dengan URL model Anda
-mfcc_model_url = 'https://drive.google.com/uc?id=1rHo_GkTxFp5lDsNcFphEVV__dEHBciZa'  # Ganti dengan URL model Anda
+melspec_model_url = 'gdown https://drive.google.com/uc?id=1ebsCcP4GxY_X6VZTZhMIsvvaVKWKhSPq'  # Ganti dengan URL model Anda
+mfcc_model_url = 'gdown https://drive.google.com/uc?id=1hBPcwqyEFIvx1-2nHNKrpFTC2DmiuF4L'  # Ganti dengan URL model Anda
 
 # Path untuk menyimpan model yang diunduh
 melspec_model_save_path = 'melspec_model.h5'
@@ -32,20 +29,10 @@ download_model_from_google_drive(mfcc_model_url, mfcc_model_save_path)
 if os.path.exists(melspec_model_save_path):
     try:
         melspec_model = tf.keras.models.load_model(melspec_model_save_path)
-        st.success("Model Melspec berhasil dimuat!")
-    except Exception as e:
-        st.error(f"Terjadi error saat memuat model Melspec: {str(e)}")
-else:
-    st.error("Model Melspec tidak ditemukan!")
 
 if os.path.exists(mfcc_model_save_path):
     try:
         mfcc_model = tf.keras.models.load_model(mfcc_model_save_path)
-        st.success("Model MFCC berhasil dimuat!")
-    except Exception as e:
-        st.error(f"Terjadi error saat memuat model MFCC: {str(e)}")
-else:
-    st.error("Model MFCC tidak ditemukan!")
 
 # Title aplikasi Streamlit
 st.title("Deep Learning in Audio: Klasifikasi Suara Burung di Indonesia Bagian Barat 🦜")
