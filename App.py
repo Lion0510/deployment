@@ -234,6 +234,15 @@ st.markdown("""
 st.markdown("""
 <section class="content-section">
     <h2>Klasifikasi Suara</h2>
+    <p>Burung yang termasuk dalam klasifikasi ini adalah:</p>
+    <ul>
+        <li>Pitta sordida</li>
+        <li>Dryocopus javensis</li>
+        <li>Caprimulgus macrurus</li>
+        <li>Pnoepyga pusilla</li>
+        <li>Anthipes solitaris</li>
+        <li>Buceros rhinoceros</li>
+    </ul>
 """, unsafe_allow_html=True)
 
 uploaded_audio = st.file_uploader("Pilih file audio (MP3/WAV) untuk diuji", type=["mp3", "wav"])
