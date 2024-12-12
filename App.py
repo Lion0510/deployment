@@ -145,53 +145,52 @@ if uploaded_audio is not None:
     with open(temp_file_path, "wb") as f:
         f.write(uploaded_audio.read())
 
-    if st.button("Prediksi Kelas Burung"):
-        with st.spinner("Memproses..."):
-            try:
-                y, sr = librosa.load(temp_file_path, sr=None)
-                mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
-                melspec = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=64)
+    with st.spinner("Memproses..."):
+        try:
+            y, sr = librosa.load(temp_file_path, sr=None)
+            mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
+            melspec = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=64)
 
-                st.subheader("Spektrum MFCC")
-                plot_spectrogram(mfcc, sr, "MFCC", y_axis="mel", x_axis="time")
+            st.subheader("Spektrum MFCC")
+            plot_spectrogram(mfcc, sr, "MFCC", y_axis="mel", x_axis="time")
 
-                st.subheader("Spektrum Melspectrogram")
-                melspec_db = librosa.power_to_db(melspec, ref=np.max)
-                plot_spectrogram(melspec_db, sr, "Melspectrogram", y_axis="mel", x_axis="time")
+            st.subheader("Spektrum Melspectrogram")
+            melspec_db = librosa.power_to_db(melspec, ref=np.max)
+            plot_spectrogram(melspec_db, sr, "Melspectrogram", y_axis="mel", x_axis="time")
 
-                mfcc_image = preprocess_mfcc(mfcc)
-                melspec_image = preprocess_melspec(melspec)
+            mfcc_image = preprocess_mfcc(mfcc)
+            melspec_image = preprocess_melspec(melspec)
 
-                mfcc_image = np.expand_dims(mfcc_image, axis=0)
-                melspec_image = np.expand_dims(melspec_image, axis=0)
+            mfcc_image = np.expand_dims(mfcc_image, axis=0)
+            melspec_image = np.expand_dims(melspec_image, axis=0)
 
-                mfcc_result = mfcc_model.predict(mfcc_image)
-                melspec_result = melspec_model.predict(melspec_image)
+            mfcc_result = mfcc_model.predict(mfcc_image)
+            melspec_result = melspec_model.predict(melspec_image)
 
-                mfcc_pred_class = np.argmax(mfcc_result, axis=1)[0]
-                melspec_pred_class = np.argmax(melspec_result, axis=1)[0]
-                mfcc_accuracy = np.max(mfcc_result)
-                melspec_accuracy = np.max(melspec_result)
+            mfcc_pred_class = np.argmax(mfcc_result, axis=1)[0]
+            melspec_pred_class = np.argmax(melspec_result, axis=1)[0]
+            mfcc_accuracy = np.max(mfcc_result)
+            melspec_accuracy = np.max(melspec_result)
 
-                mfcc_bird_info = get_bird_info(mfcc_pred_class)
-                melspec_bird_info = get_bird_info(melspec_pred_class)
+            mfcc_bird_info = get_bird_info(mfcc_pred_class)
+            melspec_bird_info = get_bird_info(melspec_pred_class)
 
-                st.subheader("Hasil Prediksi:")
-                st.write(f"**Model MFCC:** Prediksi kelas {mfcc_pred_class} dengan akurasi {mfcc_accuracy * 100:.2f}%")
-                st.write(f"Nama: {mfcc_bird_info['name']}")
-                st.write(f"Deskripsi: {mfcc_bird_info['description']}")
-                if mfcc_bird_info['image']:
-                    st.image(mfcc_bird_info['image'], caption=f"{mfcc_bird_info['name']} (Model MFCC)")
+            st.subheader("Hasil Prediksi:")
+            st.write(f"**Model MFCC:** Prediksi kelas {mfcc_pred_class} dengan akurasi {mfcc_accuracy * 100:.2f}%")
+            st.write(f"Nama: {mfcc_bird_info['name']}")
+            st.write(f"Deskripsi: {mfcc_bird_info['description']}")
+            if mfcc_bird_info['image']:
+                st.image(mfcc_bird_info['image'], caption=f"{mfcc_bird_info['name']} (Model MFCC)")
 
-                st.write("---")
-                st.write(f"**Model Melspec:** Prediksi kelas {melspec_pred_class} dengan akurasi {melspec_accuracy * 100:.2f}%")
-                st.write(f"Nama: {melspec_bird_info['name']}")
-                st.write(f"Deskripsi: {melspec_bird_info['description']}")
-                if melspec_bird_info['image']:
-                    st.image(melspec_bird_info['image'], caption=f"{melspec_bird_info['name']} (Model Melspec)")
+            st.write("---")
+            st.write(f"**Model Melspec:** Prediksi kelas {melspec_pred_class} dengan akurasi {melspec_accuracy * 100:.2f}%")
+            st.write(f"Nama: {melspec_bird_info['name']}")
+            st.write(f"Deskripsi: {melspec_bird_info['description']}")
+            if melspec_bird_info['image']:
+                st.image(melspec_bird_info['image'], caption=f"{melspec_bird_info['name']} (Model Melspec)")
 
-            except Exception as e:
-                st.error(f"Error saat melakukan prediksi: {str(e)}")
+        except Exception as e:
+            st.error(f"Error saat melakukan prediksi: {str(e)}")
 
 st.markdown("""
     <hr>
