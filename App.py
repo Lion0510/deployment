@@ -45,25 +45,26 @@ def add_custom_css():
         background-color: #fff;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         padding: 10px 0;
-    }
-    nav ul {
-        list-style: none;
         display: flex;
         justify-content: center;
-        padding: 0;
-        margin: 0;
+        gap: 20px;
     }
-    nav ul li {
-        margin: 0 15px;
-    }
-    nav ul li a {
-        text-decoration: none;
+    .nav-button {
+        font-size: 16px;
         font-weight: bold;
+        padding: 10px 20px;
         color: #333;
-        transition: color 0.3s;
+        background-color: #f0f0f0;
+        border: 2px solid #ddd;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
     }
-    nav ul li a:hover {
-        color: #2196F3;
+    .nav-button:hover {
+        background-color: #2196F3;
+        color: #fff;
+        border-color: #2196F3;
     }
     .content-section {
         max-width: 800px;
@@ -112,15 +113,18 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Navigasi Horizontal
-st.markdown("""
-<nav>
-    <ul>
-        <li><a href="#" onclick="window.location='/home'">Beranda</a></li>
-        <li><a href="#" onclick="window.location='/klasifikasi-suara'">Klasifikasi Suara</a></li>
-        <li><a href="#" onclick="window.location='/tentang'">Tentang</a></li>
-    </ul>
-</nav>
-""", unsafe_allow_html=True)
+st.markdown("<nav>", unsafe_allow_html=True)
+col1, col2, col3 = st.columns(3)
+with col1:
+    if st.button("Beranda", key="home_button"):
+        navigate("home")
+with col2:
+    if st.button("Klasifikasi Suara", key="klasifikasi_button"):
+        navigate("klasifikasi-suara")
+with col3:
+    if st.button("Tentang", key="about_button"):
+        navigate("tentang")
+st.markdown("</nav>", unsafe_allow_html=True)
 
 # Konten Berdasarkan Halaman
 if st.session_state.page == "home":
