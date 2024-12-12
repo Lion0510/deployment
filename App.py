@@ -29,6 +29,19 @@ st.markdown("""
             text-align: center;
             border-bottom: 3px solid #333;
         }
+        .header-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .header-content img {
+            width: 120px;
+            height: auto;
+            border-radius: 8px;
+        }
         .header-title h1 {
             font-size: 3.5em;
             color: #ffffff;
@@ -165,6 +178,12 @@ def navigate(page):
 # Header
 st.markdown("""
     <header class="main-header">
+        <div class="header-content">
+            <!-- Menambahkan gambar logo Fakultas Sains, ITERA, dan Fakultas Teknologi -->
+            <img src="https://fs.itera.ac.id/wp-content/uploads/2020/03/Logo-FSains.png" alt="Logo Fakultas Sains">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpSH0B8r5lSPmWBfANSG_LjlIEx2q0rEMXqQLxzr5Ggr7dSi7jfn7ALTDRPGrbUVkhgevNViaXgZokaU0_wwNme660o667wS7T_l4SzhKbQi50g2gLlVXsUNJBSbgOQ7nXi_hzfTDkv0yX/s320/logo+itera+oke.png" alt="Logo ITERA">
+            <img src="https://pbs.twimg.com/profile_images/1272461269136576512/Uw9AShxq_400x400.jpg" alt="Logo Fakultas Teknologi">
+        </div>
         <div class="header-title">
             <h1>Klasifikasi Suara Burung Sumatera</h1>
             <p>Identifikasi Burung Berdasarkan Suara Secara Otomatis</p>
