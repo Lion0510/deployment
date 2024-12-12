@@ -9,15 +9,23 @@ import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
 
+# Menyembunyikan log TensorFlow
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 # Fungsi untuk mengunduh model dari Kaggle API
 def download_model_from_kaggle(kernel_name, dest_folder):
     try:
-        kaggle_username = st.secrets["kaggle"]["KAGGLE_USERNAME"]
-        kaggle_key = st.secrets["kaggle"]["KAGGLE_KEY"]
+        kaggle_username = st.secrets["kaggle"].get("KAGGLE_USERNAME", None)
+        kaggle_key = st.secrets["kaggle"].get("KAGGLE_KEY", None)
 
-        kaggle_json_path = os.path.expanduser("/home/appuser/.kaggle/kaggle.json")
+        if not kaggle_username or not kaggle_key:
+            st.error("Kredensial Kaggle tidak tersedia. Tambahkan KAGGLE_USERNAME dan KAGGLE_KEY ke Streamlit Secrets.")
+            return None
+
+        kaggle_json_path = os.path.expanduser("~/.kaggle/kaggle.json")
         os.makedirs(os.path.dirname(kaggle_json_path), exist_ok=True)
 
+        # Membuat file kaggle.json
         with open(kaggle_json_path, 'w') as f:
             json.dump({"username": kaggle_username, "key": kaggle_key}, f)
 
@@ -27,49 +35,53 @@ def download_model_from_kaggle(kernel_name, dest_folder):
         os.makedirs(dest_folder, exist_ok=True)
         # Unduh semua file output dari kernel
         api.kernels_output(kernel_name, path=dest_folder, force=True)
+        st.success("Model berhasil diunduh!")
         return True
     except Exception as e:
         st.error(f"Terjadi kesalahan saat mengunduh model: {str(e)}")
         return None
 
+# Fungsi untuk memuat model dengan caching
+@st.cache_resource
+def load_model(model_path):
+    try:
+        return tf.keras.models.load_model(model_path)
+    except Exception as e:
+        st.error(f"Gagal memuat model dari {model_path}: {e}")
+        return None
+
 kernel_name = "evanaryaputra28/tubes-dll"
 dest_folder = "./models/"
 
-download_status = download_model_from_kaggle(kernel_name, dest_folder)
+# Unduh model dari Kaggle
+if not os.path.exists("./models/cnn_melspec.h5") or not os.path.exists("./models/cnn_mfcc.h5"):
+    download_model_from_kaggle(kernel_name, dest_folder)
 
+# Path model
 melspec_model_save_path = os.path.join(dest_folder, 'cnn_melspec.h5')
 mfcc_model_save_path = os.path.join(dest_folder, 'cnn_mfcc.h5')
 
-if os.path.exists(melspec_model_save_path):
-    try:
-        melspec_model = tf.keras.models.load_model(melspec_model_save_path)
-    except Exception as e:
-        st.error(f"Gagal memuat model Melspec: {str(e)}")
-
-if os.path.exists(mfcc_model_save_path):
-    try:
-        mfcc_model = tf.keras.models.load_model(mfcc_model_save_path)
-    except Exception as e:
-        st.error(f"Gagal memuat model MFCC: {str(e)}")
+# Memuat model
+melspec_model = load_model(melspec_model_save_path)
+mfcc_model = load_model(mfcc_model_save_path)
 
 # Fungsi untuk memproses MFCC menjadi gambar 64x64x3
 def preprocess_mfcc(mfcc):
-    # Convert array to image using Pillow
     mfcc_image = Image.fromarray(mfcc)
-    mfcc_image = mfcc_image.resize((64, 64))  # Resize gambar menjadi 64x64
+    mfcc_image = mfcc_image.resize((64, 64))
     mfcc_resized = np.array(mfcc_image)
-    mfcc_resized = np.expand_dims(mfcc_resized, axis=-1)  # Tambahkan channel
-    mfcc_resized = np.repeat(mfcc_resized, 3, axis=-1)  # Ubah grayscale menjadi RGB
+    mfcc_resized = np.expand_dims(mfcc_resized, axis=-1)
+    mfcc_resized = np.repeat(mfcc_resized, 3, axis=-1)
     return mfcc_resized
 
 # Fungsi untuk memproses Melspectrogram menjadi gambar 64x64x3
 def preprocess_melspec(melspec):
     melspec_db = librosa.power_to_db(melspec, ref=np.max)
     melspec_image = Image.fromarray(melspec_db)
-    melspec_image = melspec_image.resize((64, 64))  # Resize gambar menjadi 64x64
+    melspec_image = melspec_image.resize((64, 64))
     melspec_resized = np.array(melspec_image)
-    melspec_resized = np.expand_dims(melspec_resized, axis=-1)  # Tambahkan channel
-    melspec_resized = np.repeat(melspec_resized, 3, axis=-1)  # Ubah grayscale menjadi RGB
+    melspec_resized = np.expand_dims(melspec_resized, axis=-1)
+    melspec_resized = np.repeat(melspec_resized, 3, axis=-1)
     return melspec_resized
 
 # Fungsi untuk menampilkan spektrum
@@ -134,6 +146,6 @@ if uploaded_audio is not None:
 st.markdown("""
     <hr>
     <p style="text-align:center; font-size:14px; color:#888;">
-        Aplikasi Klasifikasi Suara Burung menggunakan Deep Learning
+        Aplikasi Klasifikasi Suara Burung menggunakan Deep Learning | Dibuat oleh Kelompok 11
     </p>
 """, unsafe_allow_html=True)
