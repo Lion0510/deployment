@@ -12,6 +12,99 @@ import matplotlib.pyplot as plt
 # Menyembunyikan log TensorFlow
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
+# Tambahkan CSS untuk meniru HTML yang diberikan
+st.markdown("""
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .main-header {
+            background-color: #f5f5f5;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .header-content img {
+            width: 80px;
+            height: auto;
+        }
+
+        .header-title h1 {
+            font-size: 2em;
+            color: #333;
+            margin: 0;
+        }
+
+        .header-title p {
+            font-size: 1em;
+            color: #777;
+            margin: 0;
+        }
+
+        nav {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+        }
+
+        nav ul {
+            list-style-type: none;
+            display: flex;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+        }
+
+        .content-section {
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        .upload-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .results-box {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-top: 2px solid #ddd;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 # Kamus deskripsi kelas burung
 BIRD_CLASSES = {
     0: {
@@ -53,89 +146,46 @@ def get_bird_info(pred_class):
     else:
         return {"name": "Unknown", "description": "Deskripsi tidak tersedia.", "image": None}
 
-# Fungsi untuk mengunduh model dari Kaggle API
-def download_model_from_kaggle(kernel_name, output_files, dest_folder):
-    try:
-        model_files_exist = all([os.path.exists(os.path.join(dest_folder, file)) for file in output_files])
-        if model_files_exist:
-            return False  # Model sudah ada, tidak perlu mengunduh ulang
-
-        kaggle_username = st.secrets["kaggle"]["KAGGLE_USERNAME"]
-        kaggle_key = st.secrets["kaggle"]["KAGGLE_KEY"]
-
-        kaggle_json_path = os.path.expanduser("~/.kaggle/kaggle.json")
-        os.makedirs(os.path.dirname(kaggle_json_path), exist_ok=True)
-
-        with open(kaggle_json_path, 'w') as f:
-            json.dump({"username": kaggle_username, "key": kaggle_key}, f)
-
-        api = KaggleApi()
-        api.authenticate()
-
-        os.makedirs(dest_folder, exist_ok=True)
-        for output_file in output_files:
-            api.kernels_output(kernel_name, path=dest_folder, force=True)
-        return True
-    except Exception as e:
-        st.error(f"Terjadi kesalahan saat mengunduh model: {str(e)}")
-        return None
-
-kernel_name = "evanaryaputra28/tubes-dll"
-output_files = ["cnn_melspec.h5", "cnn_mfcc.h5"]
-dest_folder = "./models/"
-
-download_status = download_model_from_kaggle(kernel_name, output_files, dest_folder)
-
-melspec_model_save_path = os.path.join(dest_folder, 'cnn_melspec.h5')
-mfcc_model_save_path = os.path.join(dest_folder, 'cnn_mfcc.h5')
-
-if os.path.exists(melspec_model_save_path):
-    try:
-        melspec_model = tf.keras.models.load_model(melspec_model_save_path)
-    except Exception as e:
-        st.error(f"Gagal memuat model Melspec: {str(e)}")
-
-if os.path.exists(mfcc_model_save_path):
-    try:
-        mfcc_model = tf.keras.models.load_model(mfcc_model_save_path)
-    except Exception as e:
-        st.error(f"Gagal memuat model MFCC: {str(e)}")
-
-# Fungsi untuk memproses MFCC menjadi gambar 64x64x3
-def preprocess_mfcc(mfcc):
-    mfcc_image = Image.fromarray(mfcc)
-    mfcc_image = mfcc_image.resize((64, 64))
-    mfcc_resized = np.array(mfcc_image)
-    mfcc_resized = np.expand_dims(mfcc_resized, axis=-1)
-    mfcc_resized = np.repeat(mfcc_resized, 3, axis=-1)
-    return mfcc_resized
-
-# Fungsi untuk memproses Melspectrogram menjadi gambar 64x64x3
-def preprocess_melspec(melspec):
-    melspec_db = librosa.power_to_db(melspec, ref=np.max)
-    melspec_image = Image.fromarray(melspec_db)
-    melspec_image = melspec_image.resize((64, 64))
-    melspec_resized = np.array(melspec_image)
-    melspec_resized = np.expand_dims(melspec_resized, axis=-1)
-    melspec_resized = np.repeat(melspec_resized, 3, axis=-1)
-    return melspec_resized
-
-# Fungsi untuk menampilkan spektrum
-def plot_spectrogram(data, sr, title, y_axis, x_axis):
-    plt.figure(figsize=(10, 4))
-    librosa.display.specshow(data, sr=sr, x_axis=x_axis, y_axis=y_axis, cmap='magma')
-    plt.colorbar(format='%+2.0f dB')
-    plt.title(title)
-    plt.tight_layout()
-    st.pyplot(plt)
-    plt.close()
-
-st.title("Deep Learning in Audio: Klasifikasi Suara Burung di Indonesia Bagian Barat 🦜")
+# Header dan Judul
 st.markdown("""
-    **Selamat datang di aplikasi klasifikasi suara burung menggunakan Deep Learning!**
-    Unggah file audio dalam format MP3 atau WAV, dan aplikasi akan menghasilkan spektrum
-    MFCC dan Melspectrogram serta prediksi model.
-""")
+    <header class="main-header">
+        <div class="header-content">
+            <img src="https://fs.itera.ac.id/wp-content/uploads/2020/03/Logo-FSains.png" alt="Logo Fakultas Sains">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpSH0B8r5lSPmWBfANSG_LjlIEx2q0rEMXqQLxzr5Ggr7dSi7jfn7ALTDRPGrbUVkhgevNViaXgZokaU0_wwNme660o667wS7T_l4SzhKbQi50g2gLlVXsUNJBSbgOQ7nXi_hzfTDkv0yX/s320/logo+itera+oke.png" alt="Logo ITERA">
+            <img src="https://pbs.twimg.com/profile_images/1272461269136576512/Uw9AShxq_400x400.jpg" alt="Logo Fakultas Teknologi">
+        </div>
+        <div class="header-title">
+            <h1>Klasifikasi Suara Burung Sumatera</h1>
+            <p>Identifikasi Burung Berdasarkan Suara Secara Otomatis</p>
+        </div>
+    </header>
+""", unsafe_allow_html=True)
+
+# Menu Navigasi
+st.markdown("""
+    <nav>
+        <ul>
+            <li><a href="#home">Beranda</a></li>
+            <li><a href="#upload">Unggah Suara</a></li>
+            <li><a href="#results">Hasil</a></li>
+            <li><a href="#about">Tentang</a></li>
+        </ul>
+    </nav>
+""", unsafe_allow_html=True)
+
+# Konten Beranda
+st.markdown("""
+    <section id="home" class="content-section">
+        <h2>Selamat Datang</h2>
+        <p>Aplikasi ini dapat membantu mengidentifikasi burung Sumatera melalui suara. Unggah file suara untuk melakukan identifikasi!</p>
+    </section>
+""", unsafe_allow_html=True)
+
+# Konten Unggah Suara
+st.markdown("""
+    <section id="upload" class="content-section">
+        <h2>Unggah Suara</h2>
+""", unsafe_allow_html=True)
 
 uploaded_audio = st.file_uploader("Pilih file audio (MP3/WAV) untuk diuji", type=["mp3", "wav"])
 
@@ -152,17 +202,20 @@ if uploaded_audio is not None:
             melspec = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=64)
 
             st.subheader("Spektrum MFCC")
-            plot_spectrogram(mfcc, sr, "MFCC", y_axis="mel", x_axis="time")
+            fig, ax = plt.subplots()
+            librosa.display.specshow(mfcc, sr=sr, x_axis='time', y_axis='mel', ax=ax, cmap='magma')
+            plt.colorbar(format='%+2.0f dB')
+            st.pyplot(fig)
 
             st.subheader("Spektrum Melspectrogram")
+            fig, ax = plt.subplots()
             melspec_db = librosa.power_to_db(melspec, ref=np.max)
-            plot_spectrogram(melspec_db, sr, "Melspectrogram", y_axis="mel", x_axis="time")
+            librosa.display.specshow(melspec_db, sr=sr, x_axis='time', y_axis='mel', ax=ax, cmap='magma')
+            plt.colorbar(format='%+2.0f dB')
+            st.pyplot(fig)
 
-            mfcc_image = preprocess_mfcc(mfcc)
-            melspec_image = preprocess_melspec(melspec)
-
-            mfcc_image = np.expand_dims(mfcc_image, axis=0)
-            melspec_image = np.expand_dims(melspec_image, axis=0)
+            mfcc_image = np.expand_dims(mfcc, axis=(0, -1))  # Sesuaikan dimensi untuk model
+            melspec_image = np.expand_dims(melspec, axis=(0, -1))
 
             mfcc_result = mfcc_model.predict(mfcc_image)
             melspec_result = melspec_model.predict(melspec_image)
@@ -193,8 +246,30 @@ if uploaded_audio is not None:
             st.error(f"Error saat melakukan prediksi: {str(e)}")
 
 st.markdown("""
-    <hr>
-    <p style="text-align:center; font-size:14px; color:#888;">
-        Aplikasi Klasifikasi Suara Burung menggunakan Deep Learning | Dibuat oleh Kelompok 11
-    </p>
+    </section>
+""", unsafe_allow_html=True)
+
+# Konten Hasil
+st.markdown("""
+    <section id="results" class="content-section">
+        <h2>Hasil Klasifikasi</h2>
+        <div class="results-box">
+            <p>Hasil klasifikasi akan muncul di sini setelah Anda mengunggah suara.</p>
+        </div>
+    </section>
+""", unsafe_allow_html=True)
+
+# Konten Tentang
+st.markdown("""
+    <section id="about" class="content-section">
+        <h2>Tentang Kami</h2>
+        <p>Aplikasi ini dirancang oleh Kelompok 11 prodi Sains Data ITERA untuk mendukung konservasi burung di Sumatera.</p>
+    </section>
+""", unsafe_allow_html=True)
+
+# Footer
+st.markdown("""
+    <footer>
+        <p>&copy; 2024 Klasifikasi Suara Burung Sumatera | Kelompok 11 Deep Learning Sains Data</p>
+    </footer>
 """, unsafe_allow_html=True)
