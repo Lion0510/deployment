@@ -6,4 +6,5 @@ matplotlib==3.9.2
 seaborn==0.13.2
 kaggle==1.5.12
 opencv-python
-libgl1-mesa-glx
+libgl1
+libglu1-mesa
