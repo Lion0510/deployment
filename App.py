@@ -15,7 +15,7 @@ def add_custom_css():
     <style>
     body {
         font-family: 'Arial', sans-serif;
-        background-image: url('https://raw.githubusercontent.com/username/repo/main/images/background.jpg'); /* Ganti username/repo dengan path repo GitHub Anda */
+        background-image: images/background.jpg
         background-size: cover;
         background-position: center;
         margin: 0;
