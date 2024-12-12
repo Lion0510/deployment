@@ -11,11 +11,11 @@ import matplotlib.pyplot as plt
 # Menyembunyikan log TensorFlow
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-# Tambahkan CSS untuk styling agar fit ke layar dan tombol lebih rapi
+# Menambahkan CSS untuk styling
 st.markdown("""
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             background-color: #121212;
             color: #ffffff;
             margin: 0;
@@ -23,51 +23,47 @@ st.markdown("""
             box-sizing: border-box;
         }
         .main-header {
-            background-color: #1E1E1E;
-            padding: 20px;
+            background-image: url('https://via.placeholder.com/1200x400'); 
+            background-size: cover;
+            padding: 30px 0;
             text-align: center;
-            border-bottom: 2px solid #333;
-            width: 100%;
-        }
-        .header-content {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .header-content img {
-            width: 80px;
-            height: auto;
-            margin: 0 10px;
+            border-bottom: 3px solid #333;
         }
         .header-title h1 {
-            font-size: 3em;
+            font-size: 3.5em;
             color: #ffffff;
             margin: 10px 0;
+            text-shadow: 2px 2px 5px #000;
         }
         .header-title p {
-            font-size: 1.2em;
+            font-size: 1.5em;
             color: #cccccc;
             margin: 0;
         }
+        nav {
+            background-color: #1E1E1E;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid #333;
+        }
         nav ul {
-            list-style-type: none;
+            list-style: none;
             display: flex;
             justify-content: center;
             margin: 0;
-            padding: 10px 0;
-            background-color: #1E1E1E;
-            width: 100%;
+            padding: 15px 0;
         }
         nav ul li {
-            margin: 0 10px;
+            margin: 0 15px;
         }
         nav ul li button {
             background: none;
             border: 2px solid #ffffff;
             color: #ffffff;
-            padding: 10px 20px;
+            padding: 10px 25px;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 16px;
             cursor: pointer;
             border-radius: 25px;
             transition: all 0.3s ease;
@@ -78,7 +74,7 @@ st.markdown("""
             transform: scale(1.1);
         }
         .content-section {
-            padding: 20px;
+            padding: 30px;
             margin: 20px auto;
             max-width: 1200px;
             text-align: center;
@@ -86,9 +82,14 @@ st.markdown("""
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
         }
+        .content-section h2 {
+            color: #ffffff;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
         footer {
             text-align: center;
-            padding: 10px;
+            padding: 20px;
             background-color: #1E1E1E;
             border-top: 2px solid #333;
             width: 100%;
@@ -96,6 +97,18 @@ st.markdown("""
         footer p {
             margin: 0;
             color: #cccccc;
+        }
+        .image-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .image-container img {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            border-radius: 8px;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -114,7 +127,7 @@ BIRD_CLASSES = {
     },
     2: {
         "name": "Caprimulgus macrurus",
-        "description": "Penjelasan: Burung ini aktif di malam hari dan memiliki bulu yang menyerupai warna kulit kayu, sehingga mudah berkamuflase. Kangkok Malam Besar memakan serangga dan sering ditemukan di area terbuka dekat hutan.",
+        "description": "Burung ini aktif di malam hari dan memiliki bulu yang menyerupai warna kulit kayu, sehingga mudah berkamuflase. Kangkok Malam Besar memakan serangga dan sering ditemukan di area terbuka dekat hutan.",
         "image": "images/Caprimulgus_macrurus.jpg"
     },
     3: {
@@ -124,7 +137,7 @@ BIRD_CLASSES = {
     },
     4: {
         "name": "Anthipes solitaris",
-        "description": "Penjelasan: Kacer Soliter adalah burung kecil yang suka berada di dekat aliran sungai. Bulunya berwarna abu-abu dan putih dengan suara kicauan yang lembut. Ia sering makan serangga kecil.",
+        "description": "Kacer Soliter adalah burung kecil yang suka berada di dekat aliran sungai. Bulunya berwarna abu-abu dan putih dengan suara kicauan yang lembut. Ia sering makan serangga kecil.",
         "image": "images/Anthipes_solitaris.jpg"
     },
     5: {
@@ -152,11 +165,6 @@ def navigate(page):
 # Header
 st.markdown("""
     <header class="main-header">
-        <div class="header-content">
-            <img src="https://fs.itera.ac.id/wp-content/uploads/2020/03/Logo-FSains.png" alt="Logo Fakultas Sains">
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpSH0B8r5lSPmWBfANSG_LjlIEx2q0rEMXqQLxzr5Ggr7dSi7jfn7ALTDRPGrbUVkhgevNViaXgZokaU0_wwNme660o667wS7T_l4SzhKbQi50g2gLlVXsUNJBSbgOQ7nXi_hzfTDkv0yX/s320/logo+itera+oke.png" alt="Logo ITERA">
-            <img src="https://pbs.twimg.com/profile_images/1272461269136576512/Uw9AShxq_400x400.jpg" alt="Logo Fakultas Teknologi">
-        </div>
         <div class="header-title">
             <h1>Klasifikasi Suara Burung Sumatera</h1>
             <p>Identifikasi Burung Berdasarkan Suara Secara Otomatis</p>
@@ -165,19 +173,15 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Menu Navigasi dengan Streamlit
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    if st.button("Beranda"):
-        navigate("home")
-
-with col2:
-    if st.button("Unggah Suara dan Hasil"):
-        navigate("upload_results")
-
-with col3:
-    if st.button("Tentang"):
-        navigate("about")
+st.markdown("""
+    <nav>
+        <ul>
+            <li><button onClick="parent.location='#home'">Beranda</button></li>
+            <li><button onClick="parent.location='#upload_results'">Unggah Suara dan Hasil</button></li>
+            <li><button onClick="parent.location='#about'">Tentang</button></li>
+        </ul>
+    </nav>
+""", unsafe_allow_html=True)
 
 # Konten berdasarkan navigasi
 if st.session_state.page == "home":
