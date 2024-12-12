@@ -41,7 +41,7 @@ def add_custom_css():
         .navigation-button {
             font-size: 16px;
             font-weight: bold;
-            padding: 10px 20px;
+            padding: 20px 20px;
             color: #ffffff;
             text-transform: uppercase;
             text-decoration: none;
