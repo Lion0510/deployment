@@ -15,7 +15,7 @@ def download_model_from_kaggle(kernel_name, dest_folder):
         os.environ["KAGGLE_USERNAME"] = st.secrets["kaggle"]["KAGGLE_USERNAME"]
         os.environ["KAGGLE_KEY"] = st.secrets["kaggle"]["KAGGLE_KEY"]
 
-        kaggle_json_path = os.path.expanduser("~/.kaggle/kaggle.json")
+        kaggle_json_path = os.path.expanduser("~/home/appuser/.kaggle/kaggle.json")
         os.makedirs(os.path.dirname(kaggle_json_path), exist_ok=True)
 
         with open(kaggle_json_path, 'w') as f:
