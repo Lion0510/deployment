@@ -37,18 +37,14 @@ st.markdown("""
             color: #777;
             margin: 0;
         }
-        nav {
-            background-color: #333;
-            color: white;
-            padding: 10px 0;
-            margin-bottom: 20px;
-        }
         nav ul {
             list-style-type: none;
             display: flex;
             justify-content: center;
             margin: 0;
             padding: 0;
+            background-color: #333;
+            padding: 10px 0;
         }
         nav ul li {
             margin: 0 15px;
@@ -58,6 +54,7 @@ st.markdown("""
             border: none;
             color: white;
             font-weight: bold;
+            font-size: 14px;
             cursor: pointer;
         }
         nav ul li button:hover {
@@ -142,17 +139,24 @@ st.markdown("""
     </header>
 """, unsafe_allow_html=True)
 
-# Menu Navigasi
-st.markdown("""
-    <nav>
-        <ul>
-            <li><button onclick="window.location.hash = 'home'">Beranda</button></li>
-            <li><button onclick="window.location.hash = 'upload'">Unggah Suara</button></li>
-            <li><button onclick="window.location.hash = 'results'">Hasil</button></li>
-            <li><button onclick="window.location.hash = 'about'">Tentang</button></li>
-        </ul>
-    </nav>
-""", unsafe_allow_html=True)
+# Menu Navigasi dengan Streamlit
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+    if st.button("Beranda"):
+        navigate("home")
+
+with col2:
+    if st.button("Unggah Suara"):
+        navigate("upload")
+
+with col3:
+    if st.button("Hasil"):
+        navigate("results")
+
+with col4:
+    if st.button("Tentang"):
+        navigate("about")
 
 # Konten berdasarkan navigasi
 if st.session_state.page == "home":
