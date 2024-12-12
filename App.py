@@ -12,6 +12,47 @@ import matplotlib.pyplot as plt
 # Menyembunyikan log TensorFlow
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
+# Kamus deskripsi kelas burung
+BIRD_CLASSES = {
+    0: {
+        "name": "Pitta sordida",
+        "description": "Burung Pitta sordida dikenal sebagai burung Pitta hijau atau Green-breasted Pitta, memiliki bulu berwarna cerah dan sering ditemukan di hutan tropis.",
+        "image": "https://upload.wikimedia.org/wikipedia/commons/6/6f/Pitta_sordida.jpg"
+    },
+    1: {
+        "name": "Dryocopus javensis",
+        "description": "Burung pelatuk besar ini dikenal dengan paruhnya yang kuat dan sering ditemukan di kawasan hutan dataran rendah.",
+        "image": "https://upload.wikimedia.org/wikipedia/commons/8/81/Dryocopus_javensis.jpg"
+    },
+    2: {
+        "name": "Caprimulgus macrurus",
+        "description": "Burung Caprimulgus macrurus, atau Nightjar ekor panjang, dikenal aktif pada malam hari dan memiliki pola bulu kamuflase.",
+        "image": "https://upload.wikimedia.org/wikipedia/commons/2/26/Caprimulgus_macrurus.jpg"
+    },
+    3: {
+        "name": "Pnoepyga pusilla",
+        "description": "Burung kecil ini sering ditemukan di semak belukar dan terkenal dengan suaranya yang melengking.",
+        "image": "https://upload.wikimedia.org/wikipedia/commons/a/a9/Pnoepyga_pusilla.jpg"
+    },
+    4: {
+        "name": "Anthipes solitaris",
+        "description": "Burung ini memiliki kebiasaan menyendiri dan ditemukan di kawasan pegunungan dengan habitat yang lembab.",
+        "image": "https://upload.wikimedia.org/wikipedia/commons/3/39/Anthipes_solitaris.jpg"
+    },
+    5: {
+        "name": "Buceros rhinoceros",
+        "description": "Burung Enggang badak memiliki paruh besar yang unik dan merupakan ikon fauna di banyak wilayah Asia Tenggara.",
+        "image": "https://upload.wikimedia.org/wikipedia/commons/2/21/Buceros_rhinoceros.jpg"
+    }
+}
+
+# Fungsi untuk mendapatkan informasi kelas berdasarkan prediksi
+def get_bird_info(pred_class):
+    if pred_class in BIRD_CLASSES:
+        return BIRD_CLASSES[pred_class]
+    else:
+        return {"name": "Unknown", "description": "Deskripsi tidak tersedia.", "image": None}
+
 # Fungsi untuk mengunduh model dari Kaggle API
 def download_model_from_kaggle(kernel_name, output_files, dest_folder):
     try:
@@ -22,7 +63,7 @@ def download_model_from_kaggle(kernel_name, output_files, dest_folder):
         kaggle_username = st.secrets["kaggle"]["KAGGLE_USERNAME"]
         kaggle_key = st.secrets["kaggle"]["KAGGLE_KEY"]
 
-        kaggle_json_path = os.path.expanduser("/home/appuser/.kaggle/kaggle.json")
+        kaggle_json_path = os.path.expanduser("~/.kaggle/kaggle.json")
         os.makedirs(os.path.dirname(kaggle_json_path), exist_ok=True)
 
         with open(kaggle_json_path, 'w') as f:
@@ -132,9 +173,23 @@ if uploaded_audio is not None:
                 mfcc_accuracy = np.max(mfcc_result)
                 melspec_accuracy = np.max(melspec_result)
 
+                mfcc_bird_info = get_bird_info(mfcc_pred_class)
+                melspec_bird_info = get_bird_info(melspec_pred_class)
+
                 st.subheader("Hasil Prediksi:")
                 st.write(f"**Model MFCC:** Prediksi kelas {mfcc_pred_class} dengan akurasi {mfcc_accuracy * 100:.2f}%")
+                st.write(f"Nama: {mfcc_bird_info['name']}")
+                st.write(f"Deskripsi: {mfcc_bird_info['description']}")
+                if mfcc_bird_info['image']:
+                    st.image(mfcc_bird_info['image'], caption=f"{mfcc_bird_info['name']} (Model MFCC)")
+
+                st.write("---")
                 st.write(f"**Model Melspec:** Prediksi kelas {melspec_pred_class} dengan akurasi {melspec_accuracy * 100:.2f}%")
+                st.write(f"Nama: {melspec_bird_info['name']}")
+                st.write(f"Deskripsi: {melspec_bird_info['description']}")
+                if melspec_bird_info['image']:
+                    st.image(melspec_bird_info['image'], caption=f"{melspec_bird_info['name']} (Model Melspec)")
+
             except Exception as e:
                 st.error(f"Error saat melakukan prediksi: {str(e)}")
 
