@@ -144,4 +144,14 @@ if uploaded_audio is not None:
                 # Tampilkan hasil prediksi
                 st.subheader("Hasil Prediksi:")
                 st.write(f"**Model MFCC:** Prediksi kelas {mfcc_class} dengan akurasi {mfcc_accuracy * 100:.2f}%")
-                st.write(f"**Model Melspec:** Prediksi kelas
+                st.write(f"**Model Melspec:** Prediksi kelas {melspec_class} dengan akurasi {melspec_accuracy * 100:.2f}%")
+            except Exception as e:
+                st.error(f"Error saat melakukan prediksi: {str(e)}")
+
+# Footer
+st.markdown("""
+    <hr>
+    <p style="text-align:center; font-size:14px; color:#888; margin-top: 10px; margin-bottom: 10px;">
+        Aplikasi Klasifikasi Suara Burung menggunakan Deep Learning | Dibuat oleh Kelompok 11
+    </p>
+""", unsafe_allow_html=True)
