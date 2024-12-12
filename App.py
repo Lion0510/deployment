@@ -22,20 +22,28 @@ def add_custom_css():
         }
         .main-header {
             text-align: center;
-            padding: 30px 0;
+            padding: 20px 0;
             border-bottom: 3px solid #333;
         }
+        .main-header .header-images {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
         .main-header img {
-            width: 120px;
-            margin: 10px;
+            width: 100px;
+            height: auto;
         }
         .main-header h1 {
             font-size: 2.5em;
             color: #ffffff;
+            margin: 10px 0;
         }
         .main-header p {
             color: #cccccc;
             font-size: 1.2em;
+            margin-bottom: 20px;
         }
         .navigation-container {
             display: flex;
@@ -44,7 +52,7 @@ def add_custom_css():
             background-color: #1E1E1E;
             padding: 15px 0;
             border-bottom: 2px solid #333;
-            gap: 10px;
+            gap: 15px;
         }
         .navigation-container button {
             font-size: 16px;
@@ -61,14 +69,9 @@ def add_custom_css():
             background-color: #ffffff;
             color: #333;
         }
-        .navigation-container button.active {
-            background-color: #e50914;
-            color: #ffffff;
-            border: 2px solid #e50914;
-        }
         .content-section {
-            padding: 30px;
-            margin: 20px auto;
+            padding: 40px;
+            margin: 30px auto;
             max-width: 800px;
             text-align: center;
             background-color: #1E1E1E;
@@ -102,7 +105,7 @@ def navigate(page):
 # Header
 st.markdown("""
 <header class="main-header">
-    <div>
+    <div class="header-images">
         <img src="https://fs.itera.ac.id/wp-content/uploads/2020/03/Logo-FSains.png" alt="Logo Fakultas Sains">
         <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpSH0B8r5lSPmWBfANSG_LjlIEx2q0rEMXqQLxzr5Ggr7dSi7jfn7ALTDRPGrbUVkhgevNViaXgZokaU0_wwNme660o667wS7T_l4SzhKbQi50g2gLlVXsUNJBSbgOQ7nXi_hzfTDkv0yX/s320/logo+itera+oke.png" alt="Logo ITERA">
         <img src="https://pbs.twimg.com/profile_images/1272461269136576512/Uw9AShxq_400x400.jpg" alt="Logo Fakultas Teknologi">
