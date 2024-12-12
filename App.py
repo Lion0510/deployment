@@ -56,7 +56,7 @@ def add_custom_css():
             align-items: center;       /* Rata tengah secara vertikal */
             max-width: 800px;          /* Lebar maksimum kotak */
         }
-        .navigation-container button {
+        .navigation-button {
             font-size: 18px;
             font-weight: bold;
             padding: 15px 30px;
@@ -67,7 +67,7 @@ def add_custom_css():
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        .navigation-container button:hover {
+        .navigation-button:hover {
             background-color: #ffffff;
             color: #333;
         }
@@ -100,12 +100,16 @@ st.markdown("""
 
 # Navigasi dengan tombol Streamlit di dalam kotak hitam
 st.markdown('<div class="navigation-container">', unsafe_allow_html=True)
-if st.button("Beranda"):
-    navigate("home")
-if st.button("Unggah Suara dan Hasil"):
-    navigate("upload_results")
-if st.button("Tentang Kami"):
-    navigate("about")
+col1, col2, col3 = st.columns([1, 1, 1])
+with col1:
+    if st.button("Beranda", key="home_button"):
+        navigate("home")
+with col2:
+    if st.button("Unggah Suara dan Hasil", key="upload_button"):
+        navigate("upload_results")
+with col3:
+    if st.button("Tentang Kami", key="about_button"):
+        navigate("about")
 st.markdown('</div>', unsafe_allow_html=True)
 
 # Konten berdasarkan navigasi
