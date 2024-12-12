@@ -9,7 +9,8 @@ from PIL import Image
 # Menyembunyikan log TensorFlow
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-# Menambahkan CSS untuk styling
+# Menambahkan CSS untuk tata letak tombol
+
 def add_custom_css():
     st.markdown("""
     <style>
@@ -48,49 +49,28 @@ def add_custom_css():
         }
         .navigation-container {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #1E1E1E;
-            padding: 20px 0;
-            border-bottom: 2px solid #333;
-            gap: 20px;
-            margin-bottom: 30px;
+            justify-content: center;       /* Memastikan tombol berada di tengah */
+            align-items: center;           /* Vertikal rata tengah */
+            background-color: #1E1E1E;     /* Warna latar belakang */
+            padding: 20px 0;               /* Tambahkan jarak atas-bawah */
+            border-bottom: 2px solid #333; /* Garis bawah */
+            gap: 30px;                     /* Jarak antar tombol */
+            margin-bottom: 30px;           /* Tambahkan jarak di bawah kontainer */
         }
         .navigation-container button {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: bold;
-            text-transform: none;
-            padding: 20px 40px;
+            padding: 15px 30px;
             background-color: #333;
             border: 2px solid #ffffff;
             color: #ffffff;
-            border-radius: 35px;
+            border-radius: 30px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
         .navigation-container button:hover {
             background-color: #ffffff;
             color: #333;
-        }
-        .content-section {
-            padding: 40px;
-            margin: 30px auto;
-            max-width: 800px;
-            text-align: center;
-            background-color: #1E1E1E;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-        }
-        footer {
-            text-align: center;
-            padding: 20px;
-            background-color: #1E1E1E;
-            border-top: 2px solid #333;
-            margin-top: 30px;
-        }
-        footer p {
-            margin: 0;
-            color: #cccccc;
         }
     </style>
     """, unsafe_allow_html=True)
@@ -122,7 +102,7 @@ st.markdown("""
 # Navigasi dengan tombol Streamlit
 with st.container():
     st.markdown('<div class="navigation-container">', unsafe_allow_html=True)
-    col1, col2, col3 = st.columns([1, 1, 1])
+    col1, col2, col3 = st.columns(3)  # Buat 3 kolom dengan lebar yang sama
     with col1:
         if st.button("Beranda"):
             navigate("home")
