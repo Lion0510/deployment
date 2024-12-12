@@ -15,7 +15,7 @@ def add_custom_css():
     <style>
     body {
         font-family: 'Arial', sans-serif;
-        background-image: images/background.jpg
+        background-image: url('./images/background.jpg');
         background-size: cover;
         background-position: center;
         margin: 0;
