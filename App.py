@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 # Menyembunyikan log TensorFlow
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-# Tambahkan CSS untuk styling agar fit ke layar
+# Tambahkan CSS untuk styling agar fit ke layar dan tombol lebih rapi
 st.markdown("""
     <style>
         body {
@@ -59,7 +59,7 @@ st.markdown("""
             width: 100%;
         }
         nav ul li {
-            margin: 0 20px;
+            margin: 0 10px;
         }
         nav ul li button {
             background: none;
@@ -69,11 +69,13 @@ st.markdown("""
             font-weight: bold;
             font-size: 14px;
             cursor: pointer;
-            border-radius: 5px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
         }
         nav ul li button:hover {
             background-color: #ffffff;
             color: #000000;
+            transform: scale(1.1);
         }
         .content-section {
             padding: 20px;
