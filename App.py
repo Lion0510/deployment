@@ -83,9 +83,9 @@ with st.container():
 # Konten Berdasarkan Halaman
 if st.session_state.page == "home":
     st.write("Halaman Beranda")
-elif st.session_state.page == "upload_results":
+    elif st.session_state.page == "upload_results":
     # ... (kode unggah audio dan hasil)
-elif st.session_state.page ==  "about":
+    elif st.session_state.page ==  "about":
     st.write("Halaman Tentang")
 # Tambahkan CSS ke aplikasi
 add_custom_css()
