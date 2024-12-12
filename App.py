@@ -2,35 +2,40 @@ import os
 import streamlit as st
 import tensorflow as tf
 from kaggle.api.kaggle_api_extended import KaggleApi
+import zipfile
 import shutil
 
 # Set Streamlit page configuration
 st.set_page_config(page_title="Bird Song Classifier", page_icon="🦜", layout="centered")
 
-# Fungsi untuk mengunduh output dari Kaggle Kernel atau Dataset menggunakan API
-def download_model_from_kaggle(kernel_name, dest_path):
+# Fungsi untuk mengunduh dataset atau model dari Kaggle
+def download_dataset_from_kaggle(dataset_name, dest_path):
     # Setup Kaggle API
     api = KaggleApi()
     api.authenticate()
 
     try:
-        # Mengunduh output dari kernel Kaggle
-        st.info(f"Mengunduh output dari kernel {kernel_name}...")
-        api.kernels_download_output(kernel_name, path=dest_path)
-        st.success(f"Output berhasil diunduh ke {dest_path}")
+        # Mengunduh dataset dari Kaggle
+        st.info(f"Mengunduh dataset {dataset_name}...")
+        api.dataset_download_files(dataset_name, path=dest_path, unzip=True)
+        st.success(f"Dataset berhasil diunduh ke {dest_path}")
     except Exception as e:
-        st.error(f"Terjadi error saat mengunduh output kernel: {str(e)}")
+        st.error(f"Terjadi error saat mengunduh dataset: {str(e)}")
 
-# Nama kernel yang diunggah oleh orang lain di Kaggle
-kernel_name = 'evanaryaputra28/dl-tb'  # Gantilah dengan kernel yang sesuai
+# Mengambil kredensial API Kaggle dari Streamlit Secrets
+os.environ['KAGGLE_USERNAME'] = st.secrets["kaggle.json"]['username']
+os.environ['KAGGLE_KEY'] = st.secrets["kaggle.json"]['key']
+
+# Nama dataset atau model di Kaggle
+dataset_name = 'evanaryaputra28/dl-tb'  # Gantilah dengan nama dataset atau model yang sesuai
 output_dest_path = 'kaggle_output/'
 
 # Pastikan folder untuk menyimpan output ada
 if not os.path.exists(output_dest_path):
     os.makedirs(output_dest_path)
 
-# Unduh output dari Kaggle Kernel
-download_model_from_kaggle(kernel_name, output_dest_path)
+# Unduh dataset atau model dari Kaggle
+download_dataset_from_kaggle(dataset_name, output_dest_path)
 
 # Tentukan path model yang sudah diunduh
 melspec_model_path = os.path.join(output_dest_path, 'melspec_model.h5')  # Sesuaikan nama model Anda
