@@ -10,12 +10,8 @@ from PIL import Image
 import matplotlib.pyplot as plt
 
 # Fungsi untuk mengunduh model dari Kaggle API
-def download_model_from_kaggle(kernel_name, output_files, dest_folder):
+def download_model_from_kaggle(kernel_name, dest_folder):
     try:
-        model_files_exist = all([os.path.exists(os.path.join(dest_folder, file)) for file in output_files])
-        if model_files_exist:
-            return False  # Model sudah ada, tidak perlu mengunduh ulang
-
         kaggle_username = st.secrets["kaggle"]["KAGGLE_USERNAME"]
         kaggle_key = st.secrets["kaggle"]["KAGGLE_KEY"]
 
@@ -29,18 +25,17 @@ def download_model_from_kaggle(kernel_name, output_files, dest_folder):
         api.authenticate()
 
         os.makedirs(dest_folder, exist_ok=True)
-        for output_file in output_files:
-            api.kernels_output(kernel_name, path=dest_folder, force=True)
+        # Unduh semua file output dari kernel
+        api.kernels_output(kernel_name, path=dest_folder, force=True)
         return True
     except Exception as e:
         st.error(f"Terjadi kesalahan saat mengunduh model: {str(e)}")
         return None
 
 kernel_name = "evanaryaputra28/dl-tb"
-output_files = ["cnn_melspec.h5", "cnn_mfcc.h5"]
 dest_folder = "./models/"
 
-download_status = download_model_from_kaggle(kernel_name, output_files, dest_folder)
+download_status = download_model_from_kaggle(kernel_name, dest_folder)
 
 melspec_model_save_path = os.path.join(dest_folder, 'cnn_melspec.h5')
 mfcc_model_save_path = os.path.join(dest_folder, 'cnn_mfcc.h5')
