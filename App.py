@@ -9,8 +9,7 @@ from PIL import Image
 # Menyembunyikan log TensorFlow
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-# Menambahkan CSS untuk tata letak tombol
-
+# Menambahkan CSS untuk tata letak tombol di dalam kotak hitam
 def add_custom_css():
     st.markdown("""
     <style>
@@ -48,17 +47,17 @@ def add_custom_css():
             margin-bottom: 30px;
         }
         .navigation-container {
-            display: flex;
-            justify-content: space-around; /* Membuat tombol berjarak sama */
-            align-items: center;           /* Vertikal rata tengah */
-            background-color: #1E1E1E;     /* Warna latar belakang */
-            padding: 20px 0;               /* Tambahkan jarak atas-bawah */
-            border-bottom: 2px solid #333; /* Garis bawah */
-            gap: 20px;                     /* Jarak antar tombol */
-            margin-bottom: 30px;           /* Tambahkan jarak di bawah kontainer */
+            background-color: #1E1E1E;  /* Kotak hitam untuk tombol */
+            padding: 20px;             /* Jarak dalam kotak */
+            border-radius: 10px;       /* Sudut kotak melengkung */
+            margin: 20px auto;         /* Jarak atas-bawah */
+            display: flex;             /* Gunakan Flexbox untuk tata letak tombol */
+            justify-content: space-evenly; /* Tombol dengan jarak sama */
+            align-items: center;       /* Rata tengah secara vertikal */
+            max-width: 800px;          /* Lebar maksimum kotak */
         }
         .navigation-container button {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
             padding: 15px 30px;
             background-color: #333;
@@ -99,7 +98,7 @@ st.markdown("""
 </header>
 """, unsafe_allow_html=True)
 
-# Navigasi dengan tombol Streamlit
+# Navigasi dengan tombol Streamlit di dalam kotak hitam
 st.markdown('<div class="navigation-container">', unsafe_allow_html=True)
 if st.button("Beranda"):
     navigate("home")
