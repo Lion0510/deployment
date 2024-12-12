@@ -118,7 +118,7 @@ def download_model_from_kaggle(kernel_name, output_files, dest_folder):
             return False  # Model sudah ada, tidak perlu mengunduh ulang
 
         kaggle_username = st.secrets["kaggle"]["KAGGLE_USERNAME"]
-        kaggle_key = st.secrets["kaggle"]["KAGGLE_KEY"]
+        kaggle_key = st.secrets["kaggle"]["KEY"]
 
         kaggle_json_path = os.path.expanduser("/home/appuser/.kaggle/kaggle.json")
         os.makedirs(os.path.dirname(kaggle_json_path), exist_ok=True)
