@@ -70,22 +70,6 @@ st.markdown("""
         nav ul li {
             margin: 0 15px;
         }
-        nav ul li button {
-            background: none;
-            border: 2px solid #ffffff;
-            color: #ffffff;
-            padding: 10px 25px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 25px;
-            transition: all 0.3s ease;
-        }
-        nav ul li button:hover {
-            background-color: #ffffff;
-            color: #000000;
-            transform: scale(1.1);
-        }
         .content-section {
             padding: 30px;
             margin: 20px auto;
@@ -195,19 +179,38 @@ st.markdown("""
 st.markdown("""
     <nav>
         <ul>
-            <li><button onClick="parent.location='#home'">Beranda</button></li>
-            <li><button onClick="parent.location='#upload_results'">Unggah Suara dan Hasil</button></li>
-            <li><button onClick="parent.location='#about'">Tentang</button></li>
+            <li>
+                <button onClick="window.location='#home'">Beranda</button>
+            </li>
+            <li>
+                <button onClick="window.location='#upload_results'">Unggah Suara dan Hasil</button>
+            </li>
+            <li>
+                <button onClick="window.location='#about'">Tentang</button>
+            </li>
         </ul>
     </nav>
 """, unsafe_allow_html=True)
 
-# Konten berdasarkan navigasi
+# Menggunakan tombol Streamlit untuk navigasi
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    if st.button('Beranda'):
+        navigate('home')
+with col2:
+    if st.button('Unggah dan Prediksi'):
+        navigate('upload_results')
+with col3:
+    if st.button('Tentang Kami'):
+        navigate('about')
+
+# Konten sesuai halaman yang dipilih
 if st.session_state.page == "home":
     st.markdown("""
         <section id="home" class="content-section">
-            <h2>Selamat Datang</h2>
-            <p>Aplikasi ini dapat membantu mengidentifikasi burung Sumatera melalui suara. Unggah file suara untuk melakukan identifikasi!</p>
+            <h2>Selamat Datang di Sistem Klasifikasi Suara Burung Sumatera</h2>
+            <p>Aplikasi ini memungkinkan Anda untuk mengidentifikasi berbagai jenis burung yang ada di Sumatera melalui suara. Unggah file suara untuk melakukan identifikasi!</p>
         </section>
     """, unsafe_allow_html=True)
 
