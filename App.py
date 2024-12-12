@@ -59,7 +59,7 @@ def add_custom_css():
         .navigation-container button {
             font-size: 18px;
             font-weight: bold;
-            text-transform: uppercase;
+            text-transform: none;
             padding: 15px 30px;
             background-color: #333;
             border: 2px solid #ffffff;
@@ -124,13 +124,13 @@ with st.container():
     st.markdown('<div class="navigation-container">', unsafe_allow_html=True)
     col1, col2, col3 = st.columns([1, 1, 1])
     with col1:
-        if st.button("BERANDA"):
+        if st.button("Beranda"):
             navigate("home")
     with col2:
-        if st.button("UNGGAH SUARA DAN HASIL"):
+        if st.button("Unggah Suara dan Hasil"):
             navigate("upload_results")
     with col3:
-        if st.button("TENTANG KAMI"):
+        if st.button("Tentang Kami"):
             navigate("about")
     st.markdown('</div>', unsafe_allow_html=True)
 
