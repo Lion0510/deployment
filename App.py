@@ -10,9 +10,9 @@ from PIL import Image
 import matplotlib.pyplot as plt
 
 # Path ke gambar background
-BACKGROUND_IMAGE_PATH = "./images/background.jpg"  # Pastikan gambar ada di direktori ini
+BACKGROUND_IMAGE_PATH = "./images/background.jpg"  # Ganti dengan path gambar lokal
 
-# Menambahkan CSS untuk background gambar
+# Menambahkan CSS untuk background gambar dan elemen lainnya
 def add_custom_css():
     st.markdown(f"""
     <style>
@@ -24,13 +24,24 @@ def add_custom_css():
         background-attachment: fixed;
         margin: 0;
         padding: 0;
-        color: #ffffff; /* Warna teks putih untuk kontras dengan background */
+        color: #ffffff; /* Warna teks putih untuk kontras */
     }}
     .main-header {{
         text-align: center;
-        padding: 20px;
-        background-color: rgba(30, 30, 30, 0.8); /* Transparansi untuk header */
+        padding: 30px;
+        background-color: rgba(0, 0, 0, 0.6); /* Transparansi untuk header */
         color: #ffffff;
+        border-radius: 10px;
+        margin: 20px auto;
+        max-width: 90%;
+    }}
+    .main-header .header-title h1 {{
+        font-size: 2.5rem;
+        margin: 10px 0;
+    }}
+    .main-header .header-title p {{
+        font-size: 1.2rem;
+        margin: 0;
     }}
     .content-section {{
         max-width: 800px;
@@ -46,6 +57,7 @@ def add_custom_css():
         padding: 20px;
         background-color: rgba(30, 30, 30, 0.8); /* Transparansi untuk footer */
         color: #cccccc;
+        margin-top: 50px;
     }}
     </style>
     """, unsafe_allow_html=True)
