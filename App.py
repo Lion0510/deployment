@@ -6,7 +6,7 @@ import tensorflow as tf
 import librosa
 import librosa.display
 import numpy as np
-import cv2
+from PIL import Image
 import matplotlib.pyplot as plt
 
 # Fungsi untuk mengunduh model dari Kaggle API
@@ -59,17 +59,22 @@ if os.path.exists(mfcc_model_save_path):
 
 # Fungsi untuk memproses MFCC menjadi gambar 64x64x3
 def preprocess_mfcc(mfcc):
-    mfcc_resized = cv2.resize(mfcc, (64, 64))
-    mfcc_resized = np.expand_dims(mfcc_resized, axis=-1)
-    mfcc_resized = np.repeat(mfcc_resized, 3, axis=-1)
+    # Convert array to image using Pillow
+    mfcc_image = Image.fromarray(mfcc)
+    mfcc_image = mfcc_image.resize((64, 64))  # Resize gambar menjadi 64x64
+    mfcc_resized = np.array(mfcc_image)
+    mfcc_resized = np.expand_dims(mfcc_resized, axis=-1)  # Tambahkan channel
+    mfcc_resized = np.repeat(mfcc_resized, 3, axis=-1)  # Ubah grayscale menjadi RGB
     return mfcc_resized
 
 # Fungsi untuk memproses Melspectrogram menjadi gambar 64x64x3
 def preprocess_melspec(melspec):
     melspec_db = librosa.power_to_db(melspec, ref=np.max)
-    melspec_resized = cv2.resize(melspec_db, (64, 64))
-    melspec_resized = np.expand_dims(melspec_resized, axis=-1)
-    melspec_resized = np.repeat(melspec_resized, 3, axis=-1)
+    melspec_image = Image.fromarray(melspec_db)
+    melspec_image = melspec_image.resize((64, 64))  # Resize gambar menjadi 64x64
+    melspec_resized = np.array(melspec_image)
+    melspec_resized = np.expand_dims(melspec_resized, axis=-1)  # Tambahkan channel
+    melspec_resized = np.repeat(melspec_resized, 3, axis=-1)  # Ubah grayscale menjadi RGB
     return melspec_resized
 
 # Fungsi untuk menampilkan spektrum
