@@ -1,13 +1,11 @@
-import os
-import json
 import streamlit as st
-from kaggle.api.kaggle_api_extended import KaggleApi
 import tensorflow as tf
+import json
+import os
 import librosa
-import librosa.display
 import numpy as np
-from PIL import Image
 import matplotlib.pyplot as plt
+from PIL import Image
 
 # Menambahkan CSS untuk meniru gaya HTML yang diberikan
 def add_custom_css():
@@ -91,6 +89,13 @@ def add_custom_css():
 # Tambahkan CSS ke aplikasi
 add_custom_css()
 
+# State untuk navigasi
+if "page" not in st.session_state:
+    st.session_state.page = "home"
+
+def navigate(page):
+    st.session_state.page = page
+
 # Header
 st.markdown("""
 <header class="main-header">
@@ -106,124 +111,42 @@ st.markdown("""
 </header>
 """, unsafe_allow_html=True)
 
-# Fungsi untuk mengunduh model dari Kaggle API
-def download_model_from_kaggle(kernel_name, output_files, dest_folder):
-    try:
-        model_files_exist = all([os.path.exists(os.path.join(dest_folder, file)) for file in output_files])
-        if model_files_exist:
-            return False  # Model sudah ada, tidak perlu mengunduh ulang
-
-        kaggle_username = st.secrets["kaggle"]["KAGGLE_USERNAME"]
-        kaggle_key = st.secrets["kaggle"]["KAGGLE_KEY"]
-
-        kaggle_json_path = os.path.expanduser("/home/appuser/.kaggle/kaggle.json")
-        os.makedirs(os.path.dirname(kaggle_json_path), exist_ok=True)
-
-        with open(kaggle_json_path, 'w') as f:
-            json.dump({"username": kaggle_username, "key": kaggle_key}, f)
-
-        api = KaggleApi()
-        api.authenticate()
-
-        os.makedirs(dest_folder, exist_ok=True)
-        for output_file in output_files:
-            api.kernels_output(kernel_name, path=dest_folder, force=True)
-        return True
-    except Exception as e:
-        st.error(f"Terjadi kesalahan saat mengunduh model: {str(e)}")
-        return None
-
-kernel_name = "evanaryaputra28/tubes-dll"
-output_files = ["cnn_melspec.h5", "cnn_mfcc.h5"]
-dest_folder = "./models/"
-
-download_status = download_model_from_kaggle(kernel_name, output_files, dest_folder)
-
-melspec_model_save_path = os.path.join(dest_folder, 'cnn_melspec.h5')
-mfcc_model_save_path = os.path.join(dest_folder, 'cnn_mfcc.h5')
-
-if os.path.exists(melspec_model_save_path):
-    try:
-        melspec_model = tf.keras.models.load_model(melspec_model_save_path)
-    except Exception as e:
-        st.error(f"Gagal memuat model Melspec: {str(e)}")
-
-if os.path.exists(mfcc_model_save_path):
-    try:
-        mfcc_model = tf.keras.models.load_model(mfcc_model_save_path)
-    except Exception as e:
-        st.error(f"Gagal memuat model MFCC: {str(e)}")
-        
-# Fungsi untuk memproses MFCC menjadi gambar 64x64x3
-def preprocess_mfcc(mfcc):
-    mfcc_image = Image.fromarray(mfcc)
-    mfcc_image = mfcc_image.resize((64, 64))
-    mfcc_resized = np.array(mfcc_image)
-    mfcc_resized = np.expand_dims(mfcc_resized, axis=-1)
-    mfcc_resized = np.repeat(mfcc_resized, 3, axis=-1)
-    return mfcc_resized
-
-# Fungsi untuk memproses Melspectrogram menjadi gambar 64x64x3
-def preprocess_melspec(melspec):
-    melspec_db = librosa.power_to_db(melspec, ref=np.max)
-    melspec_image = Image.fromarray(melspec_db)
-    melspec_image = melspec_image.resize((64, 64))
-    melspec_resized = np.array(melspec_image)
-    melspec_resized = np.expand_dims(melspec_resized, axis=-1)
-    melspec_resized = np.repeat(melspec_resized, 3, axis=-1)
-    return melspec_resized
-
-# Fungsi untuk menampilkan spektrum
-def plot_spectrogram(data, sr, title, y_axis, x_axis):
-    plt.figure(figsize=(10, 4))
-    librosa.display.specshow(data, sr=sr, x_axis=x_axis, y_axis=y_axis, cmap='magma')
-    plt.colorbar(format='%+2.0f dB')
-    plt.title(title)
-    plt.tight_layout()
-    st.pyplot(plt)
-    plt.close()
-
-
-# Navigasi
+# Navigasi Horizontal
 st.markdown("""
 <nav>
     <ul>
-        <li><a href="#home">Beranda</a></li>
-        <li><a href="#upload">Unggah Suara</a></li>
-        <li><a href="#results">Hasil</a></li>
-        <li><a href="#about">Tentang</a></li>
+        <li><a href="#" onclick="window.location='/home'">Beranda</a></li>
+        <li><a href="#" onclick="window.location='/klasifikasi-suara'">Klasifikasi Suara</a></li>
+        <li><a href="#" onclick="window.location='/tentang'">Tentang</a></li>
     </ul>
 </nav>
 """, unsafe_allow_html=True)
 
-# Konten
-st.markdown("""
-<section id="home" class="content-section">
-    <h2>Selamat Datang</h2>
-    <p>Aplikasi ini dapat membantu mengidentifikasi burung Sumatera melalui suara. Unggah file suara untuk melakukan identifikasi!</p>
-</section>
-
-<section id="upload" class="content-section">
-    <h2>Unggah Suara</h2>
-    <form>
-        <label for="audio-upload">Pilih file suara (format .wav):</label>
-        <input type="file" id="audio-upload" accept=".wav" required>
-        <button type="submit">Klasifikasi</button>
-    </form>
-</section>
-
-<section id="results" class="content-section">
-    <h2>Hasil Klasifikasi</h2>
-    <div>
-        <p>Hasil klasifikasi akan muncul di sini setelah Anda mengunggah suara.</p>
-    </div>
-</section>
-
-<section id="about" class="content-section">
-    <h2>Tentang Kami</h2>
-    <p>Aplikasi ini dirancang oleh Kelompok 11 prodi Sains Data ITERA untuk mendukung konservasi burung di Sumatera.</p>
-</section>
-""", unsafe_allow_html=True)
+# Konten Berdasarkan Halaman
+if st.session_state.page == "home":
+    st.markdown("""
+    <section class="content-section">
+        <h2>Selamat Datang</h2>
+        <p>Halaman Beranda: Temukan informasi tentang klasifikasi suara burung di sini.</p>
+    </section>
+    """, unsafe_allow_html=True)
+elif st.session_state.page == "klasifikasi-suara":
+    st.markdown("""
+    <section class="content-section">
+        <h2>Klasifikasi Suara</h2>
+    </section>
+    """, unsafe_allow_html=True)
+    uploaded_audio = st.file_uploader("Pilih file audio (MP3/WAV) untuk diuji", type=["mp3", "wav"])
+    if uploaded_audio is not None:
+        st.audio(uploaded_audio, format="audio/mp3")
+        st.write("Hasil klasifikasi akan muncul di sini setelah proses selesai.")
+elif st.session_state.page == "tentang":
+    st.markdown("""
+    <section class="content-section">
+        <h2>Tentang Kami</h2>
+        <p>Aplikasi ini dirancang oleh Kelompok 11 prodi Sains Data ITERA untuk mendukung konservasi burung di Sumatera.</p>
+    </section>
+    """, unsafe_allow_html=True)
 
 # Footer
 st.markdown("""
