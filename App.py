@@ -1,77 +1,41 @@
-import os
-import json
 import streamlit as st
-from kaggle.api.kaggle_api_extended import KaggleApi
 import tensorflow as tf
 import librosa
 import numpy as np
-import matplotlib.pyplot as plt
+import os
+import cv2  # Untuk penyesuaian ukuran gambar
+from sklearn.preprocessing import LabelEncoder
+from keras.preprocessing import image
 
 # Set Streamlit page configuration
 st.set_page_config(page_title="Bird Song Classifier", page_icon="🦜", layout="centered")
 
-# Fungsi untuk mengunduh model dari Kaggle API
-def download_model_from_kaggle(kernel_name, output_files, dest_folder):
-    try:
-        # Mengakses API key dari Streamlit Secrets
-        kaggle_username = st.secrets["kaggle"]["KAGGLE_USERNAME"]
-        kaggle_key = st.secrets["kaggle"]["KAGGLE_KEY"]
+# Fungsi untuk memuat model MFCC
+def load_mfcc_model():
+    model_path = '/kaggle/working/cnn_mfcc.h5'  # Ganti dengan path model MFCC Anda
+    if os.path.exists(model_path):
+        return tf.keras.models.load_model(model_path)
+    else:
+        st.error("Model MFCC tidak ditemukan.")
+        return None
 
-        # Path file kaggle.json
-        kaggle_json_path = os.path.expanduser("~/.kaggle/kaggle.json")
+# Load model MFCC
+model_mfcc = load_mfcc_model()
 
-        # Membuat folder ~/.kaggle jika belum ada
-        os.makedirs(os.path.dirname(kaggle_json_path), exist_ok=True)
-
-        # Menyimpan kredensial API Kaggle ke file kaggle.json
-        with open(kaggle_json_path, 'w') as f:
-            json.dump({"username": kaggle_username, "key": kaggle_key}, f)
-
-        # Menampilkan status ke pengguna
-        st.success("API Key Kaggle berhasil disalin ke ~/.kaggle/kaggle.json")
-
-        # Autentikasi ke Kaggle API
-        api = KaggleApi()
-        api.authenticate()
-
-        # Membuat folder tujuan untuk menyimpan model yang diunduh
-        os.makedirs(dest_folder, exist_ok=True)
-
-        # Mengunduh output dari kernel
-        for output_file in output_files:
-            st.text(f"Mengunduh {output_file} dari kernel {kernel_name}...")
-            api.kernels_output(kernel_name, path=dest_folder, force=True)
-            st.success(f"{output_file} berhasil diunduh ke {dest_folder}")
-            
-    except Exception as e:
-        st.error(f"Terjadi kesalahan saat mengunduh model: {str(e)}")
-
-# URL kernel dan file output
-kernel_name = "evanaryaputra28/dl-tb"
-output_files = ["cnn_melspec.h5", "cnn_mfcc.h5"]
-dest_folder = "./models/"
-
-# Download model dari Kaggle
-download_model_from_kaggle(kernel_name, output_files, dest_folder)
-
-# Cek jika model berhasil diunduh dan memuatnya
-melspec_model_save_path = os.path.join(dest_folder, 'cnn_melspec.h5')
-mfcc_model_save_path = os.path.join(dest_folder, 'cnn_mfcc.h5')
-
-# Memuat model jika file ada
-if os.path.exists(melspec_model_save_path):
-    try:
-        melspec_model = tf.keras.models.load_model(melspec_model_save_path)
-        st.success("Model Melspec berhasil dimuat!")
-    except Exception as e:
-        st.error(f"Gagal memuat model Melspec: {str(e)}")
-
-if os.path.exists(mfcc_model_save_path):
-    try:
-        mfcc_model = tf.keras.models.load_model(mfcc_model_save_path)
-        st.success("Model MFCC berhasil dimuat!")
-    except Exception as e:
-        st.error(f"Gagal memuat model MFCC: {str(e)}")
+# Fungsi untuk mengonversi audio ke MFCC dan kemudian ke gambar 2D
+def audio_to_mfcc_image(file_path):
+    # Menggunakan librosa untuk memuat dan mengekstrak MFCC
+    y, sr = librosa.load(file_path, sr=None)
+    mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)  # Extract MFCC (13 coefficients)
+    
+    # Reshape MFCC ke (64, 64) dan tambahkan dimensi channel (reshape untuk gambar 2D)
+    mfcc_resized = cv2.resize(mfcc, (64, 64))  # Resize MFCC menjadi 64x64
+    mfcc_resized = np.expand_dims(mfcc_resized, axis=-1)  # Menambah dimensi channel (grayscale)
+    
+    # Jika model mengharapkan 3 channel, kita bisa duplikasi channel menjadi RGB
+    mfcc_resized = np.repeat(mfcc_resized, 3, axis=-1)  # Menjadi 64x64x3
+    
+    return mfcc_resized
 
 # Title aplikasi Streamlit
 st.title("Deep Learning in Audio: Klasifikasi Suara Burung di Indonesia Bagian Barat 🦜")
@@ -88,33 +52,18 @@ st.markdown("""
 st.header("Unggah File Audio Suara Burung")
 uploaded_audio = st.file_uploader("Pilih file audio (MP3/WAV) untuk diuji", type=["mp3", "wav"])
 
-# Fungsi untuk ekstraksi fitur MFCC dan Melspectrogram
-def extract_features(audio_path):
-    # Load audio file
-    y, sr = librosa.load(audio_path, sr=None)
+# Fungsi untuk melakukan prediksi
+def predict_bird_species(file_path):
+    # Mengonversi audio ke gambar MFCC
+    mfcc_image = audio_to_mfcc_image(file_path)
     
-    # Ekstraksi MFCC
-    mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
-    mfcc = np.mean(mfcc.T, axis=0)  # Ambil rata-rata dari MFCC untuk fitur
-
-    # Ekstraksi Melspectrogram
-    melspec = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=128)
-    melspec = np.mean(melspec.T, axis=0)  # Ambil rata-rata dari Melspectrogram untuk fitur
-
-    return mfcc, melspec
-
-# Fungsi untuk mengubah melspectrogram menjadi format gambar
-def preprocess_melspec(melspec):
-    melspec = np.expand_dims(melspec, axis=-1)  # Tambah dimensi channel
-    melspec = np.expand_dims(melspec, axis=0)  # Tambah dimensi batch (1,)
-    return melspec
-
-# Prediksi menggunakan model yang sudah dimuat
-def predict_bird_class(model, features):
-    prediction = model.predict(features)  # Gunakan input dengan dimensi yang sesuai
-    predicted_class = np.argmax(prediction, axis=1)[0]  # Ambil kelas dengan nilai tertinggi
-    accuracy = np.max(prediction)  # Akurasi model
-    return predicted_class, accuracy
+    # Melakukan prediksi menggunakan model MFCC
+    mfcc_image = np.expand_dims(mfcc_image, axis=0)  # Menambahkan batch dimension
+    prediction = model_mfcc.predict(mfcc_image)
+    predicted_class = np.argmax(prediction, axis=1)
+    accuracy = np.max(prediction)
+    
+    return predicted_class[0], accuracy
 
 # Proses audio yang diunggah
 if uploaded_audio is not None:
@@ -124,27 +73,18 @@ if uploaded_audio is not None:
     temp_file_path = "temp_audio.wav"
     with open(temp_file_path, "wb") as f:
         f.write(uploaded_audio.read())
-
-    # Ekstraksi fitur audio
-    mfcc_features, melspec_features = extract_features(temp_file_path)
-
+    
     # Prediksi dengan model jika tombol ditekan
     if st.button("Prediksi Kelas Burung"):
         with st.spinner("Memproses..."):
             try:
-                # Mengubah Melspectrogram menjadi format yang sesuai
-                melspec_input = preprocess_melspec(melspec_features)
+                # Lakukan prediksi
+                predicted_class, accuracy = predict_bird_species(temp_file_path)
                 
-                # Prediksi dengan model MFCC
-                mfcc_class, mfcc_accuracy = predict_bird_class(mfcc_model, np.expand_dims(mfcc_features, axis=0))
-                
-                # Prediksi dengan model Melspec
-                melspec_class, melspec_accuracy = predict_bird_class(melspec_model, melspec_input)
-
                 # Tampilkan hasil prediksi
                 st.subheader("Hasil Prediksi:")
-                st.write(f"**Model MFCC:** Prediksi kelas {mfcc_class} dengan akurasi {mfcc_accuracy * 100:.2f}%")
-                st.write(f"**Model Melspec:** Prediksi kelas {melspec_class} dengan akurasi {melspec_accuracy * 100:.2f}%")
+                st.write(f"**Prediksi kelas burung:** {predicted_class} dengan akurasi {accuracy * 100:.2f}%")
+                
             except Exception as e:
                 st.error(f"Error saat melakukan prediksi: {str(e)}")
 
