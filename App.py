@@ -45,26 +45,32 @@ def add_custom_css():
         background-color: #fff;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         padding: 10px 0;
+    }
+    nav ul {
+        list-style: none;
         display: flex;
         justify-content: center;
+        padding: 0;
+        margin: 0;
         gap: 20px;
     }
-    .nav-button {
-        font-size: 16px;
+    nav ul li {
+        margin: 0;
+    }
+    nav ul li button {
+        font-size: 1rem;
         font-weight: bold;
         padding: 10px 20px;
-        color: #333;
-        background-color: #f0f0f0;
-        border: 2px solid #ddd;
+        background-color: #fff;
+        border: 2px solid #2196F3;
         border-radius: 5px;
         cursor: pointer;
-        transition: all 0.3s ease;
-        text-align: center;
+        color: #2196F3;
+        transition: background-color 0.3s, color 0.3s;
     }
-    .nav-button:hover {
+    nav ul li button:hover {
         background-color: #2196F3;
         color: #fff;
-        border-color: #2196F3;
     }
     .content-section {
         max-width: 800px;
@@ -113,18 +119,15 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Navigasi Horizontal
-st.markdown("<nav>", unsafe_allow_html=True)
-col1, col2, col3 = st.columns(3)
-with col1:
-    if st.button("Beranda", key="home_button"):
-        navigate("home")
-with col2:
-    if st.button("Klasifikasi Suara", key="klasifikasi_button"):
-        navigate("klasifikasi-suara")
-with col3:
-    if st.button("Tentang", key="about_button"):
-        navigate("tentang")
-st.markdown("</nav>", unsafe_allow_html=True)
+st.markdown("""
+<nav>
+    <ul>
+        <li><button onclick="window.location.href='/'" class="nav-button">Beranda</button></li>
+        <li><button onclick="window.location.href='/klasifikasi-suara'" class="nav-button">Klasifikasi Suara</button></li>
+        <li><button onclick="window.location.href='/tentang'" class="nav-button">Tentang</button></li>
+    </ul>
+</nav>
+""", unsafe_allow_html=True)
 
 # Konten Berdasarkan Halaman
 if st.session_state.page == "home":
