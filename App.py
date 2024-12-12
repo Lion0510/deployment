@@ -1,7 +1,6 @@
 import os
 import json
 import streamlit as st
-from kaggle.api.kaggle_api_extended import KaggleApi
 import tensorflow as tf
 import librosa
 import librosa.display
@@ -12,51 +11,38 @@ import matplotlib.pyplot as plt
 # Menyembunyikan log TensorFlow
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-# Tambahkan CSS untuk meniru HTML yang diberikan
+# Tambahkan CSS untuk styling
 st.markdown("""
     <style>
         body {
             font-family: Arial, sans-serif;
         }
-
         .main-header {
             background-color: #f5f5f5;
             padding: 20px;
             text-align: center;
             border-bottom: 2px solid #ddd;
         }
-
-        .header-content {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
         .header-content img {
             width: 80px;
             height: auto;
         }
-
         .header-title h1 {
             font-size: 2em;
             color: #333;
             margin: 0;
         }
-
         .header-title p {
             font-size: 1em;
             color: #777;
             margin: 0;
         }
-
         nav {
             background-color: #333;
             color: white;
             padding: 10px 0;
+            margin-bottom: 20px;
         }
-
         nav ul {
             list-style-type: none;
             display: flex;
@@ -64,38 +50,25 @@ st.markdown("""
             margin: 0;
             padding: 0;
         }
-
         nav ul li {
             margin: 0 15px;
         }
-
-        nav ul li a {
-            text-decoration: none;
+        nav ul li button {
+            background: none;
+            border: none;
             color: white;
             font-weight: bold;
+            cursor: pointer;
         }
-
+        nav ul li button:hover {
+            text-decoration: underline;
+        }
         .content-section {
             padding: 20px;
             margin: 20px auto;
             max-width: 800px;
             text-align: center;
         }
-
-        .upload-form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .results-box {
-            border: 1px solid #ddd;
-            padding: 15px;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
-
         footer {
             text-align: center;
             padding: 10px;
@@ -146,7 +119,15 @@ def get_bird_info(pred_class):
     else:
         return {"name": "Unknown", "description": "Deskripsi tidak tersedia.", "image": None}
 
-# Header dan Judul
+# State untuk navigasi
+if "page" not in st.session_state:
+    st.session_state.page = "home"
+
+# Fungsi navigasi
+def navigate(page):
+    st.session_state.page = page
+
+# Header
 st.markdown("""
     <header class="main-header">
         <div class="header-content">
@@ -165,107 +146,102 @@ st.markdown("""
 st.markdown("""
     <nav>
         <ul>
-            <li><a href="#home">Beranda</a></li>
-            <li><a href="#upload">Unggah Suara</a></li>
-            <li><a href="#results">Hasil</a></li>
-            <li><a href="#about">Tentang</a></li>
+            <li><button onclick="window.location.hash = 'home'">Beranda</button></li>
+            <li><button onclick="window.location.hash = 'upload'">Unggah Suara</button></li>
+            <li><button onclick="window.location.hash = 'results'">Hasil</button></li>
+            <li><button onclick="window.location.hash = 'about'">Tentang</button></li>
         </ul>
     </nav>
 """, unsafe_allow_html=True)
 
-# Konten Beranda
-st.markdown("""
-    <section id="home" class="content-section">
-        <h2>Selamat Datang</h2>
-        <p>Aplikasi ini dapat membantu mengidentifikasi burung Sumatera melalui suara. Unggah file suara untuk melakukan identifikasi!</p>
-    </section>
-""", unsafe_allow_html=True)
+# Konten berdasarkan navigasi
+if st.session_state.page == "home":
+    st.markdown("""
+        <section id="home" class="content-section">
+            <h2>Selamat Datang</h2>
+            <p>Aplikasi ini dapat membantu mengidentifikasi burung Sumatera melalui suara. Unggah file suara untuk melakukan identifikasi!</p>
+        </section>
+    """, unsafe_allow_html=True)
 
-# Konten Unggah Suara
-st.markdown("""
-    <section id="upload" class="content-section">
-        <h2>Unggah Suara</h2>
-""", unsafe_allow_html=True)
+elif st.session_state.page == "upload":
+    st.markdown("""
+        <section id="upload" class="content-section">
+            <h2>Unggah Suara</h2>
+    """, unsafe_allow_html=True)
+    uploaded_audio = st.file_uploader("Pilih file audio (MP3/WAV) untuk diuji", type=["mp3", "wav"])
+    if uploaded_audio:
+        st.audio(uploaded_audio, format="audio/mp3")
+        temp_file_path = "temp_audio.wav"
+        with open(temp_file_path, "wb") as f:
+            f.write(uploaded_audio.read())
 
-uploaded_audio = st.file_uploader("Pilih file audio (MP3/WAV) untuk diuji", type=["mp3", "wav"])
+        with st.spinner("Memproses..."):
+            try:
+                y, sr = librosa.load(temp_file_path, sr=None)
+                mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
+                melspec = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=64)
 
-if uploaded_audio is not None:
-    st.audio(uploaded_audio, format="audio/mp3")
-    temp_file_path = "temp_audio.wav"
-    with open(temp_file_path, "wb") as f:
-        f.write(uploaded_audio.read())
+                st.subheader("Spektrum MFCC")
+                fig, ax = plt.subplots()
+                librosa.display.specshow(mfcc, sr=sr, x_axis='time', y_axis='mel', ax=ax, cmap='magma')
+                plt.colorbar(format='%+2.0f dB')
+                st.pyplot(fig)
 
-    with st.spinner("Memproses..."):
-        try:
-            y, sr = librosa.load(temp_file_path, sr=None)
-            mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
-            melspec = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=64)
+                st.subheader("Spektrum Melspectrogram")
+                fig, ax = plt.subplots()
+                melspec_db = librosa.power_to_db(melspec, ref=np.max)
+                librosa.display.specshow(melspec_db, sr=sr, x_axis='time', y_axis='mel', ax=ax, cmap='magma')
+                plt.colorbar(format='%+2.0f dB')
+                st.pyplot(fig)
 
-            st.subheader("Spektrum MFCC")
-            fig, ax = plt.subplots()
-            librosa.display.specshow(mfcc, sr=sr, x_axis='time', y_axis='mel', ax=ax, cmap='magma')
-            plt.colorbar(format='%+2.0f dB')
-            st.pyplot(fig)
+                mfcc_image = np.expand_dims(mfcc, axis=(0, -1))
+                melspec_image = np.expand_dims(melspec, axis=(0, -1))
 
-            st.subheader("Spektrum Melspectrogram")
-            fig, ax = plt.subplots()
-            melspec_db = librosa.power_to_db(melspec, ref=np.max)
-            librosa.display.specshow(melspec_db, sr=sr, x_axis='time', y_axis='mel', ax=ax, cmap='magma')
-            plt.colorbar(format='%+2.0f dB')
-            st.pyplot(fig)
+                mfcc_result = mfcc_model.predict(mfcc_image)
+                melspec_result = melspec_model.predict(melspec_image)
 
-            mfcc_image = np.expand_dims(mfcc, axis=(0, -1))  # Sesuaikan dimensi untuk model
-            melspec_image = np.expand_dims(melspec, axis=(0, -1))
+                mfcc_pred_class = np.argmax(mfcc_result, axis=1)[0]
+                melspec_pred_class = np.argmax(melspec_result, axis=1)[0]
+                mfcc_accuracy = np.max(mfcc_result)
+                melspec_accuracy = np.max(melspec_result)
 
-            mfcc_result = mfcc_model.predict(mfcc_image)
-            melspec_result = melspec_model.predict(melspec_image)
+                mfcc_bird_info = get_bird_info(mfcc_pred_class)
+                melspec_bird_info = get_bird_info(melspec_pred_class)
 
-            mfcc_pred_class = np.argmax(mfcc_result, axis=1)[0]
-            melspec_pred_class = np.argmax(melspec_result, axis=1)[0]
-            mfcc_accuracy = np.max(mfcc_result)
-            melspec_accuracy = np.max(melspec_result)
+                st.subheader("Hasil Prediksi:")
+                st.write(f"**Model MFCC:** Prediksi kelas {mfcc_pred_class} dengan akurasi {mfcc_accuracy * 100:.2f}%")
+                st.write(f"Nama: {mfcc_bird_info['name']}")
+                st.write(f"Deskripsi: {mfcc_bird_info['description']}")
+                if mfcc_bird_info['image']:
+                    st.image(mfcc_bird_info['image'], caption=f"{mfcc_bird_info['name']} (Model MFCC)")
 
-            mfcc_bird_info = get_bird_info(mfcc_pred_class)
-            melspec_bird_info = get_bird_info(melspec_pred_class)
+                st.write("---")
+                st.write(f"**Model Melspec:** Prediksi kelas {melspec_pred_class} dengan akurasi {melspec_accuracy * 100:.2f}%")
+                st.write(f"Nama: {melspec_bird_info['name']}")
+                st.write(f"Deskripsi: {melspec_bird_info['description']}")
+                if melspec_bird_info['image']:
+                    st.image(melspec_bird_info['image'], caption=f"{melspec_bird_info['name']} (Model Melspec)")
 
-            st.subheader("Hasil Prediksi:")
-            st.write(f"**Model MFCC:** Prediksi kelas {mfcc_pred_class} dengan akurasi {mfcc_accuracy * 100:.2f}%")
-            st.write(f"Nama: {mfcc_bird_info['name']}")
-            st.write(f"Deskripsi: {mfcc_bird_info['description']}")
-            if mfcc_bird_info['image']:
-                st.image(mfcc_bird_info['image'], caption=f"{mfcc_bird_info['name']} (Model MFCC)")
+            except Exception as e:
+                st.error(f"Error saat melakukan prediksi: {str(e)}")
 
-            st.write("---")
-            st.write(f"**Model Melspec:** Prediksi kelas {melspec_pred_class} dengan akurasi {melspec_accuracy * 100:.2f}%")
-            st.write(f"Nama: {melspec_bird_info['name']}")
-            st.write(f"Deskripsi: {melspec_bird_info['description']}")
-            if melspec_bird_info['image']:
-                st.image(melspec_bird_info['image'], caption=f"{melspec_bird_info['name']} (Model Melspec)")
+elif st.session_state.page == "results":
+    st.markdown("""
+        <section id="results" class="content-section">
+            <h2>Hasil Klasifikasi</h2>
+            <div class="results-box">
+                <p>Hasil klasifikasi akan muncul di sini setelah Anda mengunggah suara.</p>
+            </div>
+        </section>
+    """, unsafe_allow_html=True)
 
-        except Exception as e:
-            st.error(f"Error saat melakukan prediksi: {str(e)}")
-
-st.markdown("""
-    </section>
-""", unsafe_allow_html=True)
-
-# Konten Hasil
-st.markdown("""
-    <section id="results" class="content-section">
-        <h2>Hasil Klasifikasi</h2>
-        <div class="results-box">
-            <p>Hasil klasifikasi akan muncul di sini setelah Anda mengunggah suara.</p>
-        </div>
-    </section>
-""", unsafe_allow_html=True)
-
-# Konten Tentang
-st.markdown("""
-    <section id="about" class="content-section">
-        <h2>Tentang Kami</h2>
-        <p>Aplikasi ini dirancang oleh Kelompok 11 prodi Sains Data ITERA untuk mendukung konservasi burung di Sumatera.</p>
-    </section>
-""", unsafe_allow_html=True)
+elif st.session_state.page == "about":
+    st.markdown("""
+        <section id="about" class="content-section">
+            <h2>Tentang Kami</h2>
+            <p>Aplikasi ini dirancang oleh Kelompok 11 prodi Sains Data ITERA untuk mendukung konservasi burung di Sumatera.</p>
+        </section>
+    """, unsafe_allow_html=True)
 
 # Footer
 st.markdown("""
