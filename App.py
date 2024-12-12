@@ -1,56 +1,51 @@
-import os
 import streamlit as st
+import gdown
+import os
 import tensorflow as tf
-from kaggle.api.kaggle_api_extended import KaggleApi
-import zipfile
-import shutil
+import librosa
+import numpy as np
 
 # Set Streamlit page configuration
 st.set_page_config(page_title="Bird Song Classifier", page_icon="🦜", layout="centered")
 
-# Fungsi untuk mengunduh dataset atau model dari Kaggle
-def download_dataset_from_kaggle(dataset_name, dest_path):
-    # Setup Kaggle API
-    api = KaggleApi()
-    api.authenticate()
-
+# Fungsi untuk mengunduh model dari Google Drive
+def download_model_from_google_drive(url, output_path):
     try:
-        # Mengunduh dataset dari Kaggle
-        st.info(f"Mengunduh dataset {dataset_name}...")
-        api.dataset_download_files(dataset_name, path=dest_path, unzip=True)
-        st.success(f"Dataset berhasil diunduh ke {dest_path}")
+        gdown.download(url, output_path, quiet=True)  # quiet=True untuk menyembunyikan output
+        st.success(f"Model berhasil diunduh ke {output_path}")
     except Exception as e:
-        st.error(f"Terjadi error saat mengunduh dataset: {str(e)}")
+        st.error(f"Error saat mengunduh model: {str(e)}")
 
-# Mengambil kredensial API Kaggle dari Streamlit Secrets
-os.environ['KAGGLE_USERNAME'] = st.secrets["kaggle.json"]['username']
-os.environ['KAGGLE_KEY'] = st.secrets["kaggle.json"]['key']
+# Google Drive model URLs (ganti dengan URL model Anda)
+melspec_model_url = 'https://drive.google.com/uc?id=1--BTVqDAoyy83_3GEqL93SveSNYdncB_'  # Ganti dengan URL model Anda
+mfcc_model_url = 'https://drive.google.com/uc?id=1rHo_GkTxFp5lDsNcFphEVV__dEHBciZa'  # Ganti dengan URL model Anda
 
-# Nama dataset atau model di Kaggle
-dataset_name = 'evanaryaputra28/dl-tb'  # Gantilah dengan nama dataset atau model yang sesuai
-output_dest_path = 'kaggle_output/'
+# Path untuk menyimpan model yang diunduh
+melspec_model_save_path = 'melspec_model.h5'
+mfcc_model_save_path = 'mfcc_model.h5'
 
-# Pastikan folder untuk menyimpan output ada
-if not os.path.exists(output_dest_path):
-    os.makedirs(output_dest_path)
+# Download model dari Google Drive
+download_model_from_google_drive(melspec_model_url, melspec_model_save_path)
+download_model_from_google_drive(mfcc_model_url, mfcc_model_save_path)
 
-# Unduh dataset atau model dari Kaggle
-download_dataset_from_kaggle(dataset_name, output_dest_path)
-
-# Tentukan path model yang sudah diunduh
-melspec_model_path = os.path.join(output_dest_path, 'melspec_model.h5')  # Sesuaikan nama model Anda
-mfcc_model_path = os.path.join(output_dest_path, 'mfcc_model.h5')  # Sesuaikan nama model Anda
-
-# Pastikan model sudah diunduh
-if os.path.exists(melspec_model_path) and os.path.exists(mfcc_model_path):
+# Check jika model berhasil diunduh dan memuatnya
+if os.path.exists(melspec_model_save_path):
     try:
-        melspec_model = tf.keras.models.load_model(melspec_model_path)
-        mfcc_model = tf.keras.models.load_model(mfcc_model_path)
-        st.success("Model berhasil dimuat!")
+        melspec_model = tf.keras.models.load_model(melspec_model_save_path)
+        st.success("Model Melspec berhasil dimuat!")
     except Exception as e:
-        st.error(f"Terjadi error saat memuat model: {str(e)}")
+        st.error(f"Terjadi error saat memuat model Melspec: {str(e)}")
 else:
-    st.error("Model tidak ditemukan setelah diunduh!")
+    st.error("Model Melspec tidak ditemukan!")
+
+if os.path.exists(mfcc_model_save_path):
+    try:
+        mfcc_model = tf.keras.models.load_model(mfcc_model_save_path)
+        st.success("Model MFCC berhasil dimuat!")
+    except Exception as e:
+        st.error(f"Terjadi error saat memuat model MFCC: {str(e)}")
+else:
+    st.error("Model MFCC tidak ditemukan!")
 
 # Title aplikasi Streamlit
 st.title("Deep Learning in Audio: Klasifikasi Suara Burung di Indonesia Bagian Barat 🦜")
@@ -58,7 +53,7 @@ st.title("Deep Learning in Audio: Klasifikasi Suara Burung di Indonesia Bagian B
 # Deskripsi aplikasi
 st.markdown("""
     **Selamat datang di aplikasi klasifikasi suara burung menggunakan Deep Learning!**
-    Aplikasi ini mengimplementasikan teknik ekstraksi fitur audio menggunakan MFCC dan Melspectrogram, 
+    Aplikasi ini mengimplementasikan teknik ekstraksi fitur audio menggunakan MFCC dan Melspectrogram,
     serta menggunakan dua model CNN yang berbeda untuk mengklasifikasikan suara burung yang ada di Indonesia Bagian Barat.
     Unggah file audio dalam format MP3 atau WAV, dan model akan memberikan prediksi kelas burung beserta akurasi dari kedua model.
 """)
