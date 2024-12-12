@@ -16,25 +16,28 @@ st.markdown("""
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
         }
         .main-header {
-            background-color: #f5f5f5;
+            background-color: #1E1E1E;
             padding: 20px;
             text-align: center;
-            border-bottom: 2px solid #ddd;
+            border-bottom: 2px solid #333;
         }
         .header-content img {
             width: 80px;
             height: auto;
+            margin: 0 10px;
         }
         .header-title h1 {
-            font-size: 2em;
-            color: #333;
-            margin: 0;
+            font-size: 2.5em;
+            color: #ffffff;
+            margin: 10px 0;
         }
         .header-title p {
-            font-size: 1em;
-            color: #777;
+            font-size: 1.2em;
+            color: #cccccc;
             margin: 0;
         }
         nav ul {
@@ -42,35 +45,44 @@ st.markdown("""
             display: flex;
             justify-content: center;
             margin: 0;
-            padding: 0;
-            background-color: #333;
             padding: 10px 0;
+            background-color: #1E1E1E;
         }
         nav ul li {
-            margin: 0 15px;
+            margin: 0 20px;
         }
         nav ul li button {
             background: none;
-            border: none;
-            color: white;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 10px 20px;
             font-weight: bold;
             font-size: 14px;
             cursor: pointer;
+            border-radius: 5px;
         }
         nav ul li button:hover {
-            text-decoration: underline;
+            background-color: #ffffff;
+            color: #000000;
         }
         .content-section {
             padding: 20px;
             margin: 20px auto;
             max-width: 800px;
             text-align: center;
+            background-color: #1E1E1E;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
         }
         footer {
             text-align: center;
             padding: 10px;
-            background-color: #f5f5f5;
-            border-top: 2px solid #ddd;
+            background-color: #1E1E1E;
+            border-top: 2px solid #333;
+        }
+        footer p {
+            margin: 0;
+            color: #cccccc;
         }
     </style>
 """, unsafe_allow_html=True)
