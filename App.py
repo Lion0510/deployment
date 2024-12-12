@@ -43,16 +43,16 @@ def add_custom_css():
             color: #ffffff;
             text-transform: uppercase;
             text-decoration: none;
-            background: none;
-            border: none;
+            background-color: transparent;
+            border: 2px solid #ffffff; /* Border untuk membingkai tombol */
+            border-radius: 5px; /* Sudut sedikit melengkung untuk elegansi */
             cursor: pointer;
             transition: all 0.3s ease;
         }
         .navigation-button:hover {
             background-color: #ffffff;
             color: #333;
-            padding: 10px 20px;
-            border-radius: 5px;
+            border-color: #333; /* Ubah warna border saat hover */
         }
     </style>
     """, unsafe_allow_html=True)
@@ -78,16 +78,12 @@ st.markdown("""
 
 # Navigasi Horizontal
 st.markdown('<div class="navigation-container">', unsafe_allow_html=True)
-col1, col2, col3 = st.columns([1, 1, 1])
-with col1:
-    if st.button("Beranda", key="home_button"):
-        navigate("home")
-with col2:
-    if st.button("Unggah & Hasil", key="upload_results_button"):
-        navigate("upload_results")
-with col3:
-    if st.button("Tentang", key="about_button"):
-        navigate("about")
+if st.button("Beranda", key="home_button", args=("home",)):
+    navigate("home")
+if st.button("Unggah Audio", key="upload_results_button", args=("upload_results",)):
+    navigate("upload_results")
+if st.button("Tentang", key="about_button", args=("about",)):
+    navigate("about")
 st.markdown('</div>', unsafe_allow_html=True)
 
 # Konten Berdasarkan Halaman
