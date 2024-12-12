@@ -9,62 +9,44 @@ import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
 
-# Menambahkan CSS untuk meniru gaya HTML yang diberikan
+# Path ke gambar background
+BACKGROUND_IMAGE_PATH = "./images/background.jpg"  # Pastikan gambar ada di direktori ini
+
+# Menambahkan CSS untuk background gambar
 def add_custom_css():
-    st.markdown("""
+    st.markdown(f"""
     <style>
-    body {
+    body {{
         font-family: 'Arial', sans-serif;
-        background-image: url('./images/background.jpg');
+        background-image: url('{BACKGROUND_IMAGE_PATH}');
         background-size: cover;
         background-position: center;
+        background-attachment: fixed;
         margin: 0;
         padding: 0;
-        color: #ffffff; /* Supaya teks tetap terlihat di atas background */
-    }
-    .main-header {
+        color: #ffffff; /* Warna teks putih untuk kontras dengan background */
+    }}
+    .main-header {{
         text-align: center;
         padding: 20px;
-        background-color: rgba(30, 30, 30, 0.8); /* Transparansi untuk menonjolkan teks */
+        background-color: rgba(30, 30, 30, 0.8); /* Transparansi untuk header */
         color: #ffffff;
-    }
-    .main-header .header-content {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 20px;
-    }
-    .main-header .logo {
-        width: 80px;
-        height: auto;
-    }
-    .main-header .header-title h1 {
-        font-size: 2.5rem;
-        margin: 10px 0;
-    }
-    .main-header .header-title p {
-        font-size: 1.2rem;
-        margin: 0;
-    }
-    .content-section {
+    }}
+    .content-section {{
         max-width: 800px;
         margin: 20px auto;
         padding: 20px;
-        background: rgba(255, 255, 255, 0.8); /* Transparansi untuk kontras dengan background */
+        background: rgba(255, 255, 255, 0.8); /* Transparansi untuk kontras */
         border-radius: 10px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         color: #000000; /* Teks warna hitam untuk kontras */
-    }
-    .content-section h2 {
-        font-size: 2rem;
-        margin-bottom: 10px;
-    }
-    footer {
+    }}
+    footer {{
         text-align: center;
         padding: 20px;
         background-color: rgba(30, 30, 30, 0.8); /* Transparansi untuk footer */
         color: #cccccc;
-    }
+    }}
     </style>
     """, unsafe_allow_html=True)
 
