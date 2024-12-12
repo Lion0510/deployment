@@ -11,19 +11,23 @@ import matplotlib.pyplot as plt
 # Menyembunyikan log TensorFlow
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-# Tambahkan CSS untuk styling
+# Tambahkan CSS untuk styling agar fit ke layar
 st.markdown("""
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #121212;
             color: #ffffff;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         .main-header {
             background-color: #1E1E1E;
             padding: 20px;
             text-align: center;
             border-bottom: 2px solid #333;
+            width: 100%;
         }
         .header-content img {
             width: 80px;
@@ -47,6 +51,7 @@ st.markdown("""
             margin: 0;
             padding: 10px 0;
             background-color: #1E1E1E;
+            width: 100%;
         }
         nav ul li {
             margin: 0 20px;
@@ -68,7 +73,7 @@ st.markdown("""
         .content-section {
             padding: 20px;
             margin: 20px auto;
-            max-width: 800px;
+            max-width: 1000px;
             text-align: center;
             background-color: #1E1E1E;
             border-radius: 10px;
@@ -79,6 +84,7 @@ st.markdown("""
             padding: 10px;
             background-color: #1E1E1E;
             border-top: 2px solid #333;
+            width: 100%;
         }
         footer p {
             margin: 0;
@@ -194,13 +200,13 @@ elif st.session_state.page == "upload_results":
                 melspec = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=64)
 
                 st.subheader("Spektrum MFCC")
-                fig, ax = plt.subplots()
+                fig, ax = plt.subplots(figsize=(12, 6))
                 librosa.display.specshow(mfcc, sr=sr, x_axis='time', y_axis='mel', ax=ax, cmap='magma')
                 plt.colorbar(format='%+2.0f dB')
                 st.pyplot(fig)
 
                 st.subheader("Spektrum Melspectrogram")
-                fig, ax = plt.subplots()
+                fig, ax = plt.subplots(figsize=(12, 6))
                 melspec_db = librosa.power_to_db(melspec, ref=np.max)
                 librosa.display.specshow(melspec_db, sr=sr, x_axis='time', y_axis='mel', ax=ax, cmap='magma')
                 plt.colorbar(format='%+2.0f dB')
