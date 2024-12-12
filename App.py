@@ -32,7 +32,7 @@ def download_model_from_kaggle(kernel_name, dest_folder):
         st.error(f"Terjadi kesalahan saat mengunduh model: {str(e)}")
         return None
 
-kernel_name = "evanaryaputra28/dl-tb"
+kernel_name = "evanaryaputra28/tubes-dll"
 dest_folder = "./models/"
 
 download_status = download_model_from_kaggle(kernel_name, dest_folder)
