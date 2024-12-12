@@ -18,8 +18,8 @@ def download_model_from_kaggle(kernel_name, dest_folder):
         kaggle_json_path = os.path.expanduser("~/.kaggle/kaggle.json")
         os.makedirs(os.path.dirname(kaggle_json_path), exist_ok=True)
 
-    with open(kaggle_json_path, 'w') as f:
-        json.dump({"username": kaggle_username, "key": kaggle_key}, f)
+ with open(kaggle_json_path, 'w') as f:
+    json.dump({"username": kaggle_username, "key": kaggle_key}, f)
 
         api = KaggleApi()
         api.authenticate()
