@@ -15,14 +15,17 @@ def add_custom_css():
     <style>
     body {
         font-family: 'Arial', sans-serif;
-        background-color: #f0f0f0;
+        background-image: url('https://raw.githubusercontent.com/username/repo/main/images/background.jpg'); /* Ganti username/repo dengan path repo GitHub Anda */
+        background-size: cover;
+        background-position: center;
         margin: 0;
         padding: 0;
+        color: #ffffff; /* Supaya teks tetap terlihat di atas background */
     }
     .main-header {
         text-align: center;
         padding: 20px;
-        background-color: #1E1E1E;
+        background-color: rgba(30, 30, 30, 0.8); /* Transparansi untuk menonjolkan teks */
         color: #ffffff;
     }
     .main-header .header-content {
@@ -43,44 +46,14 @@ def add_custom_css():
         font-size: 1.2rem;
         margin: 0;
     }
-    nav {
-        background-color: #fff;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        padding: 10px 0;
-    }
-    nav ul {
-        list-style: none;
-        display: flex;
-        justify-content: center;
-        padding: 0;
-        margin: 0;
-        gap: 20px;
-    }
-    nav ul li {
-        margin: 0;
-    }
-    nav ul li button {
-        font-size: 1rem;
-        font-weight: bold;
-        padding: 10px 20px;
-        background-color: #fff;
-        border: 2px solid #2196F3;
-        border-radius: 5px;
-        cursor: pointer;
-        color: #2196F3;
-        transition: background-color 0.3s, color 0.3s;
-    }
-    nav ul li button:hover {
-        background-color: #2196F3;
-        color: #fff;
-    }
     .content-section {
         max-width: 800px;
         margin: 20px auto;
         padding: 20px;
-        background: #fff;
+        background: rgba(255, 255, 255, 0.8); /* Transparansi untuk kontras dengan background */
         border-radius: 10px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        color: #000000; /* Teks warna hitam untuk kontras */
     }
     .content-section h2 {
         font-size: 2rem;
@@ -89,11 +62,13 @@ def add_custom_css():
     footer {
         text-align: center;
         padding: 20px;
-        background-color: #1E1E1E;
+        background-color: rgba(30, 30, 30, 0.8); /* Transparansi untuk footer */
         color: #cccccc;
     }
     </style>
     """, unsafe_allow_html=True)
+
+
 # Kamus deskripsi kelas burung
 BIRD_CLASSES = {
     0: {
