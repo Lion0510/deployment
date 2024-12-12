@@ -12,8 +12,8 @@ import matplotlib.pyplot as plt
 # Fungsi untuk mengunduh model dari Kaggle API
 def download_model_from_kaggle(kernel_name, dest_folder):
     try:
-        kaggle_username = st.secrets["Kaggle"]["KAGGLE_USERNAME"]
-        kaggle_key = st.secrets["Kaggle"]["KAGGLE_KEY"]
+        kaggle_username = st.secrets["Kaggle"]["username"]
+        kaggle_key = st.secrets["Kaggle"]["key"]
 
         kaggle_json_path = os.path.expanduser("~/.kaggle/kaggle.json")
         os.makedirs(os.path.dirname(kaggle_json_path), exist_ok=True)
