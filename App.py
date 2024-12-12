@@ -119,18 +119,15 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Navigasi Horizontal
-st.markdown("<nav>", unsafe_allow_html=True)
-col1, col2, col3 = st.columns(3)
-with col1:
-    if st.button("Beranda"):
-        navigate("home")
-with col2:
-    if st.button("Klasifikasi Suara"):
-        navigate("klasifikasi-suara")
-with col3:
-    if st.button("Tentang"):
-        navigate("tentang")
-st.markdown("</nav>", unsafe_allow_html=True)
+st.markdown("""
+<nav>
+    <ul>
+        <li><button onclick="window.location.href='/'" class="nav-button">Beranda</button></li>
+        <li><button onclick="window.location.href='/klasifikasi-suara'" class="nav-button">Klasifikasi Suara</button></li>
+        <li><button onclick="window.location.href='/tentang'" class="nav-button">Tentang</button></li>
+    </ul>
+</nav>
+""", unsafe_allow_html=True)
 
 # Konten Berdasarkan Halaman
 if st.session_state.page == "home":
