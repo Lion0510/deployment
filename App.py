@@ -17,32 +17,32 @@ BIRD_CLASSES = {
     0: {
         "name": "Pitta sordida",
         "description": "Burung Pitta sordida dikenal sebagai burung Pitta hijau atau Green-breasted Pitta, memiliki bulu berwarna cerah dan sering ditemukan di hutan tropis.",
-        "image": "images/pitta_sordida.jpg"
+        "image": "images/Pitta_sordida.jpg"
     },
     1: {
         "name": "Dryocopus javensis",
         "description": "Burung pelatuk besar ini dikenal dengan paruhnya yang kuat dan sering ditemukan di kawasan hutan dataran rendah.",
-        "image": "images/dryocopus_javensis.jpg"
+        "image": "images/Dryocopus_javensis.jpg"
     },
     2: {
         "name": "Caprimulgus macrurus",
         "description": "Burung Caprimulgus macrurus, atau Nightjar ekor panjang, dikenal aktif pada malam hari dan memiliki pola bulu kamuflase.",
-        "image": "images/caprimulgus_macrurus.jpg"
+        "image": "images/Caprimulgus_macrurus.jpg"
     },
     3: {
         "name": "Pnoepyga pusilla",
         "description": "Burung kecil ini sering ditemukan di semak belukar dan terkenal dengan suaranya yang melengking.",
-        "image": "images/pnoepyga_pusilla.jpg"
+        "image": "images/Pnoepyga_pusilla.jpg"
     },
     4: {
         "name": "Anthipes solitaris",
         "description": "Burung ini memiliki kebiasaan menyendiri dan ditemukan di kawasan pegunungan dengan habitat yang lembab.",
-        "image": "images/anthipes_solitaris.jpg"
+        "image": "images/Anthipes_solitaris.jpg"
     },
     5: {
         "name": "Buceros rhinoceros",
         "description": "Burung Enggang badak memiliki paruh besar yang unik dan merupakan ikon fauna di banyak wilayah Asia Tenggara.",
-        "image": "images/buceros_rhinoceros.jpg"
+        "image": "images/Buceros_rhinoceros.jpg"
     }
 }
 
