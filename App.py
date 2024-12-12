@@ -140,21 +140,17 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Menu Navigasi dengan Streamlit
-col1, col2, col3, col4 = st.columns(4)
+col1, col2, col3 = st.columns(3)
 
 with col1:
     if st.button("Beranda"):
         navigate("home")
 
 with col2:
-    if st.button("Unggah Suara"):
-        navigate("upload")
+    if st.button("Unggah Suara dan Hasil"):
+        navigate("upload_results")
 
 with col3:
-    if st.button("Hasil"):
-        navigate("results")
-
-with col4:
     if st.button("Tentang"):
         navigate("about")
 
@@ -167,10 +163,10 @@ if st.session_state.page == "home":
         </section>
     """, unsafe_allow_html=True)
 
-elif st.session_state.page == "upload":
+elif st.session_state.page == "upload_results":
     st.markdown("""
         <section id="upload" class="content-section">
-            <h2>Unggah Suara</h2>
+            <h2>Unggah Suara dan Hasil</h2>
     """, unsafe_allow_html=True)
     uploaded_audio = st.file_uploader("Pilih file audio (MP3/WAV) untuk diuji", type=["mp3", "wav"])
     if uploaded_audio:
@@ -228,16 +224,6 @@ elif st.session_state.page == "upload":
 
             except Exception as e:
                 st.error(f"Error saat melakukan prediksi: {str(e)}")
-
-elif st.session_state.page == "results":
-    st.markdown("""
-        <section id="results" class="content-section">
-            <h2>Hasil Klasifikasi</h2>
-            <div class="results-box">
-                <p>Hasil klasifikasi akan muncul di sini setelah Anda mengunggah suara.</p>
-            </div>
-        </section>
-    """, unsafe_allow_html=True)
 
 elif st.session_state.page == "about":
     st.markdown("""
