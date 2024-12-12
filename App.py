@@ -199,7 +199,7 @@ st.markdown("""
         <img src="https://pbs.twimg.com/profile_images/1272461269136576512/Uw9AShxq_400x400.jpg" alt="Logo Fakultas Teknologi" class="logo">
     </div>
     <div class="header-title">
-        <h1>Klasifikasi Suara Burung Sumatera</h1>
+        <h1>Klasifikasi Suara Burung Sumatera 🦜</h1>
         <p>Identifikasi Burung Berdasarkan Suara Secara Otomatis</p>
     </div>
 </header>
