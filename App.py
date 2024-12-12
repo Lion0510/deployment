@@ -29,13 +29,18 @@ st.markdown("""
             border-bottom: 2px solid #333;
             width: 100%;
         }
+        .header-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
         .header-content img {
             width: 80px;
             height: auto;
             margin: 0 10px;
         }
         .header-title h1 {
-            font-size: 2.5em;
+            font-size: 3em;
             color: #ffffff;
             margin: 10px 0;
         }
@@ -73,7 +78,7 @@ st.markdown("""
         .content-section {
             padding: 20px;
             margin: 20px auto;
-            max-width: 1000px;
+            max-width: 1200px;
             text-align: center;
             background-color: #1E1E1E;
             border-radius: 10px;
