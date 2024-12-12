@@ -7,8 +7,8 @@ import shutil
 # Set Streamlit page configuration
 st.set_page_config(page_title="Bird Song Classifier", page_icon="🦜", layout="centered")
 
-# Fungsi untuk mengunduh output dari Kaggle Kernel menggunakan API
-def download_kernel_output(kernel_name, dest_path):
+# Fungsi untuk mengunduh output dari Kaggle Kernel atau Dataset menggunakan API
+def download_model_from_kaggle(kernel_name, dest_path):
     # Setup Kaggle API
     api = KaggleApi()
     api.authenticate()
@@ -30,12 +30,13 @@ if not os.path.exists(output_dest_path):
     os.makedirs(output_dest_path)
 
 # Unduh output dari Kaggle Kernel
-download_kernel_output(kernel_name, output_dest_path)
+download_model_from_kaggle(kernel_name, output_dest_path)
 
 # Tentukan path model yang sudah diunduh
 melspec_model_path = os.path.join(output_dest_path, 'melspec_model.h5')  # Sesuaikan nama model Anda
 mfcc_model_path = os.path.join(output_dest_path, 'mfcc_model.h5')  # Sesuaikan nama model Anda
 
+# Pastikan model sudah diunduh
 if os.path.exists(melspec_model_path) and os.path.exists(mfcc_model_path):
     try:
         melspec_model = tf.keras.models.load_model(melspec_model_path)
