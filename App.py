@@ -6,7 +6,7 @@ def add_custom_css():
     <style>
     /* Gaya dasar */
     body {
-        font-family: Arial, sans-serif;
+        font-family: 'Montserrat', sans-serif; /* Mengganti font dengan Montserrat */
         background-color: #f0f0f0;
         margin: 0;
         padding: 0;
@@ -43,58 +43,23 @@ def add_custom_css():
 
     /* Tombol aktif */
     .active {
-        background-color: #eee;
-        border-radius: 5px;
+        background-color: #2196F3; /* Biru cerah */
+        color: #fff;
     }
 
-    /* Responsivitas (opsional) */
-    @media (max-width: 768px) {
-        .navigation-container {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-        .navigation-button {
-            margin-bottom: 10px;
+    /* Efek slide-in */
+    .navigation-container {
+        opacity: 0;
+        animation: slide-in 0.5s forwards;
+    }
+
+    @keyframes slide-in {
+        to {
+            opacity: 1;
         }
     }
     </style>
     """, unsafe_allow_html=True)
-
-# Tambahkan CSS ke aplikasi
-add_custom_css()
-
-# State untuk navigasi
-if "page" not in st.session_state:
-    st.session_state.page = "home"
-
-# Fungsi navigasi
-def navigate(page):
-    st.session_state.page = page
-
-# Header
-st.title("Klasifikasi Suara Burung Sumatera")
-st.write("Identifikasi burung Sumatera secara otomatis melalui suara")
-
-# Navigasi Horizontal
-with st.container():
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        if st.button("Beranda", key="home_button", class_="navigation-button" + (" active" if st.session_state.page == "home" else "")):
-            navigate("home")
-    with col2:
-        if st.button("Unggah Audio", key="upload_results_button", class_="navigation-button" + (" active" if st.session_state.page == "upload_results" else "")):
-            navigate("upload_results")
-    with col3:
-        if st.button("Tentang", key="about_button", class_="navigation-button" + (" active" if st.session_state.page == "about" else "")):
-            navigate("about")
-
-# Konten Berdasarkan Halaman
-if st.session_state.page == "home":
-    st.write("Halaman Beranda")
-elif st.session_state.page == "upload_results":
-    # ... (kode unggah audio dan hasil)
-elif st.session_state.page == "about":
-    st.write("Halaman Tentang")
 
 # Tambahkan CSS ke aplikasi
 add_custom_css()
