@@ -13,19 +13,18 @@ import matplotlib.pyplot as plt
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 # Fungsi untuk mengunduh model dari Kaggle API
-def download_model_from_kaggle(kernel_name, dest_folder):
+def download_model_from_kaggle(kernel_name, output_files, dest_folder):
     try:
-        kaggle_username = st.secrets["kaggle"].get("KAGGLE_USERNAME", None)
-        kaggle_key = st.secrets["kaggle"].get("KAGGLE_KEY", None)
+        model_files_exist = all([os.path.exists(os.path.join(dest_folder, file)) for file in output_files])
+        if model_files_exist:
+            return False  # Model sudah ada, tidak perlu mengunduh ulang
 
-        if not kaggle_username or not kaggle_key:
-            st.error("Kredensial Kaggle tidak tersedia. Tambahkan KAGGLE_USERNAME dan KAGGLE_KEY ke Streamlit Secrets.")
-            return None
+        kaggle_username = st.secrets["kaggle"]["KAGGLE_USERNAME"]
+        kaggle_key = st.secrets["kaggle"]["KAGGLE_KEY"]
 
         kaggle_json_path = os.path.expanduser("~/.kaggle/kaggle.json")
         os.makedirs(os.path.dirname(kaggle_json_path), exist_ok=True)
 
-        # Membuat file kaggle.json
         with open(kaggle_json_path, 'w') as f:
             json.dump({"username": kaggle_username, "key": kaggle_key}, f)
 
@@ -33,37 +32,33 @@ def download_model_from_kaggle(kernel_name, dest_folder):
         api.authenticate()
 
         os.makedirs(dest_folder, exist_ok=True)
-        # Unduh semua file output dari kernel
-        api.kernels_output(kernel_name, path=dest_folder, force=True)
-        st.success("Model berhasil diunduh!")
+        for output_file in output_files:
+            api.kernels_output(kernel_name, path=dest_folder, force=True)
         return True
     except Exception as e:
         st.error(f"Terjadi kesalahan saat mengunduh model: {str(e)}")
         return None
 
-# Fungsi untuk memuat model dengan caching
-@st.cache_resource
-def load_model(model_path):
-    try:
-        return tf.keras.models.load_model(model_path)
-    except Exception as e:
-        st.error(f"Gagal memuat model dari {model_path}: {e}")
-        return None
-
 kernel_name = "evanaryaputra28/tubes-dll"
+output_files = ["cnn_melspec.h5", "cnn_mfcc.h5"]
 dest_folder = "./models/"
 
-# Unduh model dari Kaggle
-if not os.path.exists("./models/cnn_melspec.h5") or not os.path.exists("./models/cnn_mfcc.h5"):
-    download_model_from_kaggle(kernel_name, dest_folder)
+download_status = download_model_from_kaggle(kernel_name, output_files, dest_folder)
 
-# Path model
 melspec_model_save_path = os.path.join(dest_folder, 'cnn_melspec.h5')
 mfcc_model_save_path = os.path.join(dest_folder, 'cnn_mfcc.h5')
 
-# Memuat model
-melspec_model = load_model(melspec_model_save_path)
-mfcc_model = load_model(mfcc_model_save_path)
+if os.path.exists(melspec_model_save_path):
+    try:
+        melspec_model = tf.keras.models.load_model(melspec_model_save_path)
+    except Exception as e:
+        st.error(f"Gagal memuat model Melspec: {str(e)}")
+
+if os.path.exists(mfcc_model_save_path):
+    try:
+        mfcc_model = tf.keras.models.load_model(mfcc_model_save_path)
+    except Exception as e:
+        st.error(f"Gagal memuat model MFCC: {str(e)}")
 
 # Fungsi untuk memproses MFCC menjadi gambar 64x64x3
 def preprocess_mfcc(mfcc):
