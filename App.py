@@ -15,8 +15,6 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 # Gaya CSS untuk navigasi dan halaman dengan background gambar
 st.markdown("""
 <style>
-st.markdown("""
-<style>
 body {
     font-family: 'Montserrat', sans-serif;
     background-image: url('https://github.com/Lion0510/deployment/blob/09fc24eca1b72e47d1dd93485257305cc8399c66/images/background.jpg'); 
@@ -39,6 +37,8 @@ body {
     margin: 20px auto;
     max-width: 800px;
 }
+</style>
+""", unsafe_allow_html=True)
 
 .navigation-button {
     padding: 15px 25px;
