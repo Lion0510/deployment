@@ -10,7 +10,6 @@ from PIL import Image
 import matplotlib.pyplot as plt
 
 # Menyembunyikan log TensorFlow
-# Menyembunyikan log TensorFlow
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 # Gaya CSS untuk navigasi dan halaman
