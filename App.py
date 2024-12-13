@@ -16,7 +16,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 st.markdown("""
 <style>
 .stApp {
-    background-image: url('https://github.com/Lion0510/deployment/blob/2acd15574cb6f2e5de0fda1ad96706c57e55b2c2/images/background.jpg');
+    background-image: url('https://github.com/Lion0510/deployment/images/background.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
