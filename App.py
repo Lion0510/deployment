@@ -32,8 +32,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgba(255, 255, 255, 0.8);  /* Warna latar belakang transparan untuk navigasi */
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     padding: 10px;
     border-radius: 5px;
     margin: 20px auto;
