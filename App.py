@@ -37,8 +37,6 @@ body {
     margin: 20px auto;
     max-width: 800px;
 }
-</style>
-""", unsafe_allow_html=True)
 
 .navigation-button {
     padding: 15px 25px;
