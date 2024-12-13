@@ -16,7 +16,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 st.markdown("""
 <style>
 [data-testid="stAppViewContainer"] {
-    background-image: url('http://www.nurismailphotography.com/uploads/4/9/0/0/4900616/nur03254-arw-dxo-deepprime-gigapixel-final-standard-width-6000px-web_orig.jpg');
+    background-image: url('https://github.com/Lion0510/deployment/blob/82a5ef479b05dcc9459cdffc4345338c68ce96f3/images/bg.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
