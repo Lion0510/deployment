@@ -17,7 +17,7 @@ st.markdown("""
 <style>
 body {
     font-family: 'Montserrat', sans-serif;
-    background-image: url('images/background.jpg');  /* Ganti dengan path gambar Anda */
+    background-image: "images/background.jpg";  /* Ganti dengan path gambar Anda */
     background-size: cover;  /* Agar gambar memenuhi layar */
     background-position: center center;  /* Memposisikan gambar di tengah */
     background-attachment: fixed;  /* Membuat gambar tetap saat scroll */
