@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 # Menyembunyikan log TensorFlow
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-# Gaya CSS untuk navigasi dan halaman, dengan background gambar
+# Gaya CSS untuk navigasi dan halaman, dengan background gambar dan header yang rapi
 st.markdown("""
 <style>
 body {
@@ -60,14 +60,34 @@ body {
     border-color: #2196F3;
 }
 
+.header-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; /* Memberikan jarak antara logo */
+}
+
+.logo {
+    width: 100px;  /* Atur ukuran logo */
+    height: auto;
+    display: inline-block;
+}
+
 .header-title h1 {
     color: #fff;
     text-align: center;
     margin-top: 20px;
+    font-size: 2em;
+}
+
+.header-title p {
+    text-align: center;
+    margin-top: 5px;
+    font-size: 1.2em;
+    color: #ccc;
 }
 </style>
 """, unsafe_allow_html=True)
-
 
 # Kamus deskripsi kelas burung
 BIRD_CLASSES = {
