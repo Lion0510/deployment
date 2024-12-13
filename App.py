@@ -15,15 +15,11 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 # Gaya CSS untuk navigasi dan halaman dengan background gambar
 st.markdown("""
 <style>
-body {
-    font-family: 'Montserrat', sans-serif;
-    background-image: url('https://github.com/Lion0510/deployment/blob/09fc24eca1b72e47d1dd93485257305cc8399c66/images/background.jpg'); 
-    background-size: cover;  
-    background-position: center center;  
-    background-attachment: fixed;  
-    margin: 0;
-    padding: 0;
-    color: #fff;
+.stApp {
+    background-image: url('https://github.com/Lion0510/deployment/blob/2acd15574cb6f2e5de0fda1ad96706c57e55b2c2/images/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }
 
 .navigation-container {
