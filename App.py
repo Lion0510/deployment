@@ -10,46 +10,47 @@ from PIL import Image
 import matplotlib.pyplot as plt
 
 # Menyembunyikan log TensorFlow
+# Menyembunyikan log TensorFlow
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-# Gaya CSS untuk navigasi dan halaman, dengan background gambar dan header yang rapi
+# Gaya CSS untuk navigasi dan halaman
 st.markdown("""
 <style>
 body {
     font-family: 'Montserrat', sans-serif;
-    background-image: url('images/background.jpg');  /* Ganti dengan path gambar Anda */
-    background-size: cover;  /* Agar gambar memenuhi layar */
-    background-position: center center;  /* Memposisikan gambar di tengah */
-    background-attachment: fixed;  /* Membuat gambar tetap saat scroll */
+    background-color: #f0f0f0;
     margin: 0;
     padding: 0;
-    color: #fff;  /* Mengubah warna teks agar kontras dengan background */
 }
-
-.content-section {
-    text-align: center;  /* Menengahkan teks secara horizontal */
-    display: flex;       /* Menambahkan flexbox untuk kontrol tata letak */
-    flex-direction: column; /* Mengatur konten secara vertikal */
-    justify-content: center; /* Menengahkan secara vertikal */
-    align-items: center;  /* Menengahkan secara horizontal */
-    height: 100vh;        /* Memberikan tinggi penuh pada bagian ini */
-    background-color: rgba(128, 128, 128, 0.7);  /* Warna abu-abu transparan */
-    border-radius: 15px;  /* Membuat sudut container melengkung */
-    padding: 20px;        /* Memberikan ruang di sekitar teks */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  /* Memberikan efek bayangan */
-    width: 80%;           /* Atur lebar container */
-    margin: auto;         /* Agar container tetap di tengah */
+.navigation-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    border-radius: 5px;
+    margin: 20px auto;
+    max-width: 800px;
 }
-
-.content-section h2 {
-    margin-bottom: 20px;
-    font-size: 2.5em;
+.navigation-button {
+    padding: 15px 25px;
+    background-color: #fff;
+    color: #333;
+    border: 1px solid #ccc;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+.navigation-button:hover {
+    background-color: #e0e0e0;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+}
+.active {
+    background-color: #2196F3;
     color: #fff;
-}
-
-.content-section p, .content-section ul {
-    font-size: 1.2em;
-    color: #fff;  /* Teks putih agar kontras dengan background abu-abu */
+    border-color: #2196F3;
 }
 </style>
 """, unsafe_allow_html=True)
