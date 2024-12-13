@@ -9,19 +9,21 @@ import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
 
+# Menyembunyikan log TensorFlow
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-# Gaya CSS untuk navigasi dan halaman, dengan background gambar dan header yang rapi
+# Gaya CSS untuk navigasi dan halaman dengan background gambar
 st.markdown("""
 <style>
 body {
     font-family: 'Montserrat', sans-serif;
-    background-image: url('images/background.jpg'); /* Ganti path dengan yang benar */
+    background-image: url('https://jenis.net/wp-content/uploads/2020/06/jenis-nyamuk-e1591437296119-768x456.jpg'); /* Ganti dengan path gambar Anda */
     background-size: cover;  /* Agar gambar memenuhi layar */
     background-position: center center;  /* Memposisikan gambar di tengah */
     background-attachment: fixed;  /* Membuat gambar tetap saat scroll */
     margin: 0;
     padding: 0;
+    color: #fff;
 }
 
 .navigation-container {
@@ -62,7 +64,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10px; /* Memberikan jarak antara logo */
+    gap: 20px; /* Memberikan jarak antara logo */
 }
 
 .logo {
@@ -83,6 +85,27 @@ body {
     margin-top: 5px;
     font-size: 1.2em;
     color: #ccc;
+}
+
+.content-section {
+    text-align: center;  /* Menengahkan teks */
+    background-color: rgba(0, 0, 0, 0.6);  /* Latar belakang transparan untuk teks */
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 800px;
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  /* Memberikan bayangan pada container */
+}
+
+.footer {
+    text-align: center;
+    margin-top: 20px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 </style>
 """, unsafe_allow_html=True)
