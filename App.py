@@ -317,13 +317,15 @@ if uploaded_audio is not None:
             
             # Menampilkan gambar dengan caption berwarna putih
             if melspec_bird_info['image']:
-                st.markdown("""
+                st.markdown(f"""
                 <div style='background-color: rgba(0, 0, 0, 0.6); padding: 10px; border-radius: 10px; text-align: center;'>
-                    <img src='{image_url}' alt='Image' style='max-width: 100%; border-radius: 10px;'>
-                    <p style='color: white; margin-top: 10px; font-size: 1em;'>{caption}</p>
+                    <img src='{melspec_bird_info['image']}' style='max-width: 100%; border-radius: 10px;' />
+                    <p style='color: white; margin-top: 10px;'>{melspec_bird_info['name']} (Model Melspec)</p>
                 </div>
-                """.format(image_url=melspec_bird_info['image'], 
-                           caption=f"{melspec_bird_info['name']} (Model Melspec)"), unsafe_allow_html=True)
+                """, unsafe_allow_html=True)
+    
+        except Exception as e:
+            st.error(f"Error saat melakukan prediksi: {str(e)}")
 
 
 
