@@ -66,15 +66,54 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# Kamus deskripsi kelas burung
+BIRD_CLASSES = {
+    0: {
+        "name": "Pitta sordida",
+        "description": "Burung ini terkenal dengan bulu-bulunya yang warna-warni, seperti hijau, biru, dan kuning. Pitta Sayap Hitam hidup di hutan-hutan tropis dan suka mencari makan di tanah, biasanya berupa serangga kecil dan cacing.",
+        "image": "images/Pitta_sordida.jpg"
+    },
+    1: {
+        "name": "Dryocopus javensis",
+        "description": "Burung pelatuk ini memiliki bulu hitam dengan warna merah mencolok di kepalanya. Ia menggunakan paruhnya yang kuat untuk mematuk batang pohon, mencari serangga, atau membuat sarang.",
+        "image": "images/Dryocopus_javensis.jpg"
+    },
+    2: {
+        "name": "Caprimulgus macrurus",
+        "description": "Penjelasan: Burung ini aktif di malam hari dan memiliki bulu yang menyerupai warna kulit kayu, sehingga mudah berkamuflase. Kangkok Malam Besar memakan serangga dan sering ditemukan di area terbuka dekat hutan.",
+        "image": "images/Caprimulgus_macrurus.jpg"
+    },
+    3: {
+        "name": "Pnoepyga pusilla",
+        "description": "Burung kecil ini hampir tidak memiliki ekor dan sering bersembunyi di semak-semak. Suaranya sangat nyaring meskipun ukurannya kecil. Mereka makan serangga kecil dan hidup di daerah pegunungan.",
+        "image": "images/Pnoepyga_pusilla.jpg"
+    },
+    4: {
+        "name": "Anthipes solitaris",
+        "description": "Penjelasan: Kacer Soliter adalah burung kecil yang suka berada di dekat aliran sungai. Bulunya berwarna abu-abu dan putih dengan suara kicauan yang lembut. Ia sering makan serangga kecil.",
+        "image": "images/Anthipes_solitaris.jpg"
+    },
+    5: {
+        "name": "Buceros rhinoceros",
+        "description": "Enggang Badak adalah burung besar dengan paruh besar yang melengkung dan tanduk di atasnya. Burung ini adalah simbol keberagaman hutan tropis dan sering ditemukan di Kalimantan dan Sumatra. Mereka memakan buah-buahan, serangga, dan bahkan hewan kecil.",
+        "image": "images/Buceros_rhinoceros.jpg"
+    }
+}
+
+# Fungsi untuk mendapatkan informasi kelas berdasarkan prediksi
+def get_bird_info(pred_class):
+    if pred_class in BIRD_CLASSES:
+        return BIRD_CLASSES[pred_class]
+    else:
+        return {"name": "Unknown", "description": "Deskripsi tidak tersedia.", "image": None}
+
+
 # Fungsi mengunduh model dari Kaggle API
 def download_model_from_kaggle(kernel_name, output_files, dest_folder):
     try:
         # Cek apakah model sudah ada
         os.makedirs(dest_folder, exist_ok=True)
         model_files_exist = all([os.path.exists(os.path.join(dest_folder, file)) for file in output_files])
-        if model_files_exist:
-            st.info("Model sudah tersedia. Tidak perlu mengunduh ulang.")
-            return
 
         # Inisialisasi Kaggle API
         kaggle_username = st.secrets["kaggle"]["KAGGLE_USERNAME"]
@@ -143,30 +182,76 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Upload audio
-uploaded_audio = st.file_uploader("Pilih file audio (MP3/WAV)", type=["mp3", "wav"])
+# Konten Aplikasi
+st.markdown("""
+<section class="content-section">
+    <h2>Klasifikasi Suara</h2>
+    <p>Burung yang termasuk dalam klasifikasi ini adalah:</p>
+    <ul>
+        <li>Pitta sordida</li>
+        <li>Dryocopus javensis</li>
+        <li>Caprimulgus macrurus</li>
+        <li>Pnoepyga pusilla</li>
+        <li>Anthipes solitaris</li>
+        <li>Buceros rhinoceros</li>
+    </ul>
+""", unsafe_allow_html=True)
+
+#upload audio
+uploaded_audio = st.file_uploader("Pilih file audio (MP3/WAV) untuk diuji", type=["mp3", "wav"])
+
 if uploaded_audio is not None:
-    st.audio(uploaded_audio)
+    st.audio(uploaded_audio, format="audio/mp3")
     temp_file_path = "temp_audio.wav"
     with open(temp_file_path, "wb") as f:
         f.write(uploaded_audio.read())
 
-    with st.spinner("Memproses audio..."):
-        y, sr = librosa.load(temp_file_path, sr=None)
-        mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
-        melspec = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=64)
+    with st.spinner("Memproses..."):
+        try:
+            y, sr = librosa.load(temp_file_path, sr=None)
+            mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
+            melspec = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=64)
 
-        mfcc_image = preprocess_mfcc(mfcc)
-        melspec_image = preprocess_melspec(melspec)
+            st.subheader("Spektrum MFCC")
+            plot_spectrogram(mfcc, sr, "MFCC", y_axis="mel", x_axis="time")
 
-        mfcc_result = mfcc_model.predict(np.expand_dims(mfcc_image, axis=0))
-        melspec_result = melspec_model.predict(np.expand_dims(melspec_image, axis=0))
+            st.subheader("Spektrum Melspectrogram")
+            melspec_db = librosa.power_to_db(melspec, ref=np.max)
+            plot_spectrogram(melspec_db, sr, "Melspectrogram", y_axis="mel", x_axis="time")
 
-        mfcc_pred_class = np.argmax(mfcc_result)
-        melspec_pred_class = np.argmax(melspec_result)
+            mfcc_image = preprocess_mfcc(mfcc)
+            melspec_image = preprocess_melspec(melspec)
 
-        st.write(f"**Model MFCC:** Prediksi kelas {mfcc_pred_class}")
-        st.write(f"**Model Melspec:** Prediksi kelas {melspec_pred_class}")
+            mfcc_image = np.expand_dims(mfcc_image, axis=0)
+            melspec_image = np.expand_dims(melspec_image, axis=0)
+
+            mfcc_result = mfcc_model.predict(mfcc_image)
+            melspec_result = melspec_model.predict(melspec_image)
+
+            mfcc_pred_class = np.argmax(mfcc_result, axis=1)[0]
+            melspec_pred_class = np.argmax(melspec_result, axis=1)[0]
+            mfcc_accuracy = np.max(mfcc_result)
+            melspec_accuracy = np.max(melspec_result)
+
+            mfcc_bird_info = get_bird_info(mfcc_pred_class)
+            melspec_bird_info = get_bird_info(melspec_pred_class)
+
+            st.subheader("Hasil Prediksi:")
+            st.write(f"Model MFCC: Prediksi kelas {mfcc_pred_class} dengan akurasi {mfcc_accuracy * 100:.2f}%")
+            st.write(f"Nama: {mfcc_bird_info['name']}")
+            st.write(f"Deskripsi: {mfcc_bird_info['description']}")
+            if mfcc_bird_info['image']:
+                st.image(mfcc_bird_info['image'], caption=f"{mfcc_bird_info['name']} (Model MFCC)")
+
+            st.write("---")
+            st.write(f"Model Melspec: Prediksi kelas {melspec_pred_class} dengan akurasi {melspec_accuracy * 100:.2f}%")
+            st.write(f"Nama: {melspec_bird_info['name']}")
+            st.write(f"Deskripsi: {melspec_bird_info['description']}")
+            if melspec_bird_info['image']:
+                st.image(melspec_bird_info['image'], caption=f"{melspec_bird_info['name']} (Model Melspec)")
+
+        except Exception as e:
+            st.error(f"Error saat melakukan prediksi: {str(e)}")
 
 # Footer
 st.markdown("""
