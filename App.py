@@ -158,20 +158,33 @@ dest_folder = "./models/"
 
 download_status = download_model_from_kaggle(kernel_name, output_files, dest_folder)
 
+# Path untuk model yang disimpan
 melspec_model_save_path = os.path.join(dest_folder, 'cnn_melspec.h5')
 mfcc_model_save_path = os.path.join(dest_folder, 'cnn_mfcc.h5')
 
-if os.path.exists(melspec_model_save_path):
+# Fungsi untuk memuat dan mengkompilasi ulang model
+def load_and_compile_model(model_path):
     try:
-        melspec_model = tf.keras.models.load_model(melspec_model_save_path)
+        # Memuat model
+        model = tf.keras.models.load_model(model_path)
+        # Mengkompilasi ulang model
+        model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+        return model
     except Exception as e:
-        st.error(f"Gagal memuat model Melspec: {str(e)}")
+        st.error(f"Gagal memuat model: {str(e)}")
+        return None
 
+# Memuat dan mengkompilasi ulang model Melspec
+if os.path.exists(melspec_model_save_path):
+    melspec_model = load_and_compile_model(melspec_model_save_path)
+else:
+    st.error("Model Melspec tidak ditemukan!")
+
+# Memuat dan mengkompilasi ulang model MFCC
 if os.path.exists(mfcc_model_save_path):
-    try:
-        mfcc_model = tf.keras.models.load_model(mfcc_model_save_path)
-    except Exception as e:
-        st.error(f"Gagal memuat model MFCC: {str(e)}")
+    mfcc_model = load_and_compile_model(mfcc_model_save_path)
+else:
+    st.error("Model MFCC tidak ditemukan!")
 
 # Fungsi untuk memproses MFCC menjadi gambar 64x64x3
 def preprocess_mfcc(mfcc):
@@ -243,7 +256,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Upload file audio
-uploaded_audio = st.file_uploader("Unggah file audio (MP3/WAV)", type=["mp3", "wav"], label_visibility="hidden")
+uploaded_audio = st.file_uploader("", type=["mp3", "wav"])
 
 # Jika file audio diunggah
 if uploaded_audio is not None:
