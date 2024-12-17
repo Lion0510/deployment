@@ -6,3 +6,4 @@ matplotlib==3.9.2
 seaborn==0.13.2
 kaggle==1.5.12
 gdown
+soundfile==0.11.0
