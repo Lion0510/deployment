@@ -200,24 +200,22 @@ def plot_spectrogram(data, sr, title, y_axis, x_axis):
 
 # Header
 st.markdown("""
-<header class="main-header">
-    <div class="header-content">
-        <img src="https://raw.githubusercontent.com/Lion0510/deployment/main/images/Logo2.jpg" alt="Logo Fakultas Sains" class="logo">
-        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpSH0B8r5lSPmWBfANSG_LjlIEx2q0rEMXqQLxzr5Ggr7dSi7jfn7ALTDRPGrbUVkhgevNViaXgZokaU0_wwNme660o667wS7T_l4SzhKbQi50g2gLlVXsUNJBSbgOQ7nXi_hzfTDkv0yX/s320/logo+itera+oke.png" alt="Logo ITERA" class="logo">
-        <img src="https://pbs.twimg.com/profile_images/1272461269136576512/Uw9AShxq_400x400.jpg" alt="Logo Fakultas Teknologi" class="logo">
-    </div>
-    <div class="header-title">
-        <h1>Klasifikasi Suara Burung Sumatera 🦜</h1>
-        <p>Identifikasi Burung Berdasarkan Suara Secara Otomatis</p>
-    </div>
-</header>
+<div class="header-content">
+    <img src="https://raw.githubusercontent.com/Lion0510/deployment/main/images/Logo2.jpg" alt="Logo Fakultas Sains" class="logo">
+    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpSH0B8r5lSPmWBfANSG_LjlIEx2q0rEMXqQLxzr5Ggr7dSi7jfn7ALTDRPGrbUVkhgevNViaXgZokaU0_wwNme660o667wS7T_l4SzhKbQi50g2gLlVXsUNJBSbgOQ7nXi_hzfTDkv0yX/s320/logo+itera+oke.png" alt="Logo ITERA" class="logo">
+    <img src="https://pbs.twimg.com/profile_images/1272461269136576512/Uw9AShxq_400x400.jpg" alt="Logo Fakultas Teknologi" class="logo">
+</div>
+<div class="header-box">
+    <h1>Klasifikasi Suara Burung Sumatera 🦜</h1>
+    <p>Identifikasi Burung Berdasarkan Suara Secara Otomatis</p>
+</div>
 """, unsafe_allow_html=True)
 
 # Konten Aplikasi
 st.markdown("""
 <section class="content-section">
-    <h2>Klasifikasi Suara</h2>
-    <p>Burung yang termasuk dalam klasifikasi ini adalah:</p>
+    <h2>Selamat Datang di Aplikasi Klasifikasi Suara Burung</h2>
+    <p>Aplikasi ini dirancang untuk mengidentifikasi jenis burung berdasarkan suara yang direkam.</p>
     <ul>
         <li>Pitta sordida</li>
         <li>Dryocopus javensis</li>
@@ -226,6 +224,7 @@ st.markdown("""
         <li>Anthipes solitaris</li>
         <li>Buceros rhinoceros</li>
     </ul>
+</section>
 """, unsafe_allow_html=True)
 
 uploaded_audio = st.file_uploader("Pilih file audio (MP3/WAV) untuk diuji", type=["mp3", "wav"])
@@ -293,7 +292,7 @@ st.markdown("""
 
 # Footer
 st.markdown("""
-<footer>
-    <p>&copy; 2024 Klasifikasi Suara Burung Sumatera | Kelompok 11 Deep Learning Sains Data</p>
-</footer>
+<div class="footer">
+    <p>&copy; 2024 Klasifikasi Suara Burung Sumatera | Kelompok 11 Deep Learning ITERA</p>
+</div>
 """, unsafe_allow_html=True)
