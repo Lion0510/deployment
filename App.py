@@ -54,6 +54,8 @@ st.markdown("""
         .header-box h1 {
             font-size: 2.5em;
             margin: 0;
+            text-align: center; /* Posisikan teks di tengah */
+            line-height: 1.2;
         }
         .header-box p {
             font-size: 1.2em;
@@ -211,7 +213,7 @@ st.markdown("""
     <img src="https://pbs.twimg.com/profile_images/1272461269136576512/Uw9AShxq_400x400.jpg" alt="Logo Fakultas Teknologi" class="logo">
 </div>
 <div class="header-box">
-    <h1>        KicauNet🦜        </h1>
+    <h1>KicauNet🦜</h1>
     <p>Identifikasi Burung Berdasarkan Suara Secara Otomatis</p>
 </div>
 """, unsafe_allow_html=True)
