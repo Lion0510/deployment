@@ -245,6 +245,19 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+    <style>
+        /* Gaya untuk file uploader */
+        .stFileUploader {
+            background-color: rgba(0, 0, 0, 0.5); /* Latar belakang semi transparan */
+            color: white; /* Teks putih untuk file */
+            font-size: 16px; /* Ukuran font yang lebih besar */
+            border-radius: 10px; /* Sudut membulat */
+            padding: 10px; /* Padding agar file tidak terlalu rapat */
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 # Upload file audio
 uploaded_audio = st.file_uploader("Unggah file audio (MP3/WAV)", type=["mp3", "wav"], label_visibility="hidden")
 
