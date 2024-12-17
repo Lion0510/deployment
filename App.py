@@ -227,23 +227,38 @@ if uploaded_audio is not None:
 
     with st.spinner("Memproses..."):
         try:
+            # Proses audio menjadi MFCC dan MelSpectrogram
             y, sr = librosa.load(temp_file_path, sr=None)
             mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
             melspec = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=64)
 
-            st.subheader("Spektrum MFCC")
+            # Teks "Spektrum MFCC" dengan background hitam transparan
+            st.markdown("""
+            <div style='background-color: rgba(0, 0, 0, 0.6); padding: 10px; border-radius: 10px; text-align: center;'>
+                <h3 style='color: white; margin: 0;'>Spektrum MFCC</h3>
+            </div>
+            """, unsafe_allow_html=True)
+            
             plot_spectrogram(mfcc, sr, "MFCC", y_axis="mel", x_axis="time")
-
-            st.subheader("Spektrum Melspectrogram")
+            
+            # Teks "Spektrum Melspectrogram" dengan background hitam transparan
+            st.markdown("""
+            <div style='background-color: rgba(0, 0, 0, 0.6); padding: 10px; border-radius: 10px; text-align: center;'>
+                <h3 style='color: white; margin: 0;'>Spektrum Melspectrogram</h3>
+            </div>
+            """, unsafe_allow_html=True)
+            
             melspec_db = librosa.power_to_db(melspec, ref=np.max)
             plot_spectrogram(melspec_db, sr, "Melspectrogram", y_axis="mel", x_axis="time")
 
+            # Preproses gambar
             mfcc_image = preprocess_mfcc(mfcc)
             melspec_image = preprocess_melspec(melspec)
 
             mfcc_image = np.expand_dims(mfcc_image, axis=0)
             melspec_image = np.expand_dims(melspec_image, axis=0)
 
+            # Prediksi menggunakan model
             mfcc_result = mfcc_model.predict(mfcc_image)
             melspec_result = melspec_model.predict(melspec_image)
 
@@ -252,25 +267,41 @@ if uploaded_audio is not None:
             mfcc_accuracy = np.max(mfcc_result)
             melspec_accuracy = np.max(melspec_result)
 
+            # Ambil informasi hasil prediksi
             mfcc_bird_info = get_bird_info(mfcc_pred_class)
             melspec_bird_info = get_bird_info(melspec_pred_class)
 
-            st.subheader("Hasil Prediksi:")
-            st.write(f"Model MFCC: Prediksi kelas {mfcc_pred_class} dengan akurasi {mfcc_accuracy * 100:.2f}%")
-            st.write(f"Nama: {mfcc_bird_info['name']}")
-            st.write(f"Deskripsi: {mfcc_bird_info['description']}")
+            # Menampilkan hasil prediksi dalam kotak dengan background transparan
+            st.markdown(f"""
+            <div class="content-box">
+                <h3>Hasil Prediksi</h3>
+                <h4>Model MFCC</h4>
+                <p><strong>Prediksi Kelas:</strong> {mfcc_pred_class}</p>
+                <p><strong>Akurasinya:</strong> {mfcc_accuracy * 100:.2f}%</p>
+                <p><strong>Nama:</strong> {mfcc_bird_info['name']}</p>
+                <p><strong>Deskripsi:</strong> {mfcc_bird_info['description']}</p>
+            </div>
+            """, unsafe_allow_html=True)
+
             if mfcc_bird_info['image']:
                 st.image(mfcc_bird_info['image'], caption=f"{mfcc_bird_info['name']} (Model MFCC)")
 
-            st.write("---")
-            st.write(f"Model Melspec: Prediksi kelas {melspec_pred_class} dengan akurasi {melspec_accuracy * 100:.2f}%")
-            st.write(f"Nama: {melspec_bird_info['name']}")
-            st.write(f"Deskripsi: {melspec_bird_info['description']}")
+            st.markdown(f"""
+            <div class="content-box">
+                <h4>Model Melspec</h4>
+                <p><strong>Prediksi Kelas:</strong> {melspec_pred_class}</p>
+                <p><strong>Akurasinya:</strong> {melspec_accuracy * 100:.2f}%</p>
+                <p><strong>Nama:</strong> {melspec_bird_info['name']}</p>
+                <p><strong>Deskripsi:</strong> {melspec_bird_info['description']}</p>
+            </div>
+            """, unsafe_allow_html=True)
+
             if melspec_bird_info['image']:
                 st.image(melspec_bird_info['image'], caption=f"{melspec_bird_info['name']} (Model Melspec)")
 
         except Exception as e:
             st.error(f"Error saat melakukan prediksi: {str(e)}")
+
 
 # Footer
 st.markdown("""
