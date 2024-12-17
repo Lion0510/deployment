@@ -8,6 +8,7 @@ import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
 from kaggle.api.kaggle_api_extended import KaggleApi
+import warnings
 
 # Menyembunyikan log TensorFlow
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
@@ -272,7 +273,10 @@ if uploaded_audio is not None:
     with st.spinner("Memproses..."):
         try:
             # Proses audio menjadi MFCC dan MelSpectrogram
-            y, sr = librosa.load(temp_file_path, sr=None)
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore", UserWarning)
+                y, sr = librosa.load(temp_file_path, sr=None)
+                
             mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
             melspec = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=64)
 
