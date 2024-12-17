@@ -71,32 +71,32 @@ BIRD_CLASSES = {
     0: {
         "name": "Pitta sordida",
         "description": "Burung ini terkenal dengan bulu-bulunya yang warna-warni, seperti hijau, biru, dan kuning. Pitta Sayap Hitam hidup di hutan-hutan tropis dan suka mencari makan di tanah, biasanya berupa serangga kecil dan cacing.",
-        "image": url('https://raw.githubusercontent.com/Lion0510/deployment/main/images/Pitta_sordida.jpg')
+        "image": 'https://raw.githubusercontent.com/Lion0510/deployment/main/images/Pitta_sordida.jpg'
     },
     1: {
         "name": "Dryocopus javensis",
         "description": "Burung pelatuk ini memiliki bulu hitam dengan warna merah mencolok di kepalanya. Ia menggunakan paruhnya yang kuat untuk mematuk batang pohon, mencari serangga, atau membuat sarang.",
-        "image": url('https://raw.githubusercontent.com/Lion0510/deployment/main/images//Dryocopus_javensis.jpg')
+        "image": 'https://raw.githubusercontent.com/Lion0510/deployment/main/images//Dryocopus_javensis.jpg'
     },
     2: {
         "name": "Caprimulgus macrurus",
         "description": "Penjelasan: Burung ini aktif di malam hari dan memiliki bulu yang menyerupai warna kulit kayu, sehingga mudah berkamuflase. Kangkok Malam Besar memakan serangga dan sering ditemukan di area terbuka dekat hutan.",
-        "image": url('https://raw.githubusercontent.com/Lion0510/deployment/main/images/Caprimulgus_macrurus.jpg')
+        "image": 'https://raw.githubusercontent.com/Lion0510/deployment/main/images/Caprimulgus_macrurus.jpg'
     },
     3: {
         "name": "Pnoepyga pusilla",
         "description": "Burung kecil ini hampir tidak memiliki ekor dan sering bersembunyi di semak-semak. Suaranya sangat nyaring meskipun ukurannya kecil. Mereka makan serangga kecil dan hidup di daerah pegunungan.",
-        "image": url('https://raw.githubusercontent.com/Lion0510/deployment/main/images/Pnoepyga_pusilla.jpg')
+        "image": 'https://raw.githubusercontent.com/Lion0510/deployment/main/images/Pnoepyga_pusilla.jpg'
     },
     4: {
         "name": "Anthipes solitaris",
         "description": "Penjelasan: Kacer Soliter adalah burung kecil yang suka berada di dekat aliran sungai. Bulunya berwarna abu-abu dan putih dengan suara kicauan yang lembut. Ia sering makan serangga kecil.",
-        "image": url('https://raw.githubusercontent.com/Lion0510/deployment/main/images/Anthipes_solitaris.jpg')
+        "image": 'https://raw.githubusercontent.com/Lion0510/deployment/main/images/Anthipes_solitaris.jpg'
     },
     5: {
         "name": "Buceros rhinoceros",
         "description": "Enggang Badak adalah burung besar dengan paruh besar yang melengkung dan tanduk di atasnya. Burung ini adalah simbol keberagaman hutan tropis dan sering ditemukan di Kalimantan dan Sumatra. Mereka memakan buah-buahan, serangga, dan bahkan hewan kecil.",
-        "image": url('https://raw.githubusercontent.com/Lion0510/deployment/main/images/Buceros_rhinoceros.jpg')
+        "image": 'https://raw.githubusercontent.com/Lion0510/deployment/main/images/Buceros_rhinoceros.jpg'
     }
 }
 
