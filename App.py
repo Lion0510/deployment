@@ -11,6 +11,7 @@ from kaggle.api.kaggle_api_extended import KaggleApi
 
 # Menyembunyikan log TensorFlow
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 # CSS untuk styling halaman
 st.markdown("""
@@ -254,7 +255,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Upload file audio
-uploaded_audio = st.file_uploader("", type=["mp3", "wav"])
+uploaded_audio = st.file_uploader("Unggah file audio (MP3/WAV)", type=["mp3", "wav"], label_visibility="visible")
 
 # Jika file audio diunggah
 if uploaded_audio is not None:
