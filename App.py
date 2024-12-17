@@ -271,33 +271,35 @@ if uploaded_audio is not None:
             mfcc_bird_info = get_bird_info(mfcc_pred_class)
             melspec_bird_info = get_bird_info(melspec_pred_class)
 
-            # Menampilkan hasil prediksi dalam kotak dengan background transparan
             st.markdown(f"""
-            <div class="content-box">
-                <h3>Hasil Prediksi</h3>
-                <h4>Model MFCC</h4>
-                <p><strong>Prediksi Kelas:</strong> {mfcc_pred_class}</p>
-                <p><strong>Akurasinya:</strong> {mfcc_accuracy * 100:.2f}%</p>
-                <p><strong>Nama:</strong> {mfcc_bird_info['name']}</p>
-                <p><strong>Deskripsi:</strong> {mfcc_bird_info['description']}</p>
+            <div style='background-color: rgba(0, 0, 0, 0.6); padding: 15px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);'>
+                <h3 style='color: white; text-align: center; margin-bottom: 10px;'>Hasil Prediksi</h3>
+                <h4 style='color: white; text-align: center; margin-bottom: 5px;'>Model MFCC</h4>
+                <p style='color: white;'><strong>Prediksi Kelas:</strong> {mfcc_pred_class}</p>
+                <p style='color: white;'><strong>Akurasinya:</strong> {mfcc_accuracy * 100:.2f}%</p>
+                <p style='color: white;'><strong>Nama:</strong> {mfcc_bird_info['name']}</p>
+                <p style='color: white;'><strong>Deskripsi:</strong> {mfcc_bird_info['description']}</p>
             </div>
             """, unsafe_allow_html=True)
-
+            
+            # Menampilkan gambar jika tersedia
             if mfcc_bird_info['image']:
                 st.image(mfcc_bird_info['image'], caption=f"{mfcc_bird_info['name']} (Model MFCC)")
-
+            
             st.markdown(f"""
-            <div class="content-box">
-                <h4>Model Melspec</h4>
-                <p><strong>Prediksi Kelas:</strong> {melspec_pred_class}</p>
-                <p><strong>Akurasinya:</strong> {melspec_accuracy * 100:.2f}%</p>
-                <p><strong>Nama:</strong> {melspec_bird_info['name']}</p>
-                <p><strong>Deskripsi:</strong> {melspec_bird_info['description']}</p>
+            <div style='background-color: rgba(0, 0, 0, 0.6); padding: 15px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); margin-top: 20px;'>
+                <h4 style='color: white; text-align: center; margin-bottom: 5px;'>Model Melspec</h4>
+                <p style='color: white;'><strong>Prediksi Kelas:</strong> {melspec_pred_class}</p>
+                <p style='color: white;'><strong>Akurasinya:</strong> {melspec_accuracy * 100:.2f}%</p>
+                <p style='color: white;'><strong>Nama:</strong> {melspec_bird_info['name']}</p>
+                <p style='color: white;'><strong>Deskripsi:</strong> {melspec_bird_info['description']}</p>
             </div>
             """, unsafe_allow_html=True)
-
+            
+            # Menampilkan gambar jika tersedia
             if melspec_bird_info['image']:
                 st.image(melspec_bird_info['image'], caption=f"{melspec_bird_info['name']} (Model Melspec)")
+
 
         except Exception as e:
             st.error(f"Error saat melakukan prediksi: {str(e)}")
