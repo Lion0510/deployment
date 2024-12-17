@@ -16,92 +16,63 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 # Menambahkan CSS untuk styling halaman
 st.markdown("""
     <style>
-        /* Background full page */
+        /* Background halaman */
         .stApp {
-            background-image: url('https://raw.githubusercontent.com/Lion0510/deployment/main/images/bg.jpg'); /* Path gambar latar */
+            background-image: url('https://raw.githubusercontent.com/Lion0510/deployment/main/images/bg.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
         }
 
-        /* Kontainer navigasi */
-        .navigation-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: rgba(255, 255, 255, 0.8); /* Transparansi putih */
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-            padding: 10px;
-            border-radius: 5px;
-            margin: 20px auto;
-            max-width: 800px;
-        }
-
-        .navigation-button {
-            padding: 15px 25px;
-            background-color: #fff;
-            color: #333;
-            border: 1px solid #ccc;
-            text-decoration: none;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .navigation-button:hover {
-            background-color: #e0e0e0;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Header logo dan judul */
+        /* Styling Header */
         .header-content {
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 20px; /* Jarak antar logo */
+            margin-top: 10px;
         }
 
         .logo {
+            background-color: white; /* Background putih untuk logo */
+            padding: 10px; /* Padding di dalam logo */
+            border-radius: 10px; /* Membuat sudut membulat */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Bayangan lembut */
+            display: inline-block; /* Sesuai ukuran konten */
             width: 100px; /* Ukuran logo */
             height: auto;
-            display: inline-block;
         }
 
-        .header-title h1 {
-            color: #fff;
-            text-align: center;
-            margin-top: 20px;
-            font-size: 2.5em;
-        }
-
-        .header-title p {
-            text-align: center;
-            margin-top: 5px;
-            font-size: 1.2em;
-            color: #ccc;
-        }
-
-        /* Konten utama */
-        .content-section {
-            text-align: center;
-            background-color: rgba(0, 0, 0, 0.6); /* Latar transparan untuk teks */
+        /* Judul Header */
+        .header-box {
+            background-color: rgba(0, 0, 0, 0.6); /* Latar hitam transparan */
+            color: white; /* Warna teks putih */
+            padding: 15px 20px;
             border-radius: 10px;
-            padding: 20px;
+            text-align: center;
             margin: 20px auto;
-            max-width: 800px;
+            display: inline-block;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Konten Utama */
+        .content-section {
+            background-color: rgba(0, 0, 0, 0.6);
             color: white;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
 
         /* Footer */
         .footer {
-            text-align: center;
-            margin-top: 20px;
             background-color: rgba(0, 0, 0, 0.8);
             color: white;
+            text-align: center;
             padding: 10px;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin-top: 20px;
         }
     </style>
 """, unsafe_allow_html=True)
