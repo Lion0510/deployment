@@ -220,7 +220,7 @@ st.markdown("""
 
 # Konten Aplikasi
 st.markdown("""
-<section class="content-box">
+<section class="content-section">
     <h1>Klasifikasi Suara</h1>
     <p>Burung yang termasuk dalam klasifikasi ini adalah:</p>
     <ul>
