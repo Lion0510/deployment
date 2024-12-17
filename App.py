@@ -156,7 +156,7 @@ if os.path.exists(mfcc_model_save_path):
     except Exception as e:
         st.error(f"Gagal memuat model MFCC: {str(e)}")
 
-# Fungsi pemrosesan MFCC
+# Fungsi untuk memproses MFCC menjadi gambar 64x64x3
 def preprocess_mfcc(mfcc):
     mfcc_image = Image.fromarray(mfcc)
     mfcc_image = mfcc_image.resize((64, 64))
@@ -165,7 +165,7 @@ def preprocess_mfcc(mfcc):
     mfcc_resized = np.repeat(mfcc_resized, 3, axis=-1)
     return mfcc_resized
 
-# Fungsi pemrosesan MelSpectrogram
+# Fungsi untuk memproses Melspectrogram menjadi gambar 64x64x3
 def preprocess_melspec(melspec):
     melspec_db = librosa.power_to_db(melspec, ref=np.max)
     melspec_image = Image.fromarray(melspec_db)
@@ -174,6 +174,19 @@ def preprocess_melspec(melspec):
     melspec_resized = np.expand_dims(melspec_resized, axis=-1)
     melspec_resized = np.repeat(melspec_resized, 3, axis=-1)
     return melspec_resized
+
+# Fungsi untuk menampilkan spektrum
+def plot_spectrogram(data, sr, title, y_axis, x_axis):
+    plt.figure(figsize=(10, 4))
+    librosa.display.specshow(data, sr=sr, x_axis=x_axis, y_axis=y_axis, cmap='magma')
+    plt.colorbar(format='%+2.0f dB')
+    plt.title(title)
+    plt.tight_layout()
+    st.pyplot(plt)
+    plt.close()
+
+# Tambahkan CSS ke aplikasi
+#add_custom_css()
 
 # Header
 st.markdown("""
