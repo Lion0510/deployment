@@ -245,6 +245,14 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+
+Untuk membuat teks pada widget file uploader lebih jelas dengan ukuran yang lebih besar dan warna putih, Anda bisa menyesuaikan CSS dengan menambahkan beberapa aturan untuk teks.
+
+Berikut adalah modifikasi CSS untuk membuat teks menjadi putih dan lebih besar:
+
+Modifikasi CSS untuk Teks pada File Uploader
+python
+Copy code
 st.markdown("""
     <style>
         /* Gaya untuk file uploader */
@@ -254,6 +262,12 @@ st.markdown("""
             font-size: 16px; /* Ukuran font yang lebih besar */
             border-radius: 10px; /* Sudut membulat */
             padding: 10px; /* Padding agar file tidak terlalu rapat */
+        }
+
+        /* Gaya untuk teks label dan file yang diunggah */
+        .stFileUploader > div {
+            font-size: 18px; /* Ukuran font untuk file yang diunggah */
+            color: white; /* Teks putih */
         }
     </style>
 """, unsafe_allow_html=True)
