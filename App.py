@@ -154,6 +154,10 @@ download_status = download_model_from_kaggle(kernel_name, output_files, dest_fol
 melspec_model_save_path = os.path.join(dest_folder, 'cnn_melspec.h5')
 mfcc_model_save_path = os.path.join(dest_folder, 'cnn_mfcc.h5')
 
+# Mengkompilasi ulang model (gunakan metrik dan loss yang sama seperti saat melatih)
+melspec_model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+mfcc_model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+
 if os.path.exists(melspec_model_save_path):
     try:
         melspec_model = tf.keras.models.load_model(melspec_model_save_path)
