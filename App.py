@@ -217,13 +217,32 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 #upload audio
-uploaded_audio = st.file_uploader("Pilih file audio (MP3/WAV) untuk diuji", type=["mp3", "wav"])
+# Header untuk upload file dengan background hitam transparan
+st.markdown("""
+<div style='background-color: rgba(0, 0, 0, 0.6); padding: 15px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); text-align: center;'>
+    <h3 style='color: white; margin-bottom: 10px;'>Unggah File Audio</h3>
+    <p style='color: white;'>Pilih file audio dalam format MP3 atau WAV untuk memulai klasifikasi suara burung.</p>
+</div>
+""", unsafe_allow_html=True)
 
+# Upload file audio
+uploaded_audio = st.file_uploader("", type=["mp3", "wav"])
+
+# Jika file audio diunggah
 if uploaded_audio is not None:
+    # Tampilkan audio player
+    st.markdown("""
+    <div style='background-color: rgba(0, 0, 0, 0.6); padding: 10px; border-radius: 10px; text-align: center;'>
+        <h4 style='color: white;'>Audio yang Dipilih:</h4>
+    </div>
+    """, unsafe_allow_html=True)
     st.audio(uploaded_audio, format="audio/mp3")
+
+    # Simpan file audio sementara
     temp_file_path = "temp_audio.wav"
     with open(temp_file_path, "wb") as f:
         f.write(uploaded_audio.read())
+
 
     with st.spinner("Memproses..."):
         try:
@@ -296,13 +315,16 @@ if uploaded_audio is not None:
             </div>
             """, unsafe_allow_html=True)
             
-            # Menampilkan gambar jika tersedia
+            # Menampilkan gambar dengan caption berwarna putih
             if melspec_bird_info['image']:
-                st.image(melspec_bird_info['image'], caption=f"{melspec_bird_info['name']} (Model Melspec)")
+                st.markdown("""
+                <div style='background-color: rgba(0, 0, 0, 0.6); padding: 10px; border-radius: 10px; text-align: center;'>
+                    <img src='{image_url}' alt='Image' style='max-width: 100%; border-radius: 10px;'>
+                    <p style='color: white; margin-top: 10px; font-size: 1em;'>{caption}</p>
+                </div>
+                """.format(image_url=melspec_bird_info['image'], 
+                           caption=f"{melspec_bird_info['name']} (Model Melspec)"), unsafe_allow_html=True)
 
-
-        except Exception as e:
-            st.error(f"Error saat melakukan prediksi: {str(e)}")
 
 
 # Footer
