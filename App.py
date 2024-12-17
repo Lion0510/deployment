@@ -188,22 +188,16 @@ def plot_spectrogram(data, sr, title, y_axis, x_axis):
 # Tambahkan CSS ke aplikasi
 #add_custom_css()
 
-# Header Logo
+# Header dengan logo dan judul
 st.markdown("""
-<div class="header-logos">
-    <img src="https://raw.githubusercontent.com/Lion0510/deployment/main/images/Logo2.jpg" class="logo">
-    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpSH0B8r5lSPmWBfANSG_LjlIEx2q0rEMXqQLxzr5Ggr7dSi7jfn7ALTDRPGrbUVkhgevNViaXgZokaU0_wwNme660o667wS7T_l4SzhKbQi50g2gLlVXsUNJBSbgOQ7nXi_hzfTDkv0yX/s320/logo+itera+oke.png" class="logo">
-    <img src="https://pbs.twimg.com/profile_images/1272461269136576512/Uw9AShxq_400x400.jpg" class="logo">
+<div class="header-content">
+    <img src="https://raw.githubusercontent.com/Lion0510/deployment/main/images/Logo2.jpg" alt="Logo Fakultas Sains" class="logo">
+    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpSH0B8r5lSPmWBfANSG_LjlIEx2q0rEMXqQLxzr5Ggr7dSi7jfn7ALTDRPGrbUVkhgevNViaXgZokaU0_wwNme660o667wS7T_l4SzhKbQi50g2gLlVXsUNJBSbgOQ7nXi_hzfTDkv0yX/s320/logo+itera+oke.png" alt="Logo ITERA" class="logo">
+    <img src="https://pbs.twimg.com/profile_images/1272461269136576512/Uw9AShxq_400x400.jpg" alt="Logo Fakultas Teknologi" class="logo">
 </div>
-""", unsafe_allow_html=True)
-
-# Kotak Konten "KicauNet"
-st.markdown("""
-<div class="content-box">
-    <div class="title">KicauNet 🦜</div>
-    <div class="description">
-        Identifikasi Burung Berdasarkan Suara Secara Otomatis
-    </div>
+<div class="header-box">
+    <h1>        Klasifikasi Suara Burung Sumatera 🦜        </h1>
+    <p>Identifikasi Burung Berdasarkan Suara Secara Otomatis</p>
 </div>
 """, unsafe_allow_html=True)
 
