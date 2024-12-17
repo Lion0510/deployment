@@ -246,7 +246,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Upload file audio
-uploaded_audio = st.file_uploader("Unggah file audio (MP3/WAV)", type=["mp3", "wav"], label_visibility="visible")
+uploaded_audio = st.file_uploader("Unggah file audio (MP3/WAV)", type=["mp3", "wav"], label_visibility="hidden")
 
 # Jika file audio diunggah
 if uploaded_audio is not None:
