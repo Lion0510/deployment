@@ -164,46 +164,36 @@ download_status = download_model_from_kaggle(kernel_name, output_files, dest_fol
 melspec_model_save_path = os.path.join(dest_folder, 'cnn_melspec.h5')
 mfcc_model_save_path = os.path.join(dest_folder, 'cnn_mfcc.h5')
 
-# Fungsi untuk memuat dan mengkompilasi ulang model
-@st.cache_resource
-def load_and_compile_model(model_path):
-    try:
-        # Memuat model
-        model = tf.keras.models.load_model(model_path)
-        # Mengkompilasi ulang model
-        model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-        return model
-    except Exception as e:
-        st.error(f"Gagal memuat model: {str(e)}")
-        return None
-
-# Memuat model hanya jika ada
 if os.path.exists(melspec_model_save_path):
-    melspec_model = load_and_compile_model(melspec_model_save_path)
-else:
-    st.error("Model Melspec tidak ditemukan!")
+    try:
+        melspec_model = tf.keras.models.load_model(melspec_model_save_path)
+    except Exception as e:
+        st.error(f"Gagal memuat model Melspec: {str(e)}")
 
 if os.path.exists(mfcc_model_save_path):
-    mfcc_model = load_and_compile_model(mfcc_model_save_path)
-else:
-    st.error("Model MFCC tidak ditemukan!")
-
+    try:
+        mfcc_model = tf.keras.models.load_model(mfcc_model_save_path)
+    except Exception as e:
+        st.error(f"Gagal memuat model MFCC: {str(e)}")
+        
 # Fungsi untuk memproses MFCC menjadi gambar 64x64x3
 def preprocess_mfcc(mfcc):
-    mfcc_image = Image.fromarray(mfcc).resize((64, 64))
-    mfcc_resized = np.array(mfcc_image).astype(np.float32)
+    mfcc_image = Image.fromarray(mfcc)
+    mfcc_image = mfcc_image.resize((64, 64))
+    mfcc_resized = np.array(mfcc_image)
     mfcc_resized = np.expand_dims(mfcc_resized, axis=-1)
-    mfcc_resized = np.repeat(mfcc_resized, 3, axis=-1)  # Duplikasi channel
-    return mfcc_resized / 255.0  # Normalisasi ke 0-1
+    mfcc_resized = np.repeat(mfcc_resized, 3, axis=-1)
+    return mfcc_resized
 
 # Fungsi untuk memproses Melspectrogram menjadi gambar 64x64x3
 def preprocess_melspec(melspec):
     melspec_db = librosa.power_to_db(melspec, ref=np.max)
-    melspec_image = Image.fromarray(melspec_db).resize((64, 64))
-    melspec_resized = np.array(melspec_image).astype(np.float32)
+    melspec_image = Image.fromarray(melspec_db)
+    melspec_image = melspec_image.resize((64, 64))
+    melspec_resized = np.array(melspec_image)
     melspec_resized = np.expand_dims(melspec_resized, axis=-1)
-    melspec_resized = np.repeat(melspec_resized, 3, axis=-1)  # Duplikasi channel
-    return melspec_resized / 255.0  # Normalisasi ke 0-1
+    melspec_resized = np.repeat(melspec_resized, 3, axis=-1)
+    return melspec_resized
 
 # Fungsi untuk menampilkan spektrum
 def plot_spectrogram(data, sr, title, y_axis, x_axis):
