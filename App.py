@@ -18,7 +18,7 @@ st.markdown("""
     <style>
         /* Background full page */
         .stApp {
-            background-image: url('images/bg.jpg'); /* Path gambar latar */
+            background-image: url('https://drive.google.com/file/d/1uZYAahvQPh6WmnN2UeAC1Gr3iziUA9BX/view?usp=sharing'); /* Path gambar latar */
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
