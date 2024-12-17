@@ -298,12 +298,11 @@ if uploaded_audio is not None:
                 <p style='color: white;'><strong>Akurasinya:</strong> {mfcc_accuracy * 100:.2f}%</p>
                 <p style='color: white;'><strong>Nama:</strong> {mfcc_bird_info['name']}</p>
                 <p style='color: white;'><strong>Deskripsi:</strong> {mfcc_bird_info['description']}</p>
+                if mfcc_bird_info['image']:
+                st.image(mfcc_bird_info['image'], caption=f"{mfcc_bird_info['name']} (Model MFCC)")
             </div>
             """, unsafe_allow_html=True)
             
-            # Menampilkan gambar jika tersedia
-            if mfcc_bird_info['image']:
-                st.image(mfcc_bird_info['image'], caption=f"{mfcc_bird_info['name']} (Model MFCC)")
             
             st.markdown(f"""
             <div style='background-color: rgba(0, 0, 0, 0.6); padding: 15px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); margin-top: 20px;'>
@@ -312,17 +311,10 @@ if uploaded_audio is not None:
                 <p style='color: white;'><strong>Akurasinya:</strong> {melspec_accuracy * 100:.2f}%</p>
                 <p style='color: white;'><strong>Nama:</strong> {melspec_bird_info['name']}</p>
                 <p style='color: white;'><strong>Deskripsi:</strong> {melspec_bird_info['description']}</p>
+                 if melspec_bird_info['image']:
+                    st.image(melspec_bird_info['image'], caption=f"{melspec_bird_info['name']} (Model Melspec)")
             </div>
             """, unsafe_allow_html=True)
-            
-            # Menampilkan gambar dengan caption berwarna putih
-            if melspec_bird_info['image']:
-                st.markdown(f"""
-                <div style='background-color: rgba(0, 0, 0, 0.6); padding: 10px; border-radius: 10px; text-align: center;'>
-                    <img src='{melspec_bird_info['image']}' style='max-width: 100%; border-radius: 10px;' />
-                    <p style='color: white; margin-top: 10px;'>{melspec_bird_info['name']} (Model Melspec)</p>
-                </div>
-                """, unsafe_allow_html=True)
     
         except Exception as e:
             st.error(f"Error saat melakukan prediksi: {str(e)}")
