@@ -255,11 +255,6 @@ if uploaded_audio is not None:
     with open(temp_file_path, "wb") as f:
         f.write(uploaded_audio.read())
 
-    # Simpan file audio sementara
-    temp_file_path = "temp_audio.wav"
-    with open(temp_file_path, "wb") as f:
-        f.write(uploaded_audio.read())
-
     with st.spinner("Memproses..."):
         try:
             # Proses audio menjadi MFCC dan MelSpectrogram
