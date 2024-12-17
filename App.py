@@ -188,16 +188,22 @@ def plot_spectrogram(data, sr, title, y_axis, x_axis):
 # Tambahkan CSS ke aplikasi
 #add_custom_css()
 
-# Header
+# Header Logo
 st.markdown("""
-<div class="header-content">
-    <img src="https://raw.githubusercontent.com/Lion0510/deployment/main/images/Logo2.jpg" alt="Logo Fakultas Sains" class="logo">
-    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpSH0B8r5lSPmWBfANSG_LjlIEx2q0rEMXqQLxzr5Ggr7dSi7jfn7ALTDRPGrbUVkhgevNViaXgZokaU0_wwNme660o667wS7T_l4SzhKbQi50g2gLlVXsUNJBSbgOQ7nXi_hzfTDkv0yX/s320/logo+itera+oke.png" alt="Logo ITERA" class="logo">
-    <img src="https://pbs.twimg.com/profile_images/1272461269136576512/Uw9AShxq_400x400.jpg" alt="Logo Fakultas Teknologi" class="logo">
+<div class="header-logos">
+    <img src="https://raw.githubusercontent.com/Lion0510/deployment/main/images/logo1.png" class="logo">
+    <img src="https://raw.githubusercontent.com/Lion0510/deployment/main/images/logo2.png" class="logo">
+    <img src="https://raw.githubusercontent.com/Lion0510/deployment/main/images/logo3.png" class="logo">
 </div>
-<div class="header-box">
-    <h1>KicauNet 🦜</h1>
-    <p>Identifikasi Burung Berdasarkan Suara Secara Otomatis</p>
+""", unsafe_allow_html=True)
+
+# Kotak Konten "KicauNet"
+st.markdown("""
+<div class="content-box">
+    <div class="title">KicauNet 🦜</div>
+    <div class="description">
+        Identifikasi Burung Berdasarkan Suara Secara Otomatis
+    </div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -230,15 +236,10 @@ uploaded_audio = st.file_uploader("", type=["mp3", "wav"])
 
 # Jika file audio diunggah
 if uploaded_audio is not None:
-    # Menampilkan widget audio player
     st.audio(uploaded_audio, format="audio/mp3")
-
-    # Menampilkan teks file yang tersimpan dengan warna putih
-    st.markdown(f"""
-    <div style='background-color: rgba(0, 0, 0, 0.6); padding: 10px; border-radius: 10px; text-align: center; margin-top: 10px;'>
-        <p style='color: white; font-size: 1em; margin: 0;'>File berhasil diunggah: <strong>{uploaded_audio.name}</strong></p>
-    </div>
-    """, unsafe_allow_html=True)
+    temp_file_path = "temp_audio.wav"
+    with open(temp_file_path, "wb") as f:
+        f.write(uploaded_audio.read())
 
     # Simpan file audio sementara
     temp_file_path = "temp_audio.wav"
