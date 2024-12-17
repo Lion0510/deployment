@@ -256,10 +256,16 @@ st.markdown("""
             padding: 10px; /* Padding agar file tidak terlalu rapat */
         }
 
-        /* Gaya untuk teks label dan file yang diunggah */
+        /* Gaya untuk teks nama file yang diunggah */
         .stFileUploader > div {
-            font-size: 18px; /* Ukuran font untuk file yang diunggah */
-            color: white; /* Teks putih */
+            font-size: 18px; /* Ukuran font untuk nama file yang diunggah */
+            color: white; /* Teks putih untuk nama file */
+        }
+
+        /* Gaya untuk ukuran file yang diunggah */
+        .stFileUploader > div > div {
+            font-size: 16px; /* Ukuran font untuk ukuran file */
+            color: white; /* Warna teks putih untuk ukuran file */
         }
     </style>
 """, unsafe_allow_html=True)
