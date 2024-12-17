@@ -108,47 +108,53 @@ def get_bird_info(pred_class):
         return {"name": "Unknown", "description": "Deskripsi tidak tersedia.", "image": None}
 
 
-# Fungsi mengunduh model dari Kaggle API
+# Fungsi untuk mengunduh model dari Kaggle API
 def download_model_from_kaggle(kernel_name, output_files, dest_folder):
     try:
-        # Cek apakah model sudah ada
-        os.makedirs(dest_folder, exist_ok=True)
         model_files_exist = all([os.path.exists(os.path.join(dest_folder, file)) for file in output_files])
+        if model_files_exist:
+            return False  # Model sudah ada, tidak perlu mengunduh ulang
 
-        # Inisialisasi Kaggle API
         kaggle_username = st.secrets["kaggle"]["KAGGLE_USERNAME"]
-        kaggle_key = st.secrets["kaggle"]["KAGGLE_KEY"]
-        
-        kaggle_json_path = os.path.expanduser("~/.kaggle/kaggle.json")
+        kaggle_key = st.secrets["kaggle"]["KEY"]
+
+        kaggle_json_path = os.path.expanduser("/home/appuser/.kaggle/kaggle.json")
         os.makedirs(os.path.dirname(kaggle_json_path), exist_ok=True)
 
         with open(kaggle_json_path, 'w') as f:
             json.dump({"username": kaggle_username, "key": kaggle_key}, f)
-        os.chmod(kaggle_json_path, 600)
 
         api = KaggleApi()
         api.authenticate()
 
-        # Unduh model dari output kernel
+        os.makedirs(dest_folder, exist_ok=True)
         for output_file in output_files:
-            st.info(f"Mengunduh model {output_file}...")
             api.kernels_output(kernel_name, path=dest_folder, force=True)
-        st.success("Model berhasil diunduh!")
-
+        return True
     except Exception as e:
-        st.error(f"Kesalahan saat mengunduh model: {str(e)}")
+        st.error(f"Terjadi kesalahan saat mengunduh model: {str(e)}")
+        return None
 
-# Unduh model jika belum tersedia
-models_dir = "./models/"
-output_files = ["cnn_mfcc.h5", "cnn_melspec.h5"]
-download_model_from_kaggle("evanaryaputra28/tubes-dll", output_files, models_dir)
+kernel_name = "evanaryaputra28/tubes-dll"
+output_files = ["cnn_melspec.h5", "cnn_mfcc.h5"]
+dest_folder = "./models/"
 
-# Memuat model
-mfcc_model_path = os.path.join(models_dir, "cnn_mfcc.h5")
-melspec_model_path = os.path.join(models_dir, "cnn_melspec.h5")
+download_status = download_model_from_kaggle(kernel_name, output_files, dest_folder)
 
-mfcc_model = tf.keras.models.load_model(mfcc_model_path)
-melspec_model = tf.keras.models.load_model(melspec_model_path)
+melspec_model_save_path = os.path.join(dest_folder, 'cnn_melspec.h5')
+mfcc_model_save_path = os.path.join(dest_folder, 'cnn_mfcc.h5')
+
+if os.path.exists(melspec_model_save_path):
+    try:
+        melspec_model = tf.keras.models.load_model(melspec_model_save_path)
+    except Exception as e:
+        st.error(f"Gagal memuat model Melspec: {str(e)}")
+
+if os.path.exists(mfcc_model_save_path):
+    try:
+        mfcc_model = tf.keras.models.load_model(mfcc_model_save_path)
+    except Exception as e:
+        st.error(f"Gagal memuat model MFCC: {str(e)}")
 
 # Fungsi pemrosesan MFCC
 def preprocess_mfcc(mfcc):
