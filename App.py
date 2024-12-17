@@ -196,7 +196,7 @@ st.markdown("""
     <img src="https://pbs.twimg.com/profile_images/1272461269136576512/Uw9AShxq_400x400.jpg" alt="Logo Fakultas Teknologi" class="logo">
 </div>
 <div class="header-box">
-    <h1>Klasifikasi Suara Burung Sumatera 🦜</h1>
+    <h1>KicauNet 🦜</h1>
     <p>Identifikasi Burung Berdasarkan Suara Secara Otomatis</p>
 </div>
 """, unsafe_allow_html=True)
@@ -230,19 +230,20 @@ uploaded_audio = st.file_uploader("", type=["mp3", "wav"])
 
 # Jika file audio diunggah
 if uploaded_audio is not None:
-    # Tampilkan audio player
-    st.markdown("""
-    <div style='background-color: rgba(0, 0, 0, 0.6); padding: 10px; border-radius: 10px; text-align: center;'>
-        <h4 style='color: white;'>Audio yang Dipilih:</h4>
+    # Menampilkan widget audio player
+    st.audio(uploaded_audio, format="audio/mp3")
+
+    # Menampilkan teks file yang tersimpan dengan warna putih
+    st.markdown(f"""
+    <div style='background-color: rgba(0, 0, 0, 0.6); padding: 10px; border-radius: 10px; text-align: center; margin-top: 10px;'>
+        <p style='color: white; font-size: 1em; margin: 0;'>File berhasil diunggah: <strong>{uploaded_audio.name}</strong></p>
     </div>
     """, unsafe_allow_html=True)
-    st.audio(uploaded_audio, format="audio/mp3")
 
     # Simpan file audio sementara
     temp_file_path = "temp_audio.wav"
     with open(temp_file_path, "wb") as f:
         f.write(uploaded_audio.read())
-
 
     with st.spinner("Memproses..."):
         try:
