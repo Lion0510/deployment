@@ -21,38 +21,53 @@ st.markdown("""
             background-position: center;
             background-attachment: fixed;
         }
+        /* Container Header */
         .header-content {
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 20px;
             margin-top: 10px;
+            flex-wrap: wrap; /* Agar responsif */
         }
         .logo {
             background-color: white;
             padding: 10px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            display: inline-block;
-            width: 100px;
-            height: auto;
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
         }
+        /* Box Header Judul */
         .header-box {
             background-color: rgba(0, 0, 0, 0.6);
             color: white;
-            padding: 15px 20px;
+            padding: 20px;
             border-radius: 10px;
             text-align: center;
             margin: 20px auto;
-            display: inline-block;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
+        .header-box h1 {
+            font-size: 2.5em;
+            margin: 0;
+        }
+        .header-box p {
+            font-size: 1.2em;
+            margin-top: 5px;
+        }
+        /* Konten Utama */
         .content-section {
             background-color: rgba(0, 0, 0, 0.6);
             color: white;
             padding: 20px;
             border-radius: 10px;
             margin: 20px auto;
+            width: 90%;
+            max-width: 800px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }
         .footer {
