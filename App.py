@@ -213,7 +213,7 @@ st.markdown("""
     <img src="https://pbs.twimg.com/profile_images/1272461269136576512/Uw9AShxq_400x400.jpg" alt="Logo Fakultas Teknologi" class="logo">
 </div>
 <div class="header-box">
-    <h1>KicauNet🦜</h1>
+    <h1>🦜KicauNet🦜</h1>
     <p>Identifikasi Burung Berdasarkan Suara Secara Otomatis</p>
 </div>
 """, unsafe_allow_html=True)
@@ -221,7 +221,7 @@ st.markdown("""
 # Konten Aplikasi
 st.markdown("""
 <section class="content-section">
-    <h2>Klasifikasi Suara</h2>
+    <h1>Klasifikasi Suara</h1>
     <p>Burung yang termasuk dalam klasifikasi ini adalah:</p>
     <ul>
         <li>Pitta sordida</li>
