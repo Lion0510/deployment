@@ -298,8 +298,8 @@ if uploaded_audio is not None:
                 <p style='color: white;'><strong>Akurasinya:</strong> {mfcc_accuracy * 100:.2f}%</p>
                 <p style='color: white;'><strong>Nama:</strong> {mfcc_bird_info['name']}</p>
                 <p style='color: white;'><strong>Deskripsi:</strong> {mfcc_bird_info['description']}</p>
-                if mfcc_bird_info['image']:
-                st.image(mfcc_bird_info['image'], caption=f"{mfcc_bird_info['name']} (Model MFCC)")
+                <img src="{mfcc_bird_info['image']}" alt="{mfcc_bird_info['name']}" style='width: 100%; border-radius: 10px; margin-top: 10px;'>
+                <p style='color: white; font-style: italic;'>{mfcc_bird_info['name']} (Model MFCC)</p>
             </div>
             """, unsafe_allow_html=True)
             
@@ -311,8 +311,8 @@ if uploaded_audio is not None:
                 <p style='color: white;'><strong>Akurasinya:</strong> {melspec_accuracy * 100:.2f}%</p>
                 <p style='color: white;'><strong>Nama:</strong> {melspec_bird_info['name']}</p>
                 <p style='color: white;'><strong>Deskripsi:</strong> {melspec_bird_info['description']}</p>
-                 if melspec_bird_info['image']:
-                    st.image(melspec_bird_info['image'], caption=f"{melspec_bird_info['name']} (Model Melspec)")
+                <img src="{melspec_bird_info['image']}" alt="{melspec_bird_info['name']}" style='width: 100%; border-radius: 10px; margin-top: 10px;'>
+                <p style='color: white; font-style: italic;'>{melspec_bird_info['name']} (Model melspec)</p>
             </div>
             """, unsafe_allow_html=True)
     
