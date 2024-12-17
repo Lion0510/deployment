@@ -12,98 +12,97 @@ import matplotlib.pyplot as plt
 # Menyembunyikan log TensorFlow
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-# Gaya CSS untuk navigasi dan halaman dengan background gambar
+# Menambahkan CSS untuk styling halaman
 st.markdown("""
-<style>
-[data-testid="stAppViewContainer"] {
-    background-image: images/bg.jpg;
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-}
+    <style>
+        /* Background full page */
+        .stApp {
+            background-image: url('images/bg.jpg'); /* Path gambar latar */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
 
-.navigation-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-    padding: 10px;
-    border-radius: 5px;
-    margin: 20px auto;
-    max-width: 800px;
-}
+        /* Kontainer navigasi */
+        .navigation-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.8); /* Transparansi putih */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 20px auto;
+            max-width: 800px;
+        }
 
-.navigation-button {
-    padding: 15px 25px;
-    background-color: #fff;
-    color: #333;
-    border: 1px solid #ccc;
-    text-decoration: none;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
+        .navigation-button {
+            padding: 15px 25px;
+            background-color: #fff;
+            color: #333;
+            border: 1px solid #ccc;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
 
-.navigation-button:hover {
-    background-color: #e0e0e0;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
-}
+        .navigation-button:hover {
+            background-color: #e0e0e0;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+        }
 
-.active {
-    background-color: #2196F3;
-    color: #fff;
-    border-color: #2196F3;
-}
+        /* Header logo dan judul */
+        .header-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px; /* Jarak antar logo */
+        }
 
-.header-content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px; /* Memberikan jarak antara logo */
-}
+        .logo {
+            width: 100px; /* Ukuran logo */
+            height: auto;
+            display: inline-block;
+        }
 
-.logo {
-    width: 100px;  /* Atur ukuran logo */
-    height: auto;
-    display: inline-block;
-}
+        .header-title h1 {
+            color: #fff;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 2.5em;
+        }
 
-.header-title h1 {
-    color: #fff;
-    text-align: center;
-    margin-top: 20px;
-    font-size: 2em;
-}
+        .header-title p {
+            text-align: center;
+            margin-top: 5px;
+            font-size: 1.2em;
+            color: #ccc;
+        }
 
-.header-title p {
-    text-align: center;
-    margin-top: 5px;
-    font-size: 1.2em;
-    color: #ccc;
-}
+        /* Konten utama */
+        .content-section {
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.6); /* Latar transparan untuk teks */
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 800px;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
 
-.content-section {
-    text-align: center;  /* Menengahkan teks */
-    background-color: rgba(0, 0, 0, 0.6);  /* Latar belakang transparan untuk teks */
-    border-radius: 10px;
-    padding: 20px;
-    margin: 20px auto;
-    max-width: 800px;
-    color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  /* Memberikan bayangan pada container */
-}
-
-.footer {
-    text-align: center;
-    margin-top: 20px;
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-</style>
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+    </style>
 """, unsafe_allow_html=True)
 
 # Kamus deskripsi kelas burung
