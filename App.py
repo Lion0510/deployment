@@ -311,23 +311,23 @@ st.markdown("""
 # Upload file audio
 uploaded_audio = st.file_uploader("Unggah file audio (MP3/WAV)", type=["mp3", "wav"], label_visibility="hidden")
 
-    # Jika file audio diunggah
 if uploaded_audio is not None:
+    # Tampilkan audio
     st.audio(uploaded_audio, format="audio/mp3")
     temp_file_path = "temp_audio.wav"
     with open(temp_file_path, "wb") as f:
         f.write(uploaded_audio.read())
-        
+
     with st.spinner("Memproses..."):
         try:
             # Load audio sekali saja di awal
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore", UserWarning)
                 y, sr = librosa.load(temp_file_path, sr=None)  # Muat file audio
-    
+
             # Menghasilkan MFCC
             mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
-    
+
             # Tampilkan spektrum MFCC
             st.markdown("""
             <div style='background-color: rgba(0, 0, 0, 0.6); padding: 10px; border-radius: 10px; text-align: center;'>
@@ -335,11 +335,11 @@ if uploaded_audio is not None:
             </div>
             """, unsafe_allow_html=True)
             plot_spectrogram(mfcc, sr, "MFCC", y_axis="mel", x_axis="time")
-    
+
             # Menghasilkan MelSpectrogram
             melspec = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=64)
             melspec_db = librosa.power_to_db(melspec, ref=np.max)
-    
+
             # Tampilkan spektrum Melspectrogram
             st.markdown("""
             <div style='background-color: rgba(0, 0, 0, 0.6); padding: 10px; border-radius: 10px; text-align: center;'>
@@ -347,28 +347,24 @@ if uploaded_audio is not None:
             </div>
             """, unsafe_allow_html=True)
             plot_spectrogram(melspec_db, sr, "Melspectrogram", y_axis="mel", x_axis="time")
-    
-        except Exception as e:
-            st.error(f"Error saat memproses audio: {str(e)}")
 
-            
             # Preproses Melspectrogram untuk model
             melspec_resized = preprocess_melspec(melspec)
-            
+
             # Prediksi menggunakan model
             predictions = melspec_model.predict(melspec_resized)[0]
-            
+
             # Dapatkan top 3 kelas berdasarkan probabilitas tertinggi
             top_3_indices = np.argsort(predictions)[-3:][::-1]
             top_3_probabilities = predictions[top_3_indices]
-            
+
+            # Tampilkan hasil prediksi top 3
             st.markdown("""
             <div style='background-color: rgba(0, 0, 0, 0.8); padding: 15px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);'>
                 <h3 style='color: white; text-align: center; margin-bottom: 10px;'>Hasil Prediksi Top 3</h3>
             </div>
             """, unsafe_allow_html=True)
-            
-            # Tampilkan top 3 prediksi
+
             for idx, (class_idx, probability) in enumerate(zip(top_3_indices, top_3_probabilities), 1):
                 bird_info = get_bird_info(class_idx)
                 prediction_percentage = probability * 100
