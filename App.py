@@ -279,7 +279,7 @@ if uploaded_audio is not None:
     temp_file_path = "temp_audio.wav"
     with open(temp_file_path, "wb") as f:
         f.write(uploaded_audio.read())
-
+    
     with st.spinner("Memproses..."):
         try:
             # Proses audio menjadi MelSpectrogram
@@ -288,40 +288,51 @@ if uploaded_audio is not None:
                 y, sr = librosa.load(temp_file_path, sr=None)
                 melspec = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=64)
                 melspec_db = librosa.power_to_db(melspec, ref=np.max)
-
+            
             # Teks "Spektrum Melspectrogram" dengan background hitam transparan
             st.markdown("""
             <div style='background-color: rgba(0, 0, 0, 0.6); padding: 10px; border-radius: 10px; text-align: center;'>
                 <h3 style='color: white; margin: 0;'>Spektrum Melspectrogram</h3>
             </div>
             """, unsafe_allow_html=True)
-
+            
             plot_spectrogram(melspec_db, sr, "Melspectrogram", y_axis="mel", x_axis="time")
-
-            # Dummy model prediction (replace with actual model predictions)
-            # Here, you should load your model and use it for predictions
-            dummy_predictions = np.array([0.5, 0.3, 0.1, 0.05, 0.03, 0.02])  # Example probabilities
-            top_3_indices = np.argsort(dummy_predictions)[-3:][::-1]  # Top 3 indices based on probabilities
-
+            
+            # Preprocess Melspectrogram untuk prediksi
+            melspec_image = preprocess_melspec(melspec)
+            melspec_image = np.expand_dims(melspec_image, axis=0)
+            
+            # Prediksi menggunakan model
+            melspec_result = melspec_model.predict(melspec_image)[0]
+            
+            # Dapatkan top 3 prediksi
+            top_3_indices = np.argsort(melspec_result)[-3:][::-1]
+            top_3_probabilities = melspec_result[top_3_indices]
+            
             st.markdown("""
             <div style='background-color: rgba(0, 0, 0, 0.6); padding: 15px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);'>
-                <h3 style='color: white; text-align: center; margin-bottom: 10px;'>Hasil Prediksi</h3>
+                <h3 style='color: white; text-align: center; margin-bottom: 10px;'>Hasil Prediksi Top 3</h3>
             """, unsafe_allow_html=True)
-
-            for idx in top_3_indices:
-                bird_info = get_bird_info(idx)
+            
+            for idx, (class_idx, probability) in enumerate(zip(top_3_indices, top_3_probabilities), 1):
+                bird_info = get_bird_info(class_idx)
+                prediction_percentage = probability * 100
+                
                 st.markdown(f"""
-                <p style='color: white;'><strong>Kelas:</strong> {idx}</p>
-                <p style='color: white;'><strong>Nama Burung:</strong> {bird_info['name']}</p>
-                <p style='color: white;'><strong>Akurasinya:</strong> {dummy_predictions[idx] * 100:.2f}%</p>
-                <img src="{bird_info['image']}" alt="{bird_info['name']}" style='width: 100%; border-radius: 10px; margin-top: 10px;'>
+                <div style='background-color: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 10px; margin-bottom: 10px;'>
+                    <p style='color: white;'><strong>Peringkat {idx}:</strong></p>
+                    <p style='color: white;'><strong>Kelas:</strong> {class_idx}</p>
+                    <p style='color: white;'><strong>Nama Burung:</strong> {bird_info['name']}</p>
+                    <p style='color: white;'><strong>Akurasi:</strong> {prediction_percentage:.2f}%</p>
+                    <img src="{bird_info['image']}" alt="{bird_info['name']}" style='width: 100%; border-radius: 10px; margin-top: 10px;'>
+                    <p style='color: white; font-style: italic;'>{bird_info['description']}</p>
+                </div>
                 """, unsafe_allow_html=True)
-
+            
             st.markdown("</div>", unsafe_allow_html=True)
-
+            
         except Exception as e:
             st.error(f"Error saat memproses audio: {str(e)}")
-
 
 # Footer
 st.markdown("""
