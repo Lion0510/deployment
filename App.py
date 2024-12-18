@@ -99,7 +99,7 @@ BIRD_CLASSES = {
     },
     2: {
         "name": "Caprimulgus macrurus",
-        "description": "Penjelasan: Burung ini aktif di malam hari dan memiliki bulu yang menyerupai warna kulit kayu, sehingga mudah berkamuflase. Kangkok Malam Besar memakan serangga dan sering ditemukan di area terbuka dekat hutan.",
+        "description": "Burung ini aktif di malam hari dan memiliki bulu yang menyerupai warna kulit kayu, sehingga mudah berkamuflase. Kangkok Malam Besar memakan serangga dan sering ditemukan di area terbuka dekat hutan.",
         "image": 'https://raw.githubusercontent.com/Lion0510/deployment/main/images/Caprimulgus_macrurus.jpg'
     },
     3: {
@@ -109,7 +109,7 @@ BIRD_CLASSES = {
     },
     4: {
         "name": "Anthipes solitaris",
-        "description": "Penjelasan: Kacer Soliter adalah burung kecil yang suka berada di dekat aliran sungai. Bulunya berwarna abu-abu dan putih dengan suara kicauan yang lembut. Ia sering makan serangga kecil.",
+        "description": "Kacer Soliter adalah burung kecil yang suka berada di dekat aliran sungai. Bulunya berwarna abu-abu dan putih dengan suara kicauan yang lembut. Ia sering makan serangga kecil.",
         "image": 'https://raw.githubusercontent.com/Lion0510/deployment/main/images/Anthipes_solitaris.jpg'
     },
     5: {
