@@ -327,7 +327,9 @@ if uploaded_audio is not None:
             top_3_probabilities = melspec_result[top_3_indices]
             
             st.markdown("""
-            <div style='background-color: rgba(0, 0, 0, 0.6); padding: 15px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);'>
+            
+<div style='background-color: rgba(0, 0, 0, 0.8); padding: 15px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);'>
+
                 <h3 style='color: white; text-align: center; margin-bottom: 10px;'>Hasil Prediksi Top 3</h3>
             """, unsafe_allow_html=True)
             
@@ -341,7 +343,9 @@ if uploaded_audio is not None:
                     <p style='color: white;'><strong>Kelas:</strong> {class_idx}</p>
                     <p style='color: white;'><strong>Nama Burung:</strong> {bird_info['name']}</p>
                     <p style='color: white;'><strong>Akurasi:</strong> {prediction_percentage:.2f}%</p>
-                    <img src="{bird_info['image']}" alt="{bird_info['name']}" style='width: 100%; border-radius: 10px; margin-top: 10px;'>
+                    
+<img src="{bird_info['image']}" alt="{bird_info['name']}" style='width: 80%; border-radius: 10px; margin-top: 10px;'>
+
                     <p style='color: white; font-style: italic;'>{bird_info['description']}</p>
                 </div>
                 """, unsafe_allow_html=True)
