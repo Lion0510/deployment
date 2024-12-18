@@ -315,25 +315,29 @@ if uploaded_audio is not None:
             
             plot_spectrogram(melspec_db, sr, "Melspectrogram", y_axis="mel", x_axis="time")
             
-            # Dummy model prediction (replace with actual model predictions)
-            # Here, you should load your model and use it for predictions
-            dummy_predictions = np.array([0.5, 0.3, 0.1, 0.05, 0.03, 0.02])  # Example probabilities
-            top_3_indices = np.argsort(dummy_predictions)[-3:][::-1]  # Top 3 indices based on probabilities
+            # Sort top 3 prediksi berdasarkan probabilitas tertinggi
+            sorted_indices = np.argsort(top_3_probabilities)[::-1]  # Urutkan dari yang terbesar
+            top_3_indices_sorted = [top_3_indices[i] for i in sorted_indices]
+            top_3_probabilities_sorted = [top_3_probabilities[i] for i in sorted_indices]
 
             st.markdown("""
             <div style='background-color: rgba(0, 0, 0, 0.8); padding: 15px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);'>
                 <h3 style='color: white; text-align: center; margin-bottom: 10px;'>Hasil Prediksi Top 3</h3>
+            </div>
             """, unsafe_allow_html=True)
 
-            for idx, (class_idx, probability) in enumerate(zip(top_3_indices, dummy_predictions[top_3_indices]), 1):
+            for idx, (class_idx, probability) in enumerate(zip(top_3_indices_sorted, top_3_probabilities_sorted), 1):
                 bird_info = get_bird_info(class_idx)
+                prediction_percentage = probability * 100  # Konversi probabilitas menjadi persen
+                
+                # Kontainer hasil prediksi
                 st.markdown(f"""
                 <div style='background-color: rgba(0, 0, 0, 0.6); padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: center;'>
                     <p style='color: white; font-size: 18px;'><strong>Peringkat {idx}:</strong></p>
                     <p style='color: white;'><strong>Kelas:</strong> {class_idx}</p>
                     <p style='color: white; font-size: 20px;'><strong>Nama Burung:</strong> {bird_info['name']}</p>
-                    <p style='color: white; font-size: 18px;'><strong>Akurasi:</strong> {probability * 100:.2f}%</p>
-                    <img src="{bird_info['image']}" alt="{bird_info['name']}" style='width: 90%; max-width: 500px; height: auto; border-radius: 10px; margin-top: 10px;'>
+                    <p style='color: white; font-size: 18px;'><strong>Akurasi:</strong> {prediction_percentage:.2f}%</p>
+                    <img src="{bird_info['image']}" alt="{bird_info['name']}" style='width: 80%; max-width: 500px; height: auto; border-radius: 10px; margin-top: 10px;'>
                     <p style='color: white; font-style: italic; margin-top: 10px;'>{bird_info.get('description', 'Deskripsi tidak tersedia.')}</p>
                 </div>
                 """, unsafe_allow_html=True)
