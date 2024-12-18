@@ -95,7 +95,7 @@ BIRD_CLASSES = {
     1: {
         "name": "Dryocopus javensis",
         "description": "Burung pelatuk ini memiliki bulu hitam dengan warna merah mencolok di kepalanya. Ia menggunakan paruhnya yang kuat untuk mematuk batang pohon, mencari serangga, atau membuat sarang.",
-        "image": 'https://raw.githubusercontent.com/Lion0510/deployment/main/images//Dryocopus_javensis.jpg'
+        "image": 'https://raw.githubusercontent.com/Lion0510/deployment/refs/heads/main/images/%20Dryocopus_javensis.jpg'
     },
     2: {
         "name": "Caprimulgus macrurus",
