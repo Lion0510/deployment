@@ -45,7 +45,7 @@ def splash_screen():
         }
     </style>
     <div class="splash-screen">
-        <img src="https://path_to_your_logo/logo.png" alt="Logo" class="splash-logo">
+        <img src="https://raw.githubusercontent.com/Lion0510/deployment/refs/heads/main/images/LogoApp.jpeg" alt="Logo" class="splash-logo">
     </div>
     """, unsafe_allow_html=True)
 
