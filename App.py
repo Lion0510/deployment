@@ -242,6 +242,23 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+<style>
+.bird-image {
+    width: 100%; 
+    max-width: 800px; 
+    height: auto; 
+    border-radius: 15px; 
+    box-shadow: 0 15px 25px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+}
+.bird-image:hover {
+    transform: scale(1.05);
+    box-shadow: 0 20px 35px rgba(0,0,0,0.4);
+}
+</style>
+""", unsafe_allow_html=True)
+
 # Konten Aplikasi
 st.markdown("""
 <section class="content-section">
