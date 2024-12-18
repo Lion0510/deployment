@@ -216,7 +216,7 @@ st.markdown("""
     <img src="https://pbs.twimg.com/profile_images/1272461269136576512/Uw9AShxq_400x400.jpg" alt="Logo Fakultas Teknologi" class="logo">
 </div>
 <div class="header-box">
-    <h1>🦜KicauNet🦜</h1>
+    <h1>🦜Tweetify🦜</h1>
     <p>Identifikasi Burung Berdasarkan Suara Secara Otomatis</p>
 </div>
 """, unsafe_allow_html=True)
@@ -282,82 +282,46 @@ if uploaded_audio is not None:
 
     with st.spinner("Memproses..."):
         try:
-            # Proses audio menjadi MFCC dan MelSpectrogram
+            # Proses audio menjadi MelSpectrogram
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore", UserWarning)
                 y, sr = librosa.load(temp_file_path, sr=None)
-                
-            mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
-            melspec = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=64)
+                melspec = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=64)
+                melspec_db = librosa.power_to_db(melspec, ref=np.max)
 
-            # Teks "Spektrum MFCC" dengan background hitam transparan
-            st.markdown("""
-            <div style='background-color: rgba(0, 0, 0, 0.6); padding: 10px; border-radius: 10px; text-align: center;'>
-                <h3 style='color: white; margin: 0;'>Spektrum MFCC</h3>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            plot_spectrogram(mfcc, sr, "MFCC", y_axis="mel", x_axis="time")
-            
             # Teks "Spektrum Melspectrogram" dengan background hitam transparan
             st.markdown("""
             <div style='background-color: rgba(0, 0, 0, 0.6); padding: 10px; border-radius: 10px; text-align: center;'>
                 <h3 style='color: white; margin: 0;'>Spektrum Melspectrogram</h3>
             </div>
             """, unsafe_allow_html=True)
-            
-            melspec_db = librosa.power_to_db(melspec, ref=np.max)
+
             plot_spectrogram(melspec_db, sr, "Melspectrogram", y_axis="mel", x_axis="time")
 
-            # Preproses gambar
-            mfcc_image = preprocess_mfcc(mfcc)
-            melspec_image = preprocess_melspec(melspec)
+            # Dummy model prediction (replace with actual model predictions)
+            # Here, you should load your model and use it for predictions
+            dummy_predictions = np.array([0.5, 0.3, 0.1, 0.05, 0.03, 0.02])  # Example probabilities
+            sorted_indices = np.argsort(dummy_predictions)[::-1]
+            top_3_indices = sorted_indices[:3]
 
-            mfcc_image = np.expand_dims(mfcc_image, axis=0)
-            melspec_image = np.expand_dims(melspec_image, axis=0)
-
-            # Prediksi menggunakan model
-            mfcc_result = mfcc_model.predict(mfcc_image)
-            melspec_result = melspec_model.predict(melspec_image)
-
-            mfcc_pred_class = np.argmax(mfcc_result, axis=1)[0]
-            melspec_pred_class = np.argmax(melspec_result, axis=1)[0]
-            mfcc_accuracy = np.max(mfcc_result)
-            melspec_accuracy = np.max(melspec_result)
-
-            # Ambil informasi hasil prediksi
-            mfcc_bird_info = get_bird_info(mfcc_pred_class)
-            melspec_bird_info = get_bird_info(melspec_pred_class)
-
-            st.markdown(f"""
+            st.markdown("""
             <div style='background-color: rgba(0, 0, 0, 0.6); padding: 15px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);'>
                 <h3 style='color: white; text-align: center; margin-bottom: 10px;'>Hasil Prediksi</h3>
-                <h4 style='color: white; text-align: center; margin-bottom: 5px;'>Model MFCC</h4>
-                <p style='color: white;'><strong>Prediksi Kelas:</strong> {mfcc_pred_class}</p>
-                <p style='color: white;'><strong>Akurasinya:</strong> {mfcc_accuracy * 100:.2f}%</p>
-                <p style='color: white;'><strong>Nama:</strong> {mfcc_bird_info['name']}</p>
-                <p style='color: white;'><strong>Deskripsi:</strong> {mfcc_bird_info['description']}</p>
-                <img src="{mfcc_bird_info['image']}" alt="{mfcc_bird_info['name']}" style='width: 100%; border-radius: 10px; margin-top: 10px;'>
-                <p style='color: white; font-style: italic;'>{mfcc_bird_info['name']} (Model MFCC)</p>
-            </div>
             """, unsafe_allow_html=True)
-            
-            
-            st.markdown(f"""
-            <div style='background-color: rgba(0, 0, 0, 0.6); padding: 15px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); margin-top: 20px;'>
-                <h4 style='color: white; text-align: center; margin-bottom: 5px;'>Model Melspec</h4>
-                <p style='color: white;'><strong>Prediksi Kelas:</strong> {melspec_pred_class}</p>
-                <p style='color: white;'><strong>Akurasinya:</strong> {melspec_accuracy * 100:.2f}%</p>
-                <p style='color: white;'><strong>Nama:</strong> {melspec_bird_info['name']}</p>
-                <p style='color: white;'><strong>Deskripsi:</strong> {melspec_bird_info['description']}</p>
-                <img src="{melspec_bird_info['image']}" alt="{melspec_bird_info['name']}" style='width: 100%; border-radius: 10px; margin-top: 10px;'>
-                <p style='color: white; font-style: italic;'>{melspec_bird_info['name']} (Model melspec)</p>
-            </div>
-            """, unsafe_allow_html=True)
-    
-        except Exception as e:
-            st.error(f"Error saat melakukan prediksi: {str(e)}")
 
+            for idx in top_3_indices:
+                bird_info = get_bird_info(idx)
+                st.markdown(f"""
+                <p style='color: white;'><strong>Kelas:</strong> {idx}</p>
+                <p style='color: white;'><strong>Nama Burung:</strong> {bird_info['name']}</p>
+                <p style='color: white;'><strong>Akurasinya:</strong> {dummy_predictions[idx] * 100:.2f}%</p>
+                <img src="{bird_info['image']}" alt="{bird_info['name']}" style='width: 100%; border-radius: 10px; margin-top: 10px;'>
+                """, unsafe_allow_html=True)
+
+            st.markdown("</div>", unsafe_allow_html=True)
+
+        except Exception as e:
+            st.error(f"Error saat memproses audio: {str(e)}")
 
 
 # Footer
