@@ -312,11 +312,11 @@ st.markdown("""
 uploaded_audio = st.file_uploader("Unggah file audio (MP3/WAV)", type=["mp3", "wav"], label_visibility="hidden")
 
     # Jika file audio diunggah
-    if uploaded_audio is not None:
-        st.audio(uploaded_audio, format="audio/mp3")
-        temp_file_path = "temp_audio.wav"
-        with open(temp_file_path, "wb") as f:
-            f.write(uploaded_audio.read())
+if uploaded_audio is not None:
+    st.audio(uploaded_audio, format="audio/mp3")
+    temp_file_path = "temp_audio.wav"
+    with open(temp_file_path, "wb") as f:
+        f.write(uploaded_audio.read())
         
     with st.spinner("Memproses..."):
         try:
