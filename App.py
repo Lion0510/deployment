@@ -315,22 +315,28 @@ if uploaded_audio is not None:
             
             plot_spectrogram(melspec_db, sr, "Melspectrogram", y_axis="mel", x_axis="time")
             
+            # Preproses MelSpectrogram untuk model
+            melspec_resized = np.expand_dims(melspec_db, axis=0)
+            melspec_resized = np.expand_dims(melspec_resized, axis=-1)
+            
+            # Prediksi menggunakan model (gunakan model yang ada)
+            predictions = melspec_model.predict(melspec_resized)[0]  # Prediksi untuk satu sampel
+            
             # Sort top 3 prediksi berdasarkan probabilitas tertinggi
-            sorted_indices = np.argsort(top_3_probabilities)[::-1]  # Urutkan dari yang terbesar
-            top_3_indices_sorted = [top_3_indices[i] for i in sorted_indices]
-            top_3_probabilities_sorted = [top_3_probabilities[i] for i in sorted_indices]
+            top_3_indices = np.argsort(predictions)[-3:][::-1]  # Top 3 index dan sorted
+            top_3_probabilities = predictions[top_3_indices]
 
+            # Tampilan hasil prediksi
             st.markdown("""
             <div style='background-color: rgba(0, 0, 0, 0.8); padding: 15px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);'>
                 <h3 style='color: white; text-align: center; margin-bottom: 10px;'>Hasil Prediksi Top 3</h3>
             </div>
             """, unsafe_allow_html=True)
 
-            for idx, (class_idx, probability) in enumerate(zip(top_3_indices_sorted, top_3_probabilities_sorted), 1):
+            for idx, (class_idx, probability) in enumerate(zip(top_3_indices, top_3_probabilities), 1):
                 bird_info = get_bird_info(class_idx)
                 prediction_percentage = probability * 100  # Konversi probabilitas menjadi persen
                 
-                # Kontainer hasil prediksi
                 st.markdown(f"""
                 <div style='background-color: rgba(0, 0, 0, 0.6); padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: center;'>
                     <p style='color: white; font-size: 18px;'><strong>Peringkat {idx}:</strong></p>
@@ -346,7 +352,6 @@ if uploaded_audio is not None:
 
         except Exception as e:
             st.error(f"Error saat memproses audio: {str(e)}")
-
         
 # Footer
 st.markdown("""
