@@ -37,6 +37,8 @@ def splash_screen():
         .splash-logo {
             width: 350px; /* Ukuran logo */
             height: auto;
+            border: 5px solid white; /* Border putih */
+            border-radius: 15px; /* Ujung melengkung */
             animation: fadeIn 3s ease-in-out; /* Animasi fade-in */
         }
         @keyframes fadeIn {
