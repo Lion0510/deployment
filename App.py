@@ -329,34 +329,27 @@ if uploaded_audio is not None:
             top_3_indices = np.argsort(predictions)[-3:][::-1]
             top_3_probabilities = predictions[top_3_indices]
             
-            # Validasi top 3 dengan kriteria minimal akurasi
-            min_accuracy_threshold = 0.3  # Misalnya, minimal 30% akurasi
-            valid_predictions = [(idx, prob) for idx, prob in zip(top_3_indices, top_3_probabilities) if prob >= min_accuracy_threshold]
-            
             st.markdown("""
             <div style='background-color: rgba(0, 0, 0, 0.8); padding: 15px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);'>
                 <h3 style='color: white; text-align: center; margin-bottom: 10px;'>Hasil Prediksi Top 3</h3>
             </div>
             """, unsafe_allow_html=True)
             
-            # Tampilkan hanya prediksi yang memenuhi ambang batas
-            if valid_predictions:
-                for idx, (class_idx, probability) in enumerate(valid_predictions, 1):
-                    bird_info = get_bird_info(class_idx)
-                    prediction_percentage = probability * 100
-                    
-                    st.markdown(f"""
-                    <div style='background-color: rgba(0, 0, 0, 0.6); padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: center;'>
-                        <p style='color: white; font-size: 18px;'><strong>Peringkat {idx}:</strong></p>
-                        <p style='color: white;'><strong>Kelas:</strong> {class_idx}</p>
-                        <p style='color: white; font-size: 20px;'><strong>Nama Burung:</strong> {bird_info['name']}</p>
-                        <p style='color: white; font-size: 18px;'><strong>Akurasi:</strong> {prediction_percentage:.2f}%</p>
-                        <img src="{bird_info['image']}" alt="{bird_info['name']}" style='width: 90%; max-width: 500px; height: auto; border-radius: 10px; margin-top: 10px;'>
-                        <p style='color: white; font-style: italic; margin-top: 10px;'>{bird_info.get('description', 'Deskripsi tidak tersedia.')}</p>
-                    </div>
-                    """, unsafe_allow_html=True)
-            else:
-                st.warning("Tidak ada kelas yang memenuhi ambang batas akurasi minimum.")
+            # Tampilkan top 3 prediksi
+            for idx, (class_idx, probability) in enumerate(zip(top_3_indices, top_3_probabilities), 1):
+                bird_info = get_bird_info(class_idx)
+                prediction_percentage = probability * 100
+                
+                st.markdown(f"""
+                <div style='background-color: rgba(0, 0, 0, 0.6); padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: center;'>
+                    <p style='color: white; font-size: 18px;'><strong>Peringkat {idx}:</strong></p>
+                    <p style='color: white;'><strong>Kelas:</strong> {class_idx}</p>
+                    <p style='color: white; font-size: 20px;'><strong>Nama Burung:</strong> {bird_info['name']}</p>
+                    <p style='color: white; font-size: 18px;'><strong>Akurasi:</strong> {prediction_percentage:.2f}%</p>
+                    <img src="{bird_info['image']}" alt="{bird_info['name']}" style='width: 90%; max-width: 500px; height: auto; border-radius: 10px; margin-top: 10px;'>
+                    <p style='color: white; font-style: italic; margin-top: 10px;'>{bird_info.get('description', 'Deskripsi tidak tersedia.')}</p>
+                </div>
+                """, unsafe_allow_html=True)
             
             st.markdown("</div>", unsafe_allow_html=True)
         
