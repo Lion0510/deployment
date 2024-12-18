@@ -324,78 +324,74 @@ with st.spinner("Memproses..."):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", UserWarning)
             y, sr = librosa.load(temp_file_path, sr=None)
-        
+
         # Menghasilkan MFCC
         mfcc = librosa.feature.mfcc(
             y=y, 
             sr=sr, 
             n_mfcc=13
         )
-        
+
         # Tampilkan spektrum MFCC
         st.markdown("""
         <div style='background-color: rgba(0, 0, 0, 0.6); padding: 10px; border-radius: 10px; text-align: center;'>
             <h3 style='color: white; margin: 0;'>Spektrum MFCC</h3>
         </div>
         """, unsafe_allow_html=True)
-        
         plot_spectrogram(mfcc, sr, "MFCC", y_axis="mel", x_axis="time")
-        
+
         # Menghasilkan Melspectrogram dengan parameter yang lebih detail
         melspec = librosa.feature.melspectrogram(
             y=y,
             sr=sr,
             n_mels=128,  # Meningkatkan resolusi mel bins
-            n_fft=2048,   # Meningkatkan resolusi frekuensi
+            n_fft=2048,  # Meningkatkan resolusi frekuensi
             hop_length=512  # Meningkatkan resolusi waktu
         )
         melspec_db = librosa.power_to_db(melspec, ref=np.max)
-        
+
         # Tampilkan spektrum Melspectrogram
         st.markdown("""
         <div style='background-color: rgba(0, 0, 0, 0.6); padding: 10px; border-radius: 10px; text-align: center;'>
             <h3 style='color: white; margin: 0;'>Spektrum Melspectrogram</h3>
         </div>
         """, unsafe_allow_html=True)
-        
         plot_spectrogram(melspec_db, sr, "Melspectrogram", y_axis="mel", x_axis="time")
-            
-            # Preproses Melspectrogram untuk model
-            melspec_resized = preprocess_melspec(melspec)
-            
-            # Prediksi menggunakan model
-            predictions = melspec_model.predict(melspec_resized)[0]
-            
-            # Dapatkan top 3 kelas berdasarkan probabilitas tertinggi
-            top_3_indices = np.argsort(predictions)[-3:][::-1]
-            top_3_probabilities = predictions[top_3_indices]
-            
-            st.markdown("""
-            <div style='background-color: rgba(0, 0, 0, 0.8); padding: 15px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);'>
-                <h3 style='color: white; text-align: center; margin-bottom: 10px;'>Hasil Prediksi Top 3</h3>
+
+        # Preproses Melspectrogram untuk model
+        melspec_resized = preprocess_melspec(melspec)
+
+        # Prediksi menggunakan model
+        predictions = melspec_model.predict(melspec_resized)[0]
+
+        # Dapatkan top 3 kelas berdasarkan probabilitas tertinggi
+        top_3_indices = np.argsort(predictions)[-3:][::-1]
+        top_3_probabilities = predictions[top_3_indices]
+
+        st.markdown("""
+        <div style='background-color: rgba(0, 0, 0, 0.8); padding: 15px; border-radius: 10px; text-align: center;'>
+            <h3 style='color: white; margin: 0;'>Hasil Prediksi Top 3</h3>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Tampilkan top 3 prediksi
+        for idx, (class_idx, probability) in enumerate(zip(top_3_indices, top_3_probabilities), 1):
+            bird_info = get_bird_info(class_idx)
+            prediction_percentage = probability * 100
+
+            st.markdown(f"""
+            <div style='background-color: rgba(0, 0, 0, 0.6); padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: center;'>
+                <p style='color: white; font-size: 18px;'><strong>Peringkat {idx}:</strong></p>
+                <p style='color: white;'><strong>Kelas:</strong> {class_idx}</p>
+                <p style='color: white; font-size: 20px;'><strong>Nama Burung:</strong> {bird_info['name']}</p>
+                <p style='color: white;'><strong>Akurasi:</strong> {prediction_percentage:.2f}%</p>
+                <p style='color: white; font-style: italic; margin-top: 10px;'>{bird_info.get('description', 'Deskripsi tidak tersedia.')}</p>
             </div>
             """, unsafe_allow_html=True)
-            
-            # Tampilkan top 3 prediksi
-            for idx, (class_idx, probability) in enumerate(zip(top_3_indices, top_3_probabilities), 1):
-                bird_info = get_bird_info(class_idx)
-                prediction_percentage = probability * 100
-                
-                st.markdown(f"""
-                <div style='background-color: rgba(0, 0, 0, 0.6); padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: center;'>
-                    <p style='color: white; font-size: 18px;'><strong>Peringkat {idx}:</strong></p>
-                    <p style='color: white;'><strong>Kelas:</strong> {class_idx}</p>
-                    <p style='color: white; font-size: 20px;'><strong>Nama Burung:</strong> {bird_info['name']}</p>
-                    <p style='color: white; font-size: 18px;'><strong>Akurasi:</strong> {prediction_percentage:.2f}%</p>
-                    <img src="{bird_info['image']}" alt="{bird_info['name']}" style='width: 90%; max-width: 500px; height: auto; border-radius: 10px; margin-top: 10px;'>
-                    <p style='color: white; font-style: italic; margin-top: 10px;'>{bird_info.get('description', 'Deskripsi tidak tersedia.')}</p>
-                </div>
-                """, unsafe_allow_html=True)
-            
-            st.markdown("</div>", unsafe_allow_html=True)
-        
-        except Exception as e:
-            st.error(f"Error saat memproses audio: {str(e)}")
+
+    except Exception as e:
+        st.error(f"Error saat memproses audio: {str(e)}")
+
         
 # Footer
 st.markdown("""
