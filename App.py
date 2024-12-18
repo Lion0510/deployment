@@ -205,6 +205,19 @@ def plot_spectrogram(data, sr, title, y_axis, x_axis):
     st.pyplot(plt)
     plt.close()
 
+def preprocess_melspec(melspec):
+    melspec_db = librosa.power_to_db(melspec, ref=np.max)
+    melspec_image = Image.fromarray(melspec_db).resize((64, 64))  # Resize ke (64, 64)
+    melspec_resized = np.array(melspec_image)
+
+    # Ubah grayscale menjadi 3 channel (RGB)
+    if len(melspec_resized.shape) == 2:
+        melspec_resized = np.expand_dims(melspec_resized, axis=-1)
+        melspec_resized = np.repeat(melspec_resized, 3, axis=-1)
+
+    melspec_resized = np.expand_dims(melspec_resized, axis=0)  # Tambahkan batch dimension
+    return melspec_resized
+
 # Tambahkan CSS ke aplikasi
 #add_custom_css()
 
