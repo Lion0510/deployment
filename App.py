@@ -300,71 +300,44 @@ if uploaded_audio is not None:
     temp_file_path = "temp_audio.wav"
     with open(temp_file_path, "wb") as f:
         f.write(uploaded_audio.read())
-    
+
     with st.spinner("Memproses..."):
         try:
-            # Proses audio menjadi MFCC dan MelSpectrogram
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore", UserWarning)
-                y, sr = librosa.load(temp_file_path, sr=None)
-                
-            mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
-            melspec = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=64)
-
-            # Teks "Spektrum MFCC" dengan background hitam transparan
-            st.markdown("""
-            <div style='background-color: rgba(0, 0, 0, 0.6); padding: 10px; border-radius: 10px; text-align: center;'>
-                <h3 style='color: white; margin: 0;'>Spektrum MFCC</h3>
-            </div>
-            """, unsafe_allow_html=True)
-            
-            plot_spectrogram(mfcc, sr, "MFCC", y_axis="mel", x_axis="time")
-
             # Proses audio menjadi MelSpectrogram
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore", UserWarning)
                 y, sr = librosa.load(temp_file_path, sr=None)
                 melspec = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=64)
                 melspec_db = librosa.power_to_db(melspec, ref=np.max)
-            
+
             # Teks "Spektrum Melspectrogram" dengan background hitam transparan
             st.markdown("""
             <div style='background-color: rgba(0, 0, 0, 0.6); padding: 10px; border-radius: 10px; text-align: center;'>
                 <h3 style='color: white; margin: 0;'>Spektrum Melspectrogram</h3>
             </div>
             """, unsafe_allow_html=True)
-            
-            plot_spectrogram(melspec_db, sr, "Melspectrogram", y_axis="mel", x_axis="time")
-            
-            # Preproses MelSpectrogram untuk model
-            melspec_resized = np.expand_dims(melspec_db, axis=0)
-            melspec_resized = np.expand_dims(melspec_resized, axis=-1)
-            
-            # Prediksi menggunakan model (gunakan model yang ada)
-            predictions = melspec_model.predict(melspec_resized)[0]  # Prediksi untuk satu sampel
-            
-            # Sort top 3 prediksi berdasarkan probabilitas tertinggi
-            top_3_indices = np.argsort(predictions)[-3:][::-1]  # Top 3 index dan sorted
-            top_3_probabilities = predictions[top_3_indices]
 
-            # Tampilan hasil prediksi
+            plot_spectrogram(melspec_db, sr, "Melspectrogram", y_axis="mel", x_axis="time")
+
+            # Dummy model prediction (replace with actual model predictions)
+            # Here, you should load your model and use it for predictions
+            dummy_predictions = np.array([0.5, 0.3, 0.1, 0.05, 0.03, 0.02])  # Example probabilities
+            top_3_indices = np.argsort(dummy_predictions)[-3:][::-1]  # Top 3 indices based on probabilities
+
             st.markdown("""
             <div style='background-color: rgba(0, 0, 0, 0.8); padding: 15px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);'>
                 <h3 style='color: white; text-align: center; margin-bottom: 10px;'>Hasil Prediksi Top 3</h3>
-            </div>
             """, unsafe_allow_html=True)
 
-            for idx, (class_idx, probability) in enumerate(zip(top_3_indices, top_3_probabilities), 1):
+            for idx, (class_idx, probability) in enumerate(zip(top_3_indices, dummy_predictions[top_3_indices]), 1):
                 bird_info = get_bird_info(class_idx)
-                prediction_percentage = probability * 100  # Konversi probabilitas menjadi persen
-                
                 st.markdown(f"""
                 <div style='background-color: rgba(0, 0, 0, 0.6); padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: center;'>
                     <p style='color: white; font-size: 18px;'><strong>Peringkat {idx}:</strong></p>
                     <p style='color: white;'><strong>Kelas:</strong> {class_idx}</p>
                     <p style='color: white; font-size: 20px;'><strong>Nama Burung:</strong> {bird_info['name']}</p>
-                    <p style='color: white; font-size: 18px;'><strong>Akurasi:</strong> {prediction_percentage:.2f}%</p>
-                    <img src="{bird_info['image']}" alt="{bird_info['name']}" style='width: 80%; max-width: 500px; height: auto; border-radius: 10px; margin-top: 10px;'>
+                    <p style='color: white; font-size: 18px;'><strong>Akurasi:</strong> {probability * 100:.2f}%</p>
+                    <img src="{bird_info['image']}" alt="{bird_info['name']}" style='width: 90%; max-width: 500px; height: auto; border-radius: 10px; margin-top: 10px;'>
                     <p style='color: white; font-style: italic; margin-top: 10px;'>{bird_info.get('description', 'Deskripsi tidak tersedia.')}</p>
                 </div>
                 """, unsafe_allow_html=True)
