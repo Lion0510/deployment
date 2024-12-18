@@ -311,45 +311,45 @@ st.markdown("""
 # Upload file audio
 uploaded_audio = st.file_uploader("Unggah file audio (MP3/WAV)", type=["mp3", "wav"], label_visibility="hidden")
 
-# Jika file audio diunggah
-if uploaded_audio is not None:
-    st.audio(uploaded_audio, format="audio/mp3")
-    temp_file_path = "temp_audio.wav"
-    with open(temp_file_path, "wb") as f:
-        f.write(uploaded_audio.read())
+    # Jika file audio diunggah
+    if uploaded_audio is not None:
+        st.audio(uploaded_audio, format="audio/mp3")
+        temp_file_path = "temp_audio.wav"
+        with open(temp_file_path, "wb") as f:
+            f.write(uploaded_audio.read())
+        
+    with st.spinner("Memproses..."):
+        try:
+            # Load audio sekali saja di awal
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore", UserWarning)
+                y, sr = librosa.load(temp_file_path, sr=None)  # Muat file audio
     
-with st.spinner("Memproses..."):
-    try:
-        # Load audio sekali saja di awal
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore", UserWarning)
-            y, sr = librosa.load(temp_file_path, sr=None)  # Muat file audio
-
-        # Menghasilkan MFCC
-        mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
-
-        # Tampilkan spektrum MFCC
-        st.markdown("""
-        <div style='background-color: rgba(0, 0, 0, 0.6); padding: 10px; border-radius: 10px; text-align: center;'>
-            <h3 style='color: white; margin: 0;'>Spektrum MFCC</h3>
-        </div>
-        """, unsafe_allow_html=True)
-        plot_spectrogram(mfcc, sr, "MFCC", y_axis="mel", x_axis="time")
-
-        # Menghasilkan MelSpectrogram
-        melspec = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=64)
-        melspec_db = librosa.power_to_db(melspec, ref=np.max)
-
-        # Tampilkan spektrum Melspectrogram
-        st.markdown("""
-        <div style='background-color: rgba(0, 0, 0, 0.6); padding: 10px; border-radius: 10px; text-align: center;'>
-            <h3 style='color: white; margin: 0;'>Spektrum Melspectrogram</h3>
-        </div>
-        """, unsafe_allow_html=True)
-        plot_spectrogram(melspec_db, sr, "Melspectrogram", y_axis="mel", x_axis="time")
-
-    except Exception as e:
-        st.error(f"Error saat memproses audio: {str(e)}")
+            # Menghasilkan MFCC
+            mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
+    
+            # Tampilkan spektrum MFCC
+            st.markdown("""
+            <div style='background-color: rgba(0, 0, 0, 0.6); padding: 10px; border-radius: 10px; text-align: center;'>
+                <h3 style='color: white; margin: 0;'>Spektrum MFCC</h3>
+            </div>
+            """, unsafe_allow_html=True)
+            plot_spectrogram(mfcc, sr, "MFCC", y_axis="mel", x_axis="time")
+    
+            # Menghasilkan MelSpectrogram
+            melspec = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=64)
+            melspec_db = librosa.power_to_db(melspec, ref=np.max)
+    
+            # Tampilkan spektrum Melspectrogram
+            st.markdown("""
+            <div style='background-color: rgba(0, 0, 0, 0.6); padding: 10px; border-radius: 10px; text-align: center;'>
+                <h3 style='color: white; margin: 0;'>Spektrum Melspectrogram</h3>
+            </div>
+            """, unsafe_allow_html=True)
+            plot_spectrogram(melspec_db, sr, "Melspectrogram", y_axis="mel", x_axis="time")
+    
+        except Exception as e:
+            st.error(f"Error saat memproses audio: {str(e)}")
 
             
             # Preproses Melspectrogram untuk model
