@@ -315,46 +315,35 @@ if uploaded_audio is not None:
             
             plot_spectrogram(melspec_db, sr, "Melspectrogram", y_axis="mel", x_axis="time")
             
-            # Preprocess Melspectrogram untuk prediksi
-            melspec_image = preprocess_melspec(melspec)
-            melspec_image = np.expand_dims(melspec_image, axis=0)
-            
-            # Prediksi menggunakan model
-            melspec_result = melspec_model.predict(melspec_image)[0]
-            
-            # Dapatkan top 3 prediksi
-            top_3_indices = np.argsort(melspec_result)[-3:][::-1]
-            top_3_probabilities = melspec_result[top_3_indices]
-            
-            st.markdown("""
-            
-            <div style='background-color: rgba(0, 0, 0, 0.8); padding: 15px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);'>
+            # Dummy model prediction (replace with actual model predictions)
+            # Here, you should load your model and use it for predictions
+            dummy_predictions = np.array([0.5, 0.3, 0.1, 0.05, 0.03, 0.02])  # Example probabilities
+            top_3_indices = np.argsort(dummy_predictions)[-3:][::-1]  # Top 3 indices based on probabilities
 
+            st.markdown("""
+            <div style='background-color: rgba(0, 0, 0, 0.8); padding: 15px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);'>
                 <h3 style='color: white; text-align: center; margin-bottom: 10px;'>Hasil Prediksi Top 3</h3>
             """, unsafe_allow_html=True)
-            
-            for idx, (class_idx, probability) in enumerate(zip(top_3_indices, top_3_probabilities), 1):
-                bird_info = get_bird_info(class_idx)
-                prediction_percentage = probability * 100
-                
-                st.markdown(f"""
-                <div style='background-color: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 10px; margin-bottom: 10px;'>
-                    <p style='color: white;'><strong>Peringkat {idx}:</strong></p>
-                    <p style='color: white;'><strong>Kelas:</strong> {class_idx}</p>
-                    <p style='color: white;'><strong>Nama Burung:</strong> {bird_info['name']}</p>
-                    <p style='color: white;'><strong>Akurasi:</strong> {prediction_percentage:.2f}%</p>
-                    
-            <img src="{bird_info['image']}" alt="{bird_info['name']}" style='width: 80%; border-radius: 10px; margin-top: 10px;'>
 
-                    <p style='color: white; font-style: italic;'>{bird_info['description']}</p>
+            for idx, (class_idx, probability) in enumerate(zip(top_3_indices, dummy_predictions[top_3_indices]), 1):
+                bird_info = get_bird_info(class_idx)
+                st.markdown(f"""
+                <div style='background-color: rgba(0, 0, 0, 0.6); padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: center;'>
+                    <p style='color: white; font-size: 18px;'><strong>Peringkat {idx}:</strong></p>
+                    <p style='color: white;'><strong>Kelas:</strong> {class_idx}</p>
+                    <p style='color: white; font-size: 20px;'><strong>Nama Burung:</strong> {bird_info['name']}</p>
+                    <p style='color: white; font-size: 18px;'><strong>Akurasi:</strong> {probability * 100:.2f}%</p>
+                    <img src="{bird_info['image']}" alt="{bird_info['name']}" style='width: 90%; max-width: 500px; height: auto; border-radius: 10px; margin-top: 10px;'>
+                    <p style='color: white; font-style: italic; margin-top: 10px;'>{bird_info.get('description', 'Deskripsi tidak tersedia.')}</p>
                 </div>
                 """, unsafe_allow_html=True)
-            
+
             st.markdown("</div>", unsafe_allow_html=True)
-            
+
         except Exception as e:
             st.error(f"Error saat memproses audio: {str(e)}")
 
+        
 # Footer
 st.markdown("""
 <div class="footer">
