@@ -21,6 +21,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 def splash_screen():
     st.markdown("""
     <style>
+        /* Full-screen splash screen */
         .splash-screen {
             position: fixed;
             top: 0;
@@ -43,19 +44,23 @@ def splash_screen():
             to { opacity: 1; }
         }
     </style>
-    <div class="splash-screen" id="splash-screen">
+    <div class="splash-screen">
         <img src="https://raw.githubusercontent.com/Lion0510/deployment/refs/heads/main/images/LogoApp.jpeg" alt="Logo" class="splash-logo">
     </div>
-    <script>
-        setTimeout(function(){
-            var splash = document.getElementById("splash-screen");
-            splash.style.display = "none"; // Hilangkan splash screen setelah 3 detik
-        }, 3000);
-    </script>
     """, unsafe_allow_html=True)
 
-# Tampilkan splash screen
+# Tampilkan splash screen selama beberapa detik
 splash_screen()
+time.sleep(3)  # Tunggu 3 detik sebelum menghilangkan splash screen
+
+# Hapus splash screen setelah durasi
+st.markdown("""
+<style>
+    .splash-screen {
+        display: none; /* Hilangkan splash screen */
+    }
+</style>
+""", unsafe_allow_html=True)
 
 # Tunggu beberapa detik sebelum melanjutkan ke aplikasi utama
 time.sleep(3)
