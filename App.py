@@ -187,13 +187,21 @@ def preprocess_mfcc(mfcc):
 
 # Fungsi untuk memproses Melspectrogram menjadi gambar 64x64x3
 def preprocess_melspec(melspec):
+    # Convert to decibel scale
     melspec_db = librosa.power_to_db(melspec, ref=np.max)
-    melspec_image = Image.fromarray(melspec_db)
-    melspec_image = melspec_image.resize((64, 64))
-    melspec_resized = np.array(melspec_image)
-    melspec_resized = np.expand_dims(melspec_resized, axis=-1)
-    melspec_resized = np.repeat(melspec_resized, 3, axis=-1)
-    return melspec_resized
+    
+    # Normalize the spectrogram
+    melspec_normalized = (melspec_db - np.min(melspec_db)) / (np.max(melspec_db) - np.min(melspec_db))
+    
+    # Resize to 64x64
+    melspec_image = Image.fromarray(melspec_normalized * 255).convert('RGB')
+    melspec_resized = melspec_image.resize((64, 64))
+    melspec_array = np.array(melspec_resized)
+    
+    # Expand dimensions to match model input shape: (1, 64, 64, 3)
+    melspec_processed = np.expand_dims(melspec_array, axis=0)
+    
+    return melspec_processed
 
 # Fungsi untuk menampilkan spektrum
 def plot_spectrogram(data, sr, title, y_axis, x_axis):
