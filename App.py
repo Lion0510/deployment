@@ -301,8 +301,7 @@ if uploaded_audio is not None:
             # Dummy model prediction (replace with actual model predictions)
             # Here, you should load your model and use it for predictions
             dummy_predictions = np.array([0.5, 0.3, 0.1, 0.05, 0.03, 0.02])  # Example probabilities
-            sorted_indices = np.argsort(dummy_predictions)[::-1]
-            top_3_indices = sorted_indices[:3]
+            top_3_indices = np.argsort(dummy_predictions)[-3:][::-1]  # Top 3 indices based on probabilities
 
             st.markdown("""
             <div style='background-color: rgba(0, 0, 0, 0.6); padding: 15px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);'>
@@ -314,7 +313,7 @@ if uploaded_audio is not None:
                 st.markdown(f"""
                 <p style='color: white;'><strong>Kelas:</strong> {idx}</p>
                 <p style='color: white;'><strong>Nama Burung:</strong> {bird_info['name']}</p>
-                <p style='color: white;'><strong>Akurasinya:</strong> {sorted(dummy_predictions, reverse=True)[top_3_indices.tolist().index(idx)] * 100:.2f}%</p>
+                <p style='color: white;'><strong>Akurasinya:</strong> {dummy_predictions[idx] * 100:.2f}%</p>
                 <img src="{bird_info['image']}" alt="{bird_info['name']}" style='width: 100%; border-radius: 10px; margin-top: 10px;'>
                 """, unsafe_allow_html=True)
 
