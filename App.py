@@ -35,7 +35,7 @@ def splash_screen():
             z-index: 9999;
         }
         .splash-logo {
-            width: 500px; /* Ukuran logo */
+            width: 350px; /* Ukuran logo */
             height: auto;
             animation: fadeIn 3s ease-in-out; /* Animasi fade-in */
         }
