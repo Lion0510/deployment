@@ -303,6 +303,24 @@ if uploaded_audio is not None:
     
     with st.spinner("Memproses..."):
         try:
+                        # Proses audio menjadi MFCC dan MelSpectrogram
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore", UserWarning)
+                y, sr = librosa.load(temp_file_path, sr=None)
+                
+            mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
+            melspec = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=64)
+
+            # Teks "Spektrum MFCC" dengan background hitam transparan
+            st.markdown("""
+            <div style='background-color: rgba(0, 0, 0, 0.6); padding: 10px; border-radius: 10px; text-align: center;'>
+                <h3 style='color: white; margin: 0;'>Spektrum MFCC</h3>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            plot_spectrogram(mfcc, sr, "MFCC", y_axis="mel", x_axis="time")
+
+            
             # Proses audio menjadi MelSpectrogram
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore", UserWarning)
