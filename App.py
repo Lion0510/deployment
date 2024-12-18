@@ -28,7 +28,7 @@ def splash_screen():
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.9); /* Latar belakang hitam transparan */
+            background-color: #2E2E2E; /* Latar belakang abu-abu gelap */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -45,15 +45,15 @@ def splash_screen():
         }
     </style>
     <div class="splash-screen">
-        <img src="https://raw.githubusercontent.com/Lion0510/deployment/refs/heads/main/images/LogoApp.jpeg" alt="Logo" class="splash-logo">
+        <img src="https://path_to_your_logo/logo.png" alt="Logo" class="splash-logo">
     </div>
     """, unsafe_allow_html=True)
 
-# Tampilkan splash screen selama beberapa detik
+# Tampilkan splash screen
 splash_screen()
-time.sleep(3)  # Tunggu 3 detik sebelum menghilangkan splash screen
+time.sleep(3)  # Biarkan splash screen selama 3 detik
 
-# Hapus splash screen setelah durasi
+# Hapus splash screen dengan mengganti CSS
 st.markdown("""
 <style>
     .splash-screen {
@@ -62,8 +62,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Tunggu beberapa detik sebelum melanjutkan ke aplikasi utama
-time.sleep(3)
 
 st.markdown("""
     <style>
