@@ -9,12 +9,57 @@ from PIL import Image
 import matplotlib.pyplot as plt
 from kaggle.api.kaggle_api_extended import KaggleApi
 import warnings
+import time
 
 # Menyembunyikan log TensorFlow
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 # CSS untuk styling halaman
+
+# Fungsi untuk menampilkan splash screen
+def splash_screen():
+    st.markdown("""
+    <style>
+        .splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9); /* Latar belakang hitam transparan */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .splash-logo {
+            width: 150px; /* Ukuran logo */
+            height: auto;
+            animation: fadeIn 2s ease-in-out; /* Animasi fade-in */
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+    <div class="splash-screen" id="splash-screen">
+        <img src="https://raw.githubusercontent.com/Lion0510/deployment/refs/heads/main/images/LogoApp.jpeg" alt="Logo" class="splash-logo">
+    </div>
+    <script>
+        setTimeout(function(){
+            var splash = document.getElementById("splash-screen");
+            splash.style.display = "none"; // Hilangkan splash screen setelah 3 detik
+        }, 3000);
+    </script>
+    """, unsafe_allow_html=True)
+
+# Tampilkan splash screen
+splash_screen()
+
+# Tunggu beberapa detik sebelum melanjutkan ke aplikasi utama
+time.sleep(3)
+
 st.markdown("""
     <style>
         .stApp {
