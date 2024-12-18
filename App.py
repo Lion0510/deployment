@@ -375,7 +375,7 @@ if uploaded_audio is not None:
                     <p style='color: white;'><strong>Kelas:</strong> {class_idx}</p>
                     <p style='color: white; font-size: 20px;'><strong>Nama Burung:</strong> {bird_info['name']}</p>
                     <p style='color: white; font-size: 18px;'><strong>Akurasi:</strong> {prediction_percentage:.2f}%</p>
-                    <img src="{bird_info['image']}" alt="{bird_info['name']}" style='width: 90%; max-width: 500px; height: auto; border-radius: 10px; margin-top: 10px;'>
+                    <img src="{bird_info['image']}" alt="{bird_info['name']}" style='width: 60%; max-width: 500px; height: auto; border-radius: 10px; margin-top: 10px;'>
                     <p style='color: white; font-style: italic; margin-top: 10px;'>{bird_info.get('description', 'Deskripsi tidak tersedia.')}</p>
                 </div>
                 """, unsafe_allow_html=True)
