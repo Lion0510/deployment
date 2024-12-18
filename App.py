@@ -37,7 +37,7 @@ def splash_screen():
         .splash-logo {
             width: 500px; /* Ukuran logo */
             height: auto;
-            animation: fadeIn 2s ease-in-out; /* Animasi fade-in */
+            animation: fadeIn 3s ease-in-out; /* Animasi fade-in */
         }
         @keyframes fadeIn {
             from { opacity: 0; }
