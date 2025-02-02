@@ -43,9 +43,6 @@ if submit:
 #refresh halaman agar input kembali ke nilai awal
     st.rerun()
 
-# Menampilkan data dalam tabel
-st.subheader("📋 Data Penjualan")
-st.dataframe(df)
 # Fitur Hapus Data
 st.subheader("🗑️ Hapus Data Penjualan")
 hapus_data = st.selectbox("Pilih data yang ingin dihapus berdasarkan Tanggal dan Varian", df["Tanggal"].astype(str) + " - " + df["Varian"])
@@ -59,6 +56,10 @@ if st.button("Hapus Data"):
     df = df[(df["Tanggal"] != tanggal_to_delete) | (df["Varian"] != varian_to_delete)]
     save_data(df)
     st.success("✅ Data berhasil dihapus!")
+
+# Menampilkan data dalam tabel
+st.subheader("📋 Data Penjualan")
+st.dataframe(df)
 
 # Visualisasi Data
 if not df.empty:
