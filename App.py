@@ -41,7 +41,7 @@ if submit:
     st.success("✅ Data berhasil disimpan!")
 
 #refresh halaman agar input kembali ke nilai awal
-    st.experimental_rerun()
+    st.rerun()
 
 # Menampilkan data dalam tabel
 st.subheader("📋 Data Penjualan")
