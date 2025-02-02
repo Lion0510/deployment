@@ -53,7 +53,12 @@ if not df.empty:
     st.pyplot(fig)
 
     st.subheader("📈 Tren Penjualan")
+    df["Tanggal"] = pd.to_datetime(df["Tanggal"])  # Pastikan format tanggal benar
+    df_tren = df.groupby("Tanggal", as_index=False)["Terjual"].sum()  # Gunakan sum() agar tidak mengganti data sebelumnya
+    
     fig, ax = plt.subplots()
-    df.groupby("Tanggal")["Terjual"].sum().plot(kind="line", marker="o", ax=ax)
+    ax.plot(df_tren["Tanggal"], df_tren["Terjual"], marker="o", linestyle="-")
     ax.set_ylabel("Jumlah Terjual")
+    ax.set_xlabel("Tanggal")
+    ax.tick_params(axis="x", rotation=45)  # Memiringkan label tanggal agar lebih terbaca
     st.pyplot(fig)
