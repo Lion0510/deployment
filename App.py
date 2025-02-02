@@ -40,6 +40,9 @@ if submit:
     save_data(df)
     st.success("✅ Data berhasil disimpan!")
 
+#refresh halaman agar input kembali ke nilai awal
+    st.experimental_rerun()
+
 # Menampilkan data dalam tabel
 st.subheader("📋 Data Penjualan")
 st.dataframe(df)
