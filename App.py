@@ -69,13 +69,16 @@ if not df.empty:
     ax.set_ylabel("Jumlah Terjual")
     st.pyplot(fig)
 
-    st.subheader("📈 Tren Penjualan")
+    st.subheader("📊 Tren Penjualan (Area Chart)")
     df["Tanggal"] = pd.to_datetime(df["Tanggal"])  # Pastikan format tanggal benar
-    df_tren = df.groupby("Tanggal", as_index=False)["Terjual"].sum()  # Gunakan sum() agar tidak mengganti data sebelumnya
+    df_tren = df.groupby("Tanggal", as_index=False)["Terjual"].sum()  # Agregasi data berdasarkan tanggal
     
+    # Membuat plot dengan area
     fig, ax = plt.subplots()
-    ax.plot(df_tren["Tanggal"], df_tren["Terjual"], marker="o", linestyle="-")
+    ax.fill_between(df_tren["Tanggal"], df_tren["Terjual"], color="skyblue", alpha=0.4)
+    ax.plot(df_tren["Tanggal"], df_tren["Terjual"], color="blue", marker="o")  # Garis untuk menunjukkan tren
     ax.set_ylabel("Jumlah Terjual")
     ax.set_xlabel("Tanggal")
     ax.tick_params(axis="x", rotation=45)  # Memiringkan label tanggal agar lebih terbaca
     st.pyplot(fig)
+
